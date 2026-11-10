@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dead Drop</title>
+  <style>
+    * { box-sizing: border-box; user-select: none; }
+    body {
+      margin: 0;
+      background: #0d0f12;
+      color: #e6edf3;
+      font-family: 'Courier New', Courier, monospace;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 12px;
+    }
+    #game-container {
+      position: relative;
+      width: 500px;
+    }
+    #header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .title {
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: 2px;
+      color: #ff3344;
+      text-transform: uppercase;
+    }
+    #hud {
+      display: flex;
+      justify-content: space-between;
+      background: #161b22;
+      border: 1px solid #30363d;
+      padding: 8px 12px;
+      margin-bottom: 6px;
+      border-radius: 4px;
+    }
+    .hud-box { text-align: center; }
+    .hud-label { font-size: 10px; color: #8b949e; text-transform: uppercase; letter-spacing: 1px; }
+    .hud-val { font-size: 17px; font-weight: bold; }
+    .charge { color: #58a6ff; }
+    .flux { color: #ff3344; }
+    .quota { color: #3fb950; }
+
+    canvas {
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 4px;
+      cursor: crosshair;
+      display: block;
+    }
+
+    #core-tray {
+      display: flex;
+      gap: 6px;
+      background: #161b22;
+      border: 1px solid #30363d;
+      padding: 6px;
+      margin-top: 6px;
+      min-height: 54px;
+      border-radius: 4px;
+    }
+    .core-slot {
+      flex: 1;
+      background: #0d1117;
+      border: 1px dashed #30363d;
+      border-radius: 3px;
+      font-size: 9px;
+      padding: 4px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      color: #8b949e;
+    }
+    .core-slot.active {
+      border: 1px solid #ff3344;
+      background: #211317;
+      color: #f0f6fc;
+    }
+
+    #shop-overlay {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(13, 15, 18, 0.96);
+      border: 2px solid #3fb950;
+      display: none;
+      flex-direction: column;
+      padding: 24px 20px;
+      border-radius: 4px;
+    }
+    .shop-title { color: #3fb950; font-size: 22px; font-weight: bold; text-align: center; margin-bottom: 12px; }
+    .shop-grid { display: flex; flex-direction: column; gap: 10px; flex: 1; }
+    .shop-card {
+      background: #161b22;
+      border: 1px solid #30363d;
+      padding: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    button {
+      background: #238636;
+      color: #fff;
+      border: none;
+      padding: 7px 14px;
+      font-weight: bold;
+      cursor: pointer;
+      font-family: inherit;
+      border-radius: 4px;
+    }
+    button:hover { background: #2ea043; }
+    button:disabled { background: #21262d; color: #484f58; cursor: not-allowed; }
+  </style>
+</head>
+<body>
+
+<div id="game-container">
+  <div id="header">
+    <div class="title">Dead Drop</div>
+    <div style="font-size: 12px; color: #8b949e;">CLICK TO DROP</div>
+  </div>
+
+  <div id="hud">
+    <div class="hud-box">
+      <div class="hud-label">Floor / Quota</div>
+      <div class="hud-val quota" id="ui-quota">1 / 500</div>
+    </div>
+    <div class="hud-box">
+      <div class="hud-label">Score</div>
+      <div class="hud-val" id="ui-round-score">0</div>
+    </div>
+    <div class="hud-box">
+      <div class="hud-label">Drops Left</div>
+      <div class="hud-val" id="ui-drops">4</div>
+    </div>
+    <div class="hud-box">
+      <div class="hud-label">Cash</div>
+      <div class="hud-val charge" id="ui-money">$5</div>
+    </div>
+  </div>
+
+  <canvas id="gameCanvas" width="500" height="600"></canvas>
+
+  <div id="core-tray">
+    <div class="core-slot" id="slot-0">EMPTY</div>
+    <div class="core-slot" id="slot-1">EMPTY</div>
+    <div class="core-slot" id="slot-2">EMPTY</div>
+    <div class="core-slot" id="slot-3">EMPTY</div>
+    <div class="core-slot" id="slot-4">EMPTY</div>
+  </div>
+
+  <!-- Shop Screen -->
+  <div id="shop-overlay">
+    <div class="shop-title">DEAD DROP BLACK MARKET</div>
+    <div class="shop-grid" id="shop-items"></div>
+    <button style="margin-top: 15px;" onclick="game.nextRound()">NEXT FLOOR</button>
+  </div>
+</div>
+
+<script>
+// Available passive items (cores)
+const CORES = [
+  {
+    name: "Rattle Wire",
+    cost: 4,
+    desc: "+3 Flux every 4th bounce.",
+    onBounce: (ball, peg, engine) => {
+      if (ball.bounces % 4 === 0) {
+        engine.flux += 3.0;
+        engine.spawnText(ball.x, ball.y, "+3x FLUX", "#ff3344");
+      }
+    }
+  },
+  {
+    name: "Lead Weight",
+    cost: 5,
+    desc: "+20 Charge on every peg hit.",
+    onBounce: (ball, peg, engine) => {
+      engine.charge += 20;
+      engine.spawnText(peg.x, peg.y, "+20", "#58a6ff");
+    }
+  },
+  {
+    name: "Jackpot Needle",
+    cost: 7,
+    desc: "12% chance per peg to crit for +60 Charge.",
+    onBounce: (ball, peg, engine) => {
+      if (Math.random() < 0.12) {
+        engine.charge += 60;
+        engine.spawnText(ball.x, ball.y, "CRIT! +60", "#3fb950");
+      }
+    }
+  },
+  {
+    name: "Deep Siphon",
+    cost: 6,
+    desc: "Multiplies total round flux by x1.5 in any bin.",
+    onLand: (bin, engine) => {
+      engine.flux *= 1.5;
+      engine.spawnText(bin.x + bin.w / 2, 570, "x1.5 FLUX", "#ff3344");
+    }
+  }
+];
+
+class Game {
+  constructor() {
+    this.canvas = document.getElementById("gameCanvas");
+    this.ctx = this.canvas.getContext("2d");
+
+    this.floor = 1;
+    this.quota = 500;
+    this.roundScore = 0;
+    this.dropsLeft = 4;
+    this.money = 5;
+    this.activeCores = [];
+
+    this.charge = 0;
+    this.flux = 1.0;
+
+    this.pegs = [];
+    this.bins = [];
+    this.floatingTexts = [];
+    this.ball = null;
+    this.launcherX = 250;
+
+    this.initBoard();
+    this.attachEvents();
+    this.updateUI();
+
+    requestAnimationFrame((t) => this.tick(t));
+  }
+
+  initBoard() {
+    this.pegs = [];
+    this.bins = [];
+
+    const rows = 9;
+    const spacingX = 42;
+    const spacingY = 40;
+    const startY = 120;
+
+    for (let r = 0; r < rows; r++) {
+      const isOdd = r % 2 === 1;
+      const cols = isOdd ? 10 : 9;
+      const offsetX = (this.canvas.width - ((cols - 1) * spacingX)) / 2;
+
+      for (let c = 0; c < cols; c++) {
+        this.pegs.push({
+          x: offsetX + c * spacingX,
+          y: startY + r * spacingY,
+          radius: 4,
+          glow: 0
+        });
+      }
+    }
+
+    const binMultipliers = [3.0, 1.5, 1.0, 2.0, 1.0, 1.5, 3.0];
+    const binWidth = this.canvas.width / binMultipliers.length;
+    for (let i = 0; i < binMultipliers.length; i++) {
+      this.bins.push({
+        x: i * binWidth,
+        y: 560,
+        w: binWidth,
+        h: 40,
+        mult: binMultipliers[i]
+      });
+    }
+  }
+
+  attachEvents() {
+    this.canvas.addEventListener("mousemove", (e) => {
+      const rect = this.canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      this.launcherX = Math.max(30, Math.min(this.canvas.width - 30, x));
+    });
+
+    this.canvas.addEventListener("click", () => {
+      if (!this.ball && this.dropsLeft > 0) {
+        this.dropBall();
+      }
+    });
+  }
+
+  dropBall() {
+    this.dropsLeft--;
+    this.charge = 10;
+    this.flux = 1.0;
+    this.ball = {
+      x: this.launcherX,
+      y: 40,
+      vx: (Math.random() - 0.5) * 1.5,
+      vy: 2,
+      radius: 6,
+      bounces: 0
+    };
+    this.updateUI();
+  }
+
+  spawnText(x, y, text, color) {
+    this.floatingTexts.push({ x, y, text, color, life: 1.0 });
+  }
+
+  tick(time) {
+    this.update();
+    this.draw();
+    requestAnimationFrame((t) => this.tick(t));
+  }
+
+  update() {
+    for (let i = this.floatingTexts.length - 1; i >= 0; i--) {
+      const ft = this.floatingTexts[i];
+      ft.y -= 0.6;
+      ft.life -= 0.02;
+      if (ft.life <= 0) this.floatingTexts.splice(i, 1);
+    }
+
+    this.pegs.forEach(p => { if (p.glow > 0) p.glow -= 0.05; });
+
+    if (!this.ball) return;
+
+    this.ball.vy += 0.22;
+    this.ball.x += this.ball.vx;
+    this.ball.y += this.ball.vy;
+
+    if (this.ball.x - this.ball.radius < 0) {
+      this.ball.x = this.ball.radius;
+      this.ball.vx *= -0.6;
+    } else if (this.ball.x + this.ball.radius > this.canvas.width) {
+      this.ball.x = this.canvas.width - this.ball.radius;
+      this.ball.vx *= -0.6;
+    }
+
+    for (let peg of this.pegs) {
+      const dx = this.ball.x - peg.x;
+      const dy = this.ball.y - peg.y;
+      const dist = Math.hypot(dx, dy);
+
+      if (dist < this.ball.radius + peg.radius) {
+        const angle = Math.atan2(dy, dx);
+        const speed = Math.hypot(this.ball.vx, this.ball.vy) * 0.75;
+        this.ball.vx = Math.cos(angle) * Math.max(speed, 2.5);
+        this.ball.vy = Math.sin(angle) * Math.max(speed, 2.5);
+
+        this.ball.x = peg.x + Math.cos(angle) * (this.ball.radius + peg.radius + 1);
+        this.ball.y = peg.y + Math.sin(angle) * (this.ball.radius + peg.radius + 1);
+
+        this.ball.bounces++;
+        peg.glow = 1.0;
+        this.charge += 5;
+
+        for (let core of this.activeCores) {
+          if (core.onBounce) core.onBounce(this.ball, peg, this);
+        }
+        break;
+      }
+    }
+
+    if (this.ball.y > 560) {
+      let landedBin = this.bins.find(b => this.ball.x >= b.x && this.ball.x <= b.x + b.w);
+      if (!landedBin) landedBin = this.bins[0];
+
+      this.flux *= landedBin.mult;
+
+      for (let core of this.activeCores) {
+        if (core.onLand) core.onLand(landedBin, this);
+      }
+
+      const dropFinalScore = Math.floor(this.charge * this.flux);
+      this.roundScore += dropFinalScore;
+      this.spawnText(this.ball.x, 540, `+${dropFinalScore}`, "#3fb950");
+
+      this.ball = null;
+      this.updateUI();
+      this.checkRoundEnd();
+    }
+  }
+
+  checkRoundEnd() {
+    if (this.roundScore >= this.quota) {
+      this.money += 3 + Math.max(0, this.dropsLeft);
+      this.openShop();
+    } else if (this.dropsLeft <= 0) {
+      alert("DEAD DROP FAILED: Quota missed. Restarting run.");
+      this.resetRun();
+    }
+  }
+
+  openShop() {
+    const shop = document.getElementById("shop-overlay");
+    const container = document.getElementById("shop-items");
+    container.innerHTML = "";
+
+    const options = [...CORES].sort(() => 0.5 - Math.random()).slice(0, 3);
+
+    options.forEach(core => {
+      const card = document.createElement("div");
+      card.className = "shop-card";
+      card.innerHTML = `
+        <div>
+          <strong style="color: #ff3344">${core.name}</strong> ($${core.cost})<br>
+          <small style="color: #8b949e">${core.desc}</small>
+        </div>
+      `;
+      const buyBtn = document.createElement("button");
+      buyBtn.innerText = "BUY";
+      buyBtn.disabled = this.money < core.cost || this.activeCores.length >= 5;
+      buyBtn.onclick = () => {
+        this.money -= core.cost;
+        this.activeCores.push(core);
+        this.updateUI();
+        this.openShop();
+      };
+      card.appendChild(buyBtn);
+      container.appendChild(card);
+    });
+
+    shop.style.display = "flex";
+  }
+
+  nextRound() {
+    document.getElementById("shop-overlay").style.display = "none";
+    this.floor++;
+    this.quota = Math.floor(this.quota * 1.8);
+    this.roundScore = 0;
+    this.dropsLeft = 4;
+    this.updateUI();
+  }
+
+  resetRun() {
+    this.floor = 1;
+    this.quota = 500;
+    this.roundScore = 0;
+    this.dropsLeft = 4;
+    this.money = 5;
+    this.activeCores = [];
+    this.updateUI();
+  }
+
+  updateUI() {
+    document.getElementById("ui-quota").innerText = `${this.floor} / ${this.quota}`;
+    document.getElementById("ui-round-score").innerText = this.roundScore;
+    document.getElementById("ui-drops").innerText = this.dropsLeft;
+    document.getElementById("ui-money").innerText = `$${this.money}`;
+
+    for (let i = 0; i < 5; i++) {
+      const slot = document.getElementById(`slot-${i}`);
+      if (this.activeCores[i]) {
+        slot.classList.add("active");
+        slot.innerText = this.activeCores[i].name;
+      } else {
+        slot.classList.remove("active");
+        slot.innerText = "EMPTY";
+      }
+    }
+  }
+
+  draw() {
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+    this.ctx.strokeStyle = "rgba(88, 166, 255, 0.2)";
+    this.ctx.setLineDash([4, 4]);
+    this.ctx.beginPath();
+    this.ctx.moveTo(this.launcherX, 0);
+    this.ctx.lineTo(this.launcherX, this.canvas.height);
+    this.ctx.stroke();
+    this.ctx.setLineDash([]);
+
+    this.ctx.fillStyle = "#58a6ff";
+    this.ctx.fillRect(this.launcherX - 10, 5, 20, 10);
+
+    this.bins.forEach(bin => {
+      this.ctx.strokeStyle = "#30363d";
+      this.ctx.strokeRect(bin.x, bin.y, bin.w, bin.h);
+      this.ctx.fillStyle = "#8b949e";
+      this.ctx.font = "12px Courier New";
+      this.ctx.textAlign = "center";
+      this.ctx.fillText(`${bin.mult}x`, bin.x + bin.w / 2, bin.y + 24);
+    });
+
+    this.pegs.forEach(peg => {
+      this.ctx.beginPath();
+      this.ctx.arc(peg.x, peg.y, peg.radius, 0, Math.PI * 2);
+      this.ctx.fillStyle = peg.glow > 0.05 ? `rgba(255, 51, 68, ${peg.glow})` : "#30363d";
+      this.ctx.fill();
+    });
+
+    if (this.ball) {
+      this.ctx.beginPath();
+      this.ctx.arc(this.ball.x, this.ball.y, this.ball.radius, 0, Math.PI * 2);
+      this.ctx.fillStyle = "#f0f6fc";
+      this.ctx.fill();
+
+      this.ctx.font = "bold 13px Courier New";
+      this.ctx.textAlign = "center";
+      this.ctx.fillStyle = "#58a6ff";
+      this.ctx.fillText(`+${this.charge}`, this.ball.x, this.ball.y - 24);
+      this.ctx.fillStyle = "#ff3344";
+      this.ctx.fillText(`${this.flux.toFixed(1)}x`, this.ball.x, this.ball.y - 10);
+    }
+
+    this.floatingTexts.forEach(ft => {
+      this.ctx.fillStyle = ft.color;
+      this.ctx.font = "bold 12px Courier New";
+      this.ctx.textAlign = "center";
+      this.ctx.fillText(ft.text, ft.x, ft.y);
+    });
+  }
+}
+
+const game = new Game();
+</script>
+</body>
+</html>

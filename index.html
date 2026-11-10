@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dead Drop: Overdrive</title>
+  <title>Dead Drop: Black Market Edition</title>
   <style>
     * {
       box-sizing: border-box;
@@ -24,7 +24,7 @@
     }
     #game-container {
       position: relative;
-      width: 540px;
+      width: 560px;
       max-width: 100%;
     }
     #header {
@@ -87,7 +87,7 @@
       display: block;
       cursor: crosshair;
       box-shadow: 0 0 20px rgba(0,0,0,0.8);
-      width: 540px;
+      width: 560px;
       height: 640px;
     }
 
@@ -134,35 +134,63 @@
       margin-top: 2px;
     }
 
+    /* MARKET OVERLAY OVERHAUL */
     #shop-overlay {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(7, 9, 14, 0.95);
+      background: rgba(7, 9, 14, 0.98);
       border: 2px solid #3fb950;
       display: none;
       flex-direction: column;
-      padding: 20px;
+      padding: 16px;
       border-radius: 6px;
       z-index: 10;
-      box-shadow: 0 0 30px rgba(63, 185, 80, 0.3);
+      box-shadow: 0 0 35px rgba(63, 185, 80, 0.35);
+    }
+    .shop-header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #243046;
+      padding-bottom: 8px;
+      margin-bottom: 10px;
+    }
+    .shop-title-wrap {
+      text-align: left;
     }
     .shop-title {
       color: #3fb950;
-      font-size: 22px;
+      font-size: 20px;
       font-weight: 900;
-      text-align: center;
       letter-spacing: 2px;
-      margin-bottom: 6px;
-      text-shadow: 0 0 10px rgba(63, 185, 80, 0.6);
+      margin: 0;
+      text-shadow: 0 0 8px rgba(63, 185, 80, 0.5);
     }
     .shop-subtitle {
-      font-size: 11px;
+      font-size: 10px;
       color: #8b949e;
-      text-align: center;
-      margin-bottom: 14px;
+      margin-top: 2px;
+    }
+    .shop-wallet-box {
+      text-align: right;
+      background: #0f141c;
+      padding: 6px 12px;
+      border: 1px solid #30363d;
+      border-radius: 4px;
+    }
+    .shop-wallet-label {
+      font-size: 9px;
+      color: #8b949e;
+      text-transform: uppercase;
+    }
+    .shop-wallet-val {
+      font-size: 18px;
+      font-weight: bold;
+      color: #e3b341;
+      text-shadow: 0 0 6px rgba(227, 179, 65, 0.5);
     }
     .shop-grid {
       display: flex;
@@ -170,24 +198,43 @@
       gap: 8px;
       flex: 1;
       overflow-y: auto;
+      padding-right: 4px;
     }
     .shop-card {
       background: #0f141c;
       border: 1px solid #243046;
-      padding: 10px 14px;
+      padding: 8px 12px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       border-radius: 4px;
-      transition: border-color 0.2s;
+      transition: all 0.2s;
     }
     .shop-card:hover {
       border-color: #58a6ff;
     }
+    .shop-card.sold {
+      opacity: 0.35;
+      pointer-events: none;
+      filter: grayscale(1);
+    }
+    .card-badge {
+      display: inline-block;
+      font-size: 8px;
+      text-transform: uppercase;
+      padding: 1px 5px;
+      border-radius: 3px;
+      margin-bottom: 3px;
+      font-weight: bold;
+    }
+    .badge-core { background: #1f3a5f; color: #58a6ff; }
+    .badge-board { background: #3b2344; color: #d2a8ff; }
+    .badge-upgrade { background: #1c3829; color: #3fb950; }
+
     .shop-buttons {
       display: flex;
       gap: 8px;
-      margin-top: 12px;
+      margin-top: 10px;
     }
     button {
       background: #238636;
@@ -223,7 +270,7 @@
 <div id="game-container">
   <div id="header">
     <div class="title">Dead Drop</div>
-    <div class="instruction">CLICK / SPAM TO LAUNCH MULTIPLE</div>
+    <div class="instruction">CLICK / SPAM TO DROP MULTIPLE</div>
   </div>
 
   <div id="hud">
@@ -241,11 +288,11 @@
     </div>
     <div class="hud-box">
       <div class="hud-label">Credits</div>
-      <div class="hud-val gold" id="ui-money">$5</div>
+      <div class="hud-val gold" id="ui-money">$6</div>
     </div>
   </div>
 
-  <canvas id="gameCanvas" width="540" height="640"></canvas>
+  <canvas id="gameCanvas" width="560" height="640"></canvas>
 
   <div id="core-tray">
     <div class="core-slot" id="slot-0">EMPTY</div>
@@ -256,8 +303,16 @@
   </div>
 
   <div id="shop-overlay">
-    <div class="shop-title">CORE PROTOCOL MARKET</div>
-    <div class="shop-subtitle">CLICK ON INSTALLED CORES BELOW TO RECYCLE THEM</div>
+    <div class="shop-header-bar">
+      <div class="shop-title-wrap">
+        <h2 class="shop-title">BLACK MARKET</h2>
+        <div class="shop-subtitle">CLICK EQUIPPED CORES AT BOTTOM TO RECYCLE (+50%)</div>
+      </div>
+      <div class="shop-wallet-box">
+        <div class="shop-wallet-label">AVAILABLE FUNDS</div>
+        <div class="shop-wallet-val" id="shop-wallet-display">$0</div>
+      </div>
+    </div>
     <div class="shop-grid" id="shop-items"></div>
     <div class="shop-buttons">
       <button class="btn-reroll" id="shop-reroll-btn">REROLL ($2)</button>
@@ -268,10 +323,10 @@
 
 <script>
 window.addEventListener('DOMContentLoaded', () => {
-  const CORES = [
+  // ITEM POOL DEFINITIONS
+  const ALL_CORES = [
     {
-      name: "Rattle Wire",
-      cost: 4,
+      id: "c1", category: "core", name: "Rattle Wire", cost: 4,
       desc: "+1.2x Flux multiplier every 3 bounces.",
       onBounce: (ball, peg, engine) => {
         if (ball.bounces % 3 === 0) {
@@ -281,8 +336,7 @@ window.addEventListener('DOMContentLoaded', () => {
       }
     },
     {
-      name: "Supercharger",
-      cost: 4,
+      id: "c2", category: "core", name: "Supercharger", cost: 4,
       desc: "+15 Base Charge on every single peg collision.",
       onBounce: (ball, peg, engine) => {
         ball.charge += 15;
@@ -290,8 +344,7 @@ window.addEventListener('DOMContentLoaded', () => {
       }
     },
     {
-      name: "Lucky Strike",
-      cost: 5,
+      id: "c3", category: "core", name: "Lucky Strike", cost: 5,
       desc: "20% chance to critically strike for +60 Charge.",
       onBounce: (ball, peg, engine) => {
         if (Math.random() < 0.20) {
@@ -302,8 +355,7 @@ window.addEventListener('DOMContentLoaded', () => {
       }
     },
     {
-      name: "Fission Core",
-      cost: 7,
+      id: "c4", category: "core", name: "Fission Core", cost: 7,
       desc: "10% chance on peg hit to split into 2 balls (once per ball).",
       onBounce: (ball, peg, engine) => {
         if (!ball.hasSplit && Math.random() < 0.10) {
@@ -314,18 +366,16 @@ window.addEventListener('DOMContentLoaded', () => {
       }
     },
     {
-      name: "Dynamo Blast",
-      cost: 6,
-      desc: "Every 6th bounce releases a blast triggering nearby pegs.",
+      id: "c5", category: "core", name: "Dynamo Blast", cost: 6,
+      desc: "Every 6th bounce triggers an explosive radius blast.",
       onBounce: (ball, peg, engine) => {
         if (ball.bounces % 6 === 0) {
-          engine.triggerExplosion(ball.x, ball.y, 60, ball);
+          engine.triggerExplosion(ball.x, ball.y, 65, ball);
         }
       }
     },
     {
-      name: "Deep Siphon",
-      cost: 5,
+      id: "c6", category: "core", name: "Deep Siphon", cost: 5,
       desc: "Multiplies ball flux by an extra x1.5 upon landing.",
       onLand: (ball, bin, engine) => {
         ball.flux *= 1.5;
@@ -333,25 +383,59 @@ window.addEventListener('DOMContentLoaded', () => {
       }
     },
     {
-      name: "Golden Drip",
-      cost: 5,
-      desc: "Landing in outer edge bins gives +$2 Credits.",
-      onLand: (ball, bin, engine) => {
-        if (bin.mult >= 2.5) {
-          engine.money += 2;
-          engine.spawnText(bin.x + bin.w / 2, bin.y - 30, "+$2", "#e3b341");
-        }
-      }
-    },
-    {
-      name: "Kinetic Battery",
-      cost: 6,
-      desc: "Each bounce increases ball speed & adds +8 Charge.",
+      id: "c7", category: "core", name: "Kinetic Battery", cost: 5,
+      desc: "Gains speed and adds +8 Charge on every bounce.",
       onBounce: (ball, peg, engine) => {
         ball.charge += 8;
         ball.vx *= 1.05;
         ball.vy *= 1.05;
       }
+    },
+    {
+      id: "c8", category: "core", name: "Credit Collector", cost: 5,
+      desc: "Every 10 bounces on a single drop grants +$1 instant Credit.",
+      onBounce: (ball, peg, engine) => {
+        if (ball.bounces % 10 === 0) {
+          engine.money += 1;
+          engine.spawnText(ball.x, ball.y - 14, "+$1 CASH", "#e3b341");
+        }
+      }
+    }
+  ];
+
+  const BOARD_MODS = [
+    {
+      id: "b1", category: "board", name: "Midas Infusion", cost: 4,
+      desc: "Permanently transforms 4 random pegs into Gold Pegs (+Cash).",
+      apply: (engine) => engine.convertRandomPegs('gold', 4)
+    },
+    {
+      id: "b2", category: "board", name: "Flux Field Generator", cost: 4,
+      desc: "Permanently transforms 4 random pegs into Flux Pegs (+Mult).",
+      apply: (engine) => engine.convertRandomPegs('flux', 4)
+    },
+    {
+      id: "b3", category: "board", name: "Rubber Padding", cost: 3,
+      desc: "Converts 3 pegs into Bouncy Pegs that fling balls violently.",
+      apply: (engine) => engine.convertRandomPegs('bouncy', 3)
+    }
+  ];
+
+  const VESSEL_UPGRADES = [
+    {
+      id: "u1", category: "upgrade", name: "Extra Drop Chamber", cost: 6,
+      desc: "+1 Permanent Max Drop count per floor.",
+      apply: (engine) => { engine.maxDrops++; }
+    },
+    {
+      id: "u2", category: "upgrade", name: "Pre-Charged Payloads", cost: 4,
+      desc: "Balls start with +20 base Charge instead of 10.",
+      apply: (engine) => { engine.baseStartingCharge += 20; }
+    },
+    {
+      id: "u3", category: "upgrade", name: "Sub-Floor Multipliers", cost: 5,
+      desc: "Increases all landing bin multipliers by +0.3x.",
+      apply: (engine) => { engine.bins.forEach(b => b.mult = parseFloat((b.mult + 0.3).toFixed(1))); }
     }
   ];
 
@@ -363,8 +447,10 @@ window.addEventListener('DOMContentLoaded', () => {
       this.floor = 1;
       this.quota = 400;
       this.roundScore = 0;
+      this.maxDrops = 5;
       this.dropsLeft = 5;
       this.money = 6;
+      this.baseStartingCharge = 10;
       this.activeCores = [];
 
       this.pegs = [];
@@ -372,6 +458,7 @@ window.addEventListener('DOMContentLoaded', () => {
       this.particles = [];
       this.floatingTexts = [];
       this.balls = [];
+      this.currentShopItems = [];
       this.launcherX = this.canvas.width / 2;
 
       this.screenShake = 0;
@@ -381,7 +468,7 @@ window.addEventListener('DOMContentLoaded', () => {
       this.attachEvents();
       this.updateUI();
 
-      requestAnimationFrame((ts) => this.tick(ts));
+      requestAnimationFrame(() => this.tick());
     }
 
     initBoard() {
@@ -389,7 +476,7 @@ window.addEventListener('DOMContentLoaded', () => {
       this.bins = [];
 
       const rows = 10;
-      const spacingX = 44;
+      const spacingX = 46;
       const spacingY = 38;
       const startY = 130;
 
@@ -401,8 +488,8 @@ window.addEventListener('DOMContentLoaded', () => {
         for (let c = 0; c < cols; c++) {
           let type = 'normal';
           const rand = Math.random();
-          if (rand < 0.05) type = 'gold'; // Gives cash
-          else if (rand < 0.12) type = 'flux'; // Extra flux boost
+          if (rand < 0.05) type = 'gold';
+          else if (rand < 0.12) type = 'flux';
 
           this.pegs.push({
             x: offsetX + c * spacingX,
@@ -428,6 +515,15 @@ window.addEventListener('DOMContentLoaded', () => {
       }
     }
 
+    convertRandomPegs(targetType, count) {
+      const normalPegs = this.pegs.filter(p => p.type === 'normal');
+      for (let i = 0; i < count && normalPegs.length > 0; i++) {
+        const randIndex = Math.floor(Math.random() * normalPegs.length);
+        normalPegs[randIndex].type = targetType;
+        normalPegs.splice(randIndex, 1);
+      }
+    }
+
     attachEvents() {
       this.canvas.addEventListener("mousemove", (e) => {
         const rect = this.canvas.getBoundingClientRect();
@@ -449,8 +545,9 @@ window.addEventListener('DOMContentLoaded', () => {
       document.getElementById("shop-reroll-btn").addEventListener("click", () => {
         if (this.money >= this.rerollCost) {
           this.money -= this.rerollCost;
+          this.generateShopInventory();
           this.updateUI();
-          this.openShop();
+          this.renderShop();
         }
       });
 
@@ -463,7 +560,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     dropBall() {
       this.dropsLeft--;
-      this.spawnSubBall(this.launcherX, 40, 10, 1.0);
+      this.spawnSubBall(this.launcherX, 40, this.baseStartingCharge, 1.0);
       this.updateUI();
     }
 
@@ -491,7 +588,7 @@ window.addEventListener('DOMContentLoaded', () => {
         this.activeCores.splice(index, 1);
         this.updateUI();
         if (document.getElementById("shop-overlay").style.display === "flex") {
-          this.openShop();
+          this.renderShop();
         }
       }
     }
@@ -502,7 +599,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
     triggerExplosion(x, y, radius, sourceBall) {
       this.triggerScreenShake(4);
-      // Spawn particles
       for (let i = 0; i < 20; i++) {
         const ang = Math.random() * Math.PI * 2;
         const spd = 1 + Math.random() * 4;
@@ -519,7 +615,7 @@ window.addEventListener('DOMContentLoaded', () => {
         const dist = Math.hypot(peg.x - x, peg.y - y);
         if (dist <= radius) {
           peg.glow = 1.0;
-          sourceBall.charge += 10;
+          sourceBall.charge += 8;
         }
       });
       this.spawnText(x, y, "BLAST!", "#ff9900");
@@ -539,7 +635,6 @@ window.addEventListener('DOMContentLoaded', () => {
       if (this.screenShake > 0) this.screenShake *= 0.88;
       if (this.screenShake < 0.1) this.screenShake = 0;
 
-      // Floating texts
       for (let i = this.floatingTexts.length - 1; i >= 0; i--) {
         const ft = this.floatingTexts[i];
         ft.y -= 0.7;
@@ -547,7 +642,6 @@ window.addEventListener('DOMContentLoaded', () => {
         if (ft.life <= 0) this.floatingTexts.splice(i, 1);
       }
 
-      // Particles
       for (let i = this.particles.length - 1; i >= 0; i--) {
         const p = this.particles[i];
         p.x += p.vx;
@@ -556,30 +650,25 @@ window.addEventListener('DOMContentLoaded', () => {
         if (p.life <= 0) this.particles.splice(i, 1);
       }
 
-      // Peg glows & Bins
       this.pegs.forEach(p => { if (p.glow > 0) p.glow -= 0.04; });
       this.bins.forEach(b => { if (b.flash > 0) b.flash -= 0.05; });
 
-      // Process balls
       for (let bIndex = this.balls.length - 1; bIndex >= 0; bIndex--) {
         const ball = this.balls[bIndex];
 
-        // Store trail
         ball.trail.push({ x: ball.x, y: ball.y });
         if (ball.trail.length > 5) ball.trail.shift();
 
-        // Gravity & Velocity
         ball.vy += 0.22;
         ball.x += ball.vx;
         ball.y += ball.vy;
 
-        // Anti-Stuck System: Check if trapped vertically
+        // Anti-stuck system
         if (Math.abs(ball.y - ball.lastY) < 0.6) {
           ball.stuckCounter++;
-          if (ball.stuckCounter > 30) {
-            // Give subtle directional push to free the ball
-            ball.vx += (Math.random() - 0.5) * 4;
-            ball.vy += 1.5;
+          if (ball.stuckCounter > 28) {
+            ball.vx += (Math.random() - 0.5) * 5;
+            ball.vy += 1.8;
             ball.stuckCounter = 0;
           }
         } else {
@@ -587,7 +676,7 @@ window.addEventListener('DOMContentLoaded', () => {
         }
         ball.lastY = ball.y;
 
-        // Wall collisions
+        // Boundary physics
         if (ball.x - ball.radius < 0) {
           ball.x = ball.radius;
           ball.vx = Math.abs(ball.vx) * 0.7;
@@ -596,7 +685,7 @@ window.addEventListener('DOMContentLoaded', () => {
           ball.vx = -Math.abs(ball.vx) * 0.7;
         }
 
-        // Peg collisions
+        // Peg physics
         for (let peg of this.pegs) {
           const dx = ball.x - peg.x;
           const dy = ball.y - peg.y;
@@ -604,14 +693,13 @@ window.addEventListener('DOMContentLoaded', () => {
 
           if (dist < ball.radius + peg.radius) {
             const angle = Math.atan2(dy, dx);
-            const speed = Math.max(Math.hypot(ball.vx, ball.vy) * 0.8, 2.8);
+            let speed = Math.max(Math.hypot(ball.vx, ball.vy) * 0.8, 2.8);
+            if (peg.type === 'bouncy') speed *= 1.4;
 
-            // Bounce trajectory + slight variation prevents infinite cycles
             const angleJitter = (Math.random() - 0.5) * 0.15;
             ball.vx = Math.cos(angle + angleJitter) * speed;
             ball.vy = Math.sin(angle + angleJitter) * speed;
 
-            // Separate bodies to prevent clipping/sticking
             ball.x = peg.x + Math.cos(angle) * (ball.radius + peg.radius + 1.5);
             ball.y = peg.y + Math.sin(angle) * (ball.radius + peg.radius + 1.5);
 
@@ -619,16 +707,16 @@ window.addEventListener('DOMContentLoaded', () => {
             peg.glow = 1.0;
             ball.charge += 5;
 
-            // Peg type specials
             if (peg.type === 'gold') {
               this.money += 1;
               this.spawnText(peg.x, peg.y - 10, "+$1", "#e3b341");
             } else if (peg.type === 'flux') {
               ball.flux += 0.3;
               this.spawnText(peg.x, peg.y - 10, "+0.3x", "#ff3344");
+            } else if (peg.type === 'bouncy') {
+              this.spawnText(peg.x, peg.y - 10, "BOOSTER!", "#3fb950");
             }
 
-            // Core Perks
             for (let core of this.activeCores) {
               if (core.onBounce) core.onBounce(ball, peg, this);
             }
@@ -636,7 +724,7 @@ window.addEventListener('DOMContentLoaded', () => {
           }
         }
 
-        // Check Landing Bins
+        // Landings
         if (ball.y > 590) {
           let landedBin = this.bins.find(b => ball.x >= b.x && ball.x <= b.x + b.w);
           if (!landedBin) landedBin = this.bins[0];
@@ -652,11 +740,9 @@ window.addEventListener('DOMContentLoaded', () => {
           this.roundScore += dropScore;
           this.spawnText(ball.x, 570, `+${dropScore}`, landedBin.mult >= 2 ? "#e3b341" : "#3fb950");
 
-          // Remove ball
           this.balls.splice(bIndex, 1);
           this.updateUI();
 
-          // Check for floor completion after all balls have landed
           if (this.balls.length === 0) {
             this.checkRoundEnd();
           }
@@ -667,45 +753,97 @@ window.addEventListener('DOMContentLoaded', () => {
     checkRoundEnd() {
       if (this.roundScore >= this.quota) {
         this.money += 4 + Math.max(0, this.dropsLeft);
+        this.generateShopInventory();
         this.openShop();
       } else if (this.dropsLeft <= 0 && this.balls.length === 0) {
-        alert(`SIGNAL LOST: Quota missed.\nReached Floor: ${this.floor}\nFinal Score: ${this.roundScore}`);
+        alert(`CRITICAL QUOTA FAILURE!\nReached Floor: ${this.floor}\nFinal Score: ${this.roundScore}`);
         this.resetRun();
       }
     }
 
+    generateShopInventory() {
+      this.currentShopItems = [];
+
+      // Pick 2 random available Cores
+      const availableCores = ALL_CORES.filter(c => !this.activeCores.some(ac => ac.name === c.name));
+      const pickedCores = [...availableCores].sort(() => 0.5 - Math.random()).slice(0, 2);
+
+      // Pick 1 Board Mod
+      const pickedBoard = [...BOARD_MODS].sort(() => 0.5 - Math.random()).slice(0, 1);
+
+      // Pick 1 Vessel Upgrade
+      const pickedUpgrade = [...VESSEL_UPGRADES].sort(() => 0.5 - Math.random()).slice(0, 1);
+
+      this.currentShopItems = [...pickedCores, ...pickedBoard, ...pickedUpgrade].map(item => ({
+        ...item,
+        sold: false
+      }));
+    }
+
     openShop() {
-      const shop = document.getElementById("shop-overlay");
+      this.updateUI();
+      this.renderShop();
+      document.getElementById("shop-overlay").style.display = "flex";
+    }
+
+    renderShop() {
+      document.getElementById("shop-wallet-display").innerText = `$${this.money}`;
       const container = document.getElementById("shop-items");
       container.innerHTML = "";
 
-      const options = [...CORES].sort(() => 0.5 - Math.random()).slice(0, 3);
-
-      options.forEach(core => {
+      this.currentShopItems.forEach((item, index) => {
         const card = document.createElement("div");
-        card.className = "shop-card";
+        card.className = `shop-card ${item.sold ? 'sold' : ''}`;
+
+        let badgeClass = "badge-core";
+        let badgeText = "Passive Core";
+        if (item.category === "board") {
+          badgeClass = "badge-board";
+          badgeText = "Board Hack";
+        } else if (item.category === "upgrade") {
+          badgeClass = "badge-upgrade";
+          badgeText = "Vessel Mod";
+        }
+
         card.innerHTML = `
           <div>
-            <strong style="color: #00d4ff">${core.name}</strong> 
-            <span style="color: #e3b341; font-weight:bold;">$${core.cost}</span><br>
-            <small style="color: #8b949e">${core.desc}</small>
+            <span class="card-badge ${badgeClass}">${badgeText}</span><br>
+            <strong style="color: #00d4ff">${item.name}</strong> 
+            <span style="color: #e3b341; font-weight: bold; margin-left: 6px;">$${item.cost}</span>
+            <div style="font-size: 11px; color: #8b949e; margin-top: 2px;">${item.desc}</div>
           </div>
         `;
+
         const buyBtn = document.createElement("button");
-        buyBtn.innerText = "INSTALL";
-        buyBtn.disabled = this.money < core.cost || this.activeCores.length >= 5;
+        buyBtn.innerText = item.sold ? "OWNED" : "BUY";
+        
+        let canAfford = this.money >= item.cost;
+        let slotRestricted = item.category === 'core' && this.activeCores.length >= 5;
+        buyBtn.disabled = item.sold || !canAfford || slotRestricted;
+
+        if (slotRestricted && !item.sold) {
+          buyBtn.innerText = "NO SLOTS";
+        }
+
         buyBtn.onclick = () => {
-          this.money -= core.cost;
-          this.activeCores.push(core);
+          this.money -= item.cost;
+          item.sold = true;
+
+          if (item.category === 'core') {
+            this.activeCores.push(item);
+          } else if (item.apply) {
+            item.apply(this);
+          }
+
           this.updateUI();
-          this.openShop();
+          this.renderShop();
         };
+
         card.appendChild(buyBtn);
         container.appendChild(card);
       });
 
       document.getElementById("shop-reroll-btn").disabled = this.money < this.rerollCost;
-      shop.style.display = "flex";
     }
 
     nextRound() {
@@ -713,8 +851,7 @@ window.addEventListener('DOMContentLoaded', () => {
       this.floor++;
       this.quota = Math.floor(this.quota * 1.65 + 100);
       this.roundScore = 0;
-      this.dropsLeft = 5;
-      this.initBoard(); // Re-randomize board layouts & bonuses
+      this.dropsLeft = this.maxDrops;
       this.updateUI();
     }
 
@@ -722,8 +859,10 @@ window.addEventListener('DOMContentLoaded', () => {
       this.floor = 1;
       this.quota = 400;
       this.roundScore = 0;
+      this.maxDrops = 5;
       this.dropsLeft = 5;
       this.money = 6;
+      this.baseStartingCharge = 10;
       this.activeCores = [];
       this.balls = [];
       this.initBoard();
@@ -735,6 +874,7 @@ window.addEventListener('DOMContentLoaded', () => {
       document.getElementById("ui-round-score").innerText = this.roundScore;
       document.getElementById("ui-drops").innerText = this.dropsLeft;
       document.getElementById("ui-money").innerText = `$${this.money}`;
+      document.getElementById("shop-wallet-display").innerText = `$${this.money}`;
 
       for (let i = 0; i < 5; i++) {
         const slot = document.getElementById(`slot-${i}`);
@@ -752,7 +892,6 @@ window.addEventListener('DOMContentLoaded', () => {
     draw() {
       this.ctx.save();
 
-      // Screen shake translation
       if (this.screenShake > 0) {
         const ox = (Math.random() - 0.5) * this.screenShake;
         const oy = (Math.random() - 0.5) * this.screenShake;
@@ -761,7 +900,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-      // Launcher guide beam
+      // Launcher beam
       const grad = this.ctx.createLinearGradient(0, 0, 0, this.canvas.height);
       grad.addColorStop(0, "rgba(0, 212, 255, 0.25)");
       grad.addColorStop(1, "rgba(0, 212, 255, 0)");
@@ -772,14 +911,14 @@ window.addEventListener('DOMContentLoaded', () => {
       this.ctx.lineTo(this.launcherX, this.canvas.height);
       this.ctx.stroke();
 
-      // Launcher barrel
+      // Launcher block
       this.ctx.fillStyle = "#00d4ff";
       this.ctx.shadowColor = "#00d4ff";
       this.ctx.shadowBlur = 10;
       this.ctx.fillRect(this.launcherX - 12, 0, 24, 12);
       this.ctx.shadowBlur = 0;
 
-      // Draw Bins
+      // Landing Bins
       this.bins.forEach(bin => {
         this.ctx.fillStyle = bin.flash > 0 ? `rgba(255, 255, 255, ${bin.flash * 0.3})` : "#0d131d";
         this.ctx.fillRect(bin.x, bin.y, bin.w, bin.h);
@@ -792,7 +931,7 @@ window.addEventListener('DOMContentLoaded', () => {
         this.ctx.fillText(`${bin.mult.toFixed(1)}x`, bin.x + bin.w / 2, bin.y + 30);
       });
 
-      // Draw Pegs
+      // Pegs
       this.pegs.forEach(peg => {
         this.ctx.beginPath();
         this.ctx.arc(peg.x, peg.y, peg.radius, 0, Math.PI * 2);
@@ -809,6 +948,10 @@ window.addEventListener('DOMContentLoaded', () => {
           this.ctx.fillStyle = "#ff3366";
           this.ctx.shadowColor = "#ff3366";
           this.ctx.shadowBlur = 4;
+        } else if (peg.type === 'bouncy') {
+          this.ctx.fillStyle = "#3fb950";
+          this.ctx.shadowColor = "#3fb950";
+          this.ctx.shadowBlur = 6;
         } else {
           this.ctx.fillStyle = "#222c3d";
           this.ctx.shadowBlur = 0;
@@ -817,7 +960,7 @@ window.addEventListener('DOMContentLoaded', () => {
         this.ctx.shadowBlur = 0;
       });
 
-      // Draw Particles
+      // Particles
       this.particles.forEach(p => {
         this.ctx.fillStyle = p.color;
         this.ctx.globalAlpha = p.life;
@@ -827,9 +970,8 @@ window.addEventListener('DOMContentLoaded', () => {
       });
       this.ctx.globalAlpha = 1.0;
 
-      // Draw Balls & Trails
+      // Balls & Trails
       this.balls.forEach(ball => {
-        // Trail
         this.ctx.strokeStyle = "rgba(0, 212, 255, 0.4)";
         this.ctx.lineWidth = 3;
         this.ctx.beginPath();
@@ -840,7 +982,6 @@ window.addEventListener('DOMContentLoaded', () => {
         }
         this.ctx.stroke();
 
-        // Ball Body
         this.ctx.beginPath();
         this.ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
         this.ctx.fillStyle = "#ffffff";
@@ -849,7 +990,6 @@ window.addEventListener('DOMContentLoaded', () => {
         this.ctx.fill();
         this.ctx.shadowBlur = 0;
 
-        // Above Ball Stats HUD
         this.ctx.font = "bold 11px Consolas";
         this.ctx.textAlign = "center";
         this.ctx.fillStyle = "#58a6ff";
@@ -858,7 +998,7 @@ window.addEventListener('DOMContentLoaded', () => {
         this.ctx.fillText(`${ball.flux.toFixed(1)}x`, ball.x, ball.y - 7);
       });
 
-      // Floating Texts
+      // Texts
       this.floatingTexts.forEach(ft => {
         this.ctx.fillStyle = ft.color;
         this.ctx.globalAlpha = ft.life;
@@ -872,7 +1012,7 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Initialize
+  // Start game
   new Game();
 });
 </script>

@@ -3,94 +3,80 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dead Drop: Hyper-Grid Overhaul</title>
+  <title>CYBER-DROP // NETWORK BREACH</title>
   <style>
     :root {
-      --bg: #04060a;
-      --panel: #0b1019;
-      --panel-border: #1b263b;
-      --accent-blue: #00e5ff;
-      --accent-gold: #ffd000;
-      --accent-red: #ff2a5f;
-      --accent-green: #00ff88;
-      --accent-purple: #bd34fe;
-      --foil: linear-gradient(135deg, #00e5ff, #bd34fe, #ffd000);
-      --holo: #ff2a5f;
-      --poly: linear-gradient(90deg, #ff2a5f, #ffd000, #00ff88, #00e5ff, #bd34fe);
-      --text-main: #f0f6fc;
-      --text-dim: #768390;
+      --bg: #03070d;
+      --panel: #0a111a;
+      --panel-border: #152232;
+      --cyan: #00f0ff;
+      --amber: #ffb700;
+      --crimson: #ff0055;
+      --emerald: #00ff66;
+      --violet: #9d00ff;
+      --text: #c8d6e5;
+      --dim: #576574;
     }
 
     * {
       box-sizing: border-box;
       user-select: none;
       -webkit-user-select: none;
+      margin: 0;
+      padding: 0;
     }
 
     body {
-      margin: 0;
-      padding: 14px;
       background-color: var(--bg);
-      color: var(--text-main);
-      font-family: 'Consolas', 'Courier New', monospace;
+      color: var(--text);
+      font-family: 'Courier New', Courier, monospace;
       display: flex;
       justify-content: center;
-      align-items: flex-start;
+      align-items: center;
       min-height: 100vh;
-      overflow-x: hidden;
+      overflow: hidden;
+      padding: 10px;
     }
 
-    #app {
+    #workspace {
       display: grid;
-      grid-template-columns: 620px 330px;
-      gap: 14px;
-      max-width: 980px;
-      width: 100%;
+      grid-template-columns: 600px 320px;
+      gap: 12px;
+      background: #020408;
+      padding: 14px;
+      border: 1px solid var(--panel-border);
+      border-radius: 6px;
+      box-shadow: 0 0 40px rgba(0, 240, 255, 0.08);
       position: relative;
     }
 
-    /* Left Stage */
-    #stage-panel {
+    /* Primary Terminal Stage */
+    #terminal-view {
+      position: relative;
       display: flex;
       flex-direction: column;
       gap: 8px;
-      position: relative;
     }
 
-    #header-bar {
+    .status-ribbon {
       display: flex;
       justify-content: space-between;
-      align-items: baseline;
-      padding-bottom: 4px;
-      border-bottom: 2px solid var(--panel-border);
-    }
-
-    .title {
-      font-size: 22px;
-      font-weight: 900;
-      letter-spacing: 2px;
-      background: linear-gradient(135deg, var(--accent-blue), var(--accent-gold));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      text-transform: uppercase;
-    }
-
-    .boss-directive {
+      align-items: center;
       font-size: 11px;
-      font-weight: 800;
-      color: var(--accent-red);
-      letter-spacing: 1px;
+      font-weight: bold;
+      letter-spacing: 1.5px;
+      padding-bottom: 4px;
+      border-bottom: 1px solid var(--panel-border);
     }
 
-    #canvas-wrap {
+    #canvas-container {
       position: relative;
-      width: 620px;
-      height: 690px;
-      background: #020305;
+      width: 600px;
+      height: 640px;
       border: 1px solid var(--panel-border);
-      border-radius: 8px;
+      background: #010204;
+      border-radius: 4px;
       overflow: hidden;
-      box-shadow: 0 0 35px rgba(0,0,0,0.85);
     }
 
     canvas {
@@ -98,157 +84,132 @@
       cursor: crosshair;
     }
 
-    /* Dashboard UI */
-    #dash-panel {
+    /* Retro Scanline Overlay */
+    #canvas-container::after {
+      content: " ";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.4) 50%);
+      background-size: 100% 4px;
+      pointer-events: none;
+      opacity: 0.7;
+    }
+
+    /* Diagnostics Panel */
+    #diagnostics {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 10px;
     }
 
-    .panel-box {
+    .telemetry-card {
       background: var(--panel);
       border: 1px solid var(--panel-border);
-      border-radius: 6px;
-      padding: 12px;
-      box-shadow: inset 0 0 10px rgba(0,0,0,0.4);
+      border-radius: 4px;
+      padding: 10px;
     }
 
-    .stat-row {
+    .metric-line {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 6px;
     }
 
-    .stat-label {
-      font-size: 11px;
+    .metric-name {
+      font-size: 10px;
       text-transform: uppercase;
-      color: var(--text-dim);
+      color: var(--dim);
       font-weight: bold;
     }
 
-    .stat-val {
-      font-size: 18px;
-      font-weight: 800;
+    .metric-val {
+      font-size: 16px;
+      font-weight: bold;
     }
 
-    .score-target {
-      color: var(--accent-green);
-      text-shadow: 0 0 8px rgba(0, 255, 136, 0.4);
-    }
-
-    .chips-mult-display {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(0,0,0,0.5);
-      padding: 8px 12px;
-      border-radius: 6px;
+    .eval-box {
+      background: rgba(0, 0, 0, 0.6);
       border: 1px solid var(--panel-border);
+      border-radius: 4px;
+      padding: 8px;
       margin-top: 6px;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
     }
 
-    .chips-box { color: var(--accent-blue); font-weight: 900; font-size: 18px; }
-    .mult-box { color: var(--accent-red); font-weight: 900; font-size: 18px; }
+    .eval-packets { color: var(--cyan); font-weight: bold; font-size: 15px; }
+    .eval-amp { color: var(--crimson); font-weight: bold; font-size: 15px; }
 
-    .section-title {
+    .inventory-title {
       font-size: 10px;
-      font-weight: 800;
-      color: var(--text-dim);
+      font-weight: bold;
+      color: var(--dim);
       text-transform: uppercase;
-      letter-spacing: 1px;
       margin-bottom: 6px;
       display: flex;
       justify-content: space-between;
     }
 
-    #cores-tray, #consumables-tray {
+    .inventory-list {
       display: flex;
       flex-direction: column;
       gap: 6px;
+      min-height: 48px;
     }
 
-    .core-card {
-      background: #070a0f;
-      border: 1px solid #1a2538;
-      border-radius: 5px;
-      padding: 8px 10px;
-      position: relative;
+    .node-item {
+      background: #060a10;
+      border: 1px solid var(--panel-border);
+      border-radius: 3px;
+      padding: 6px 8px;
+      font-size: 10px;
       cursor: pointer;
-      transition: all 0.15s;
+      transition: all 0.15s ease;
     }
 
-    .core-card:hover {
-      border-color: var(--accent-blue);
+    .node-item:hover {
+      border-color: var(--cyan);
       transform: translateX(2px);
     }
 
-    .core-edition-foil { box-shadow: 0 0 8px rgba(0, 229, 255, 0.5); border-color: var(--accent-blue); }
-    .core-edition-holo { box-shadow: 0 0 8px rgba(255, 42, 95, 0.5); border-color: var(--accent-red); }
-    .core-edition-poly { box-shadow: 0 0 10px rgba(189, 52, 254, 0.6); border-color: var(--accent-purple); }
+    .synthesis-overclocked { border-left: 3px solid var(--cyan); }
+    .synthesis-cryo { border-left: 3px solid var(--crimson); }
+    .synthesis-superconducting { border-left: 3px solid var(--violet); }
 
-    .edition-tag {
-      font-size: 8px;
-      font-weight: 900;
-      text-transform: uppercase;
-      padding: 1px 4px;
-      border-radius: 3px;
-      margin-left: 4px;
-    }
-    .tag-foil { background: var(--accent-blue); color: #000; }
-    .tag-holo { background: var(--accent-red); color: #fff; }
-    .tag-poly { background: var(--accent-purple); color: #fff; }
-
-    /* Balatro Style Market & Booster Packs */
-    #shop-overlay {
+    /* Tactical Terminal / Market Interface */
+    #tactical-overlay {
       position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(3, 5, 8, 0.98);
-      z-index: 50;
-      border-radius: 8px;
-      border: 2px solid var(--accent-green);
+      inset: 0;
+      background: rgba(2, 5, 9, 0.96);
+      z-index: 20;
       display: none;
       flex-direction: column;
       padding: 16px;
-      box-shadow: 0 0 45px rgba(0, 255, 136, 0.25);
+      border: 1px solid var(--emerald);
     }
 
-    .shop-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      border-bottom: 1px solid #1a2c22;
-      padding-bottom: 8px;
-      margin-bottom: 10px;
-    }
-
-    .shop-shelf-title {
-      font-size: 11px;
-      font-weight: 800;
-      color: var(--text-dim);
-      text-transform: uppercase;
+    .market-section-title {
+      font-size: 10px;
+      font-weight: bold;
+      color: var(--emerald);
       letter-spacing: 1px;
-      margin: 6px 0;
+      margin: 8px 0 4px 0;
+      text-transform: uppercase;
     }
 
-    .market-row {
+    .cache-row, .market-row {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 8px;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
 
-    .pack-row {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 8px;
-      margin-bottom: 12px;
-    }
-
-    .shop-card, .pack-card {
-      background: #080d14;
+    .cache-unit, .market-unit {
+      background: #060c14;
       border: 1px solid var(--panel-border);
-      border-radius: 6px;
+      border-radius: 4px;
       padding: 10px;
       display: flex;
       flex-direction: column;
@@ -256,80 +217,55 @@
       transition: all 0.2s;
     }
 
-    .pack-card {
-      background: radial-gradient(circle at 50% 0%, #152238, #070c14);
-      border: 1px solid var(--accent-blue);
+    .cache-unit {
+      border-color: var(--cyan);
+      background: radial-gradient(circle at 50% 0%, #0d1e30, #040810);
       cursor: pointer;
-      text-align: center;
-      padding: 14px 10px;
     }
 
-    .pack-card:hover:not(.sold) {
-      transform: translateY(-2px);
-      box-shadow: 0 0 16px rgba(0, 229, 255, 0.35);
+    .cache-unit:hover:not(.consumed) {
+      box-shadow: 0 0 12px rgba(0, 240, 255, 0.25);
       border-color: #fff;
     }
 
-    .pack-card.spectral {
-      border-color: var(--accent-purple);
-      background: radial-gradient(circle at 50% 0%, #2f143d, #070c14);
-    }
-
-    .pack-card.sold, .shop-card.sold {
-      opacity: 0.3;
+    .consumed {
+      opacity: 0.25;
       pointer-events: none;
       filter: grayscale(1);
     }
 
-    .shop-controls {
-      display: flex;
-      gap: 8px;
-      margin-top: auto;
-    }
-
     button {
-      background: #11281d;
-      color: var(--accent-green);
-      border: 1px solid var(--accent-green);
-      padding: 10px 14px;
+      background: #091a14;
+      color: var(--emerald);
+      border: 1px solid var(--emerald);
       font-family: inherit;
-      font-weight: 800;
+      font-weight: bold;
       font-size: 11px;
-      border-radius: 4px;
+      padding: 8px 12px;
+      border-radius: 3px;
       cursor: pointer;
       transition: all 0.15s;
     }
 
     button:hover:not(:disabled) {
-      background: var(--accent-green);
+      background: var(--emerald);
       color: #000;
-      box-shadow: 0 0 12px rgba(0,255,136,0.4);
+      box-shadow: 0 0 10px rgba(0, 255, 102, 0.4);
     }
 
     button:disabled {
       opacity: 0.3;
-      border-color: var(--text-dim);
-      color: var(--text-dim);
       cursor: not-allowed;
+      border-color: var(--dim);
+      color: var(--dim);
     }
 
-    .btn-reroll {
-      background: #141c2b;
-      border-color: var(--accent-blue);
-      color: var(--accent-blue);
-    }
-    .btn-reroll:hover:not(:disabled) {
-      background: var(--accent-blue);
-      color: #000;
-    }
-
-    /* Booster Pack Opening Overlay */
-    #pack-opening-modal {
+    /* Firmware Cache Decompilation Modal */
+    #cache-modal {
       position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(2, 3, 5, 0.98);
-      z-index: 100;
-      border-radius: 8px;
+      inset: 0;
+      background: rgba(1, 3, 6, 0.98);
+      z-index: 40;
       display: none;
       flex-direction: column;
       align-items: center;
@@ -337,132 +273,130 @@
       padding: 20px;
     }
 
-    #pack-options {
+    .options-grid {
       display: flex;
-      gap: 16px;
-      margin: 20px 0;
+      gap: 12px;
+      margin: 18px 0;
     }
 
-    .pack-choice-card {
+    .firmware-card {
       width: 160px;
-      min-height: 220px;
-      background: #080d15;
-      border: 2px solid var(--accent-blue);
-      border-radius: 6px;
-      padding: 12px;
+      min-height: 200px;
+      background: #060b12;
+      border: 1px solid var(--cyan);
+      border-radius: 4px;
+      padding: 10px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       cursor: pointer;
-      box-shadow: 0 0 20px rgba(0, 229, 255, 0.2);
-      transition: all 0.2s;
+      transition: transform 0.15s;
     }
 
-    .pack-choice-card:hover {
-      transform: translateY(-6px) scale(1.03);
-      border-color: #fff;
-      box-shadow: 0 0 25px rgba(0, 229, 255, 0.5);
+    .firmware-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 0 16px rgba(0, 240, 255, 0.3);
     }
   </style>
 </head>
 <body>
 
-<div id="app">
-  <!-- Left Side: Physics Canvas & Boss Directive -->
-  <div id="stage-panel">
-    <div id="header-bar">
-      <div class="title">Dead Drop // Overhaul</div>
-      <div class="boss-directive" id="boss-directive">DIRECTIVE: ALL SYSTEMS NORMAL</div>
+<div id="workspace">
+  <!-- Left Side: Interactive Physics Execution Stage -->
+  <div id="terminal-view">
+    <div class="status-ribbon">
+      <span style="color: var(--cyan);">CYBER-DROP // TERMINAL BREACH</span>
+      <span id="directive-indicator" style="color: var(--crimson);">COUNTERMEASURE: NONE DETECTED</span>
     </div>
 
-    <div id="canvas-wrap">
-      <canvas id="stage" width="620" height="690"></canvas>
+    <div id="canvas-container">
+      <canvas id="field" width="600" height="640"></canvas>
 
-      <!-- Shop Overlay -->
-      <div id="shop-overlay">
-        <div class="shop-header">
+      <!-- Tactical Market Overlay -->
+      <div id="tactical-overlay">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--panel-border); padding-bottom: 6px;">
           <div>
-            <div style="font-size: 18px; font-weight: 900; color: var(--accent-green); letter-spacing: 1px;">THE BLACK MARKET</div>
-            <div style="font-size: 10px; color: var(--text-dim);">PURCHASE PASSIVES, OPEN BOOSTER CACHES, REROLL ODDS</div>
+            <div style="font-weight: bold; color: var(--emerald);">DARKNET SECURE RELAY</div>
+            <div style="font-size: 9px; color: var(--dim);">ACQUIRE HARDWARE PATCHES & DECOMPILE FIRMWARE CACHES</div>
           </div>
           <div style="text-align: right;">
-            <div style="font-size: 9px; color: var(--text-dim);">CREDITS</div>
-            <div style="font-size: 22px; font-weight: 900; color: var(--accent-gold);" id="shop-credits">$0</div>
+            <div style="font-size: 8px; color: var(--dim);">AVAILABLE CRYPTO</div>
+            <div style="font-size: 18px; font-weight: bold; color: var(--amber);" id="market-crypto">$0</div>
           </div>
         </div>
 
-        <div class="shop-shelf-title">BOOSTER PACKS (SELECT 1 OF CHOICES)</div>
-        <div class="pack-row" id="shop-packs"></div>
+        <div class="market-section-title">ENCRYPTED FIRMWARE CACHES (SELECT 1 DECOMPILATION)</div>
+        <div class="cache-row" id="cache-rack"></div>
 
-        <div class="shop-shelf-title">INDIVIDUAL INVENTORY & DIRECTIVES</div>
-        <div class="market-row" id="shop-items"></div>
+        <div class="market-section-title">HARDWARE INTERFACES & BUS OVERRIDES</div>
+        <div class="market-row" id="hardware-rack"></div>
 
-        <div class="shop-controls">
-          <button class="btn-reroll" id="btn-reroll">REROLL MARKET ($4)</button>
-          <button style="flex: 1;" id="btn-next-sector">COMMENCE NEXT DROP RUN</button>
+        <div style="display: flex; gap: 8px; margin-top: auto;">
+          <button id="btn-re-route" style="border-color: var(--cyan); color: var(--cyan); background: #071520;">RE-ROUTE NODES ($4)</button>
+          <button id="btn-next-tier" style="flex: 1;">EXECUTE NEXT NETWORK INTRUSION</button>
         </div>
       </div>
 
-      <!-- Booster Pack Opening Modal -->
-      <div id="pack-opening-modal">
-        <div style="font-size: 18px; font-weight: 900; color: var(--accent-blue);" id="pack-title">CYBER PACK</div>
-        <div style="font-size: 11px; color: var(--text-dim);">SELECT 1 OPTION TO INTEGRATE PERMANENTLY</div>
-        <div id="pack-options"></div>
-        <button id="btn-skip-pack" style="border-color: var(--accent-red); color: var(--accent-red); background: transparent;">SKIP CACHE</button>
+      <!-- Cache Unpacking Modal -->
+      <div id="cache-modal">
+        <div style="font-size: 16px; font-weight: bold; color: var(--cyan);" id="modal-cache-title">CACHE TITLE</div>
+        <div style="font-size: 10px; color: var(--dim);">CHOOSE 1 SIGNATURE PATTERN TO INJECT</div>
+        <div class="options-grid" id="modal-cache-options"></div>
+        <button id="btn-abort-cache" style="border-color: var(--crimson); color: var(--crimson); background: transparent;">ABORT EXTRACTION</button>
       </div>
     </div>
   </div>
 
-  <!-- Right Side: Build, Stats & Synergies -->
-  <div id="dash-panel">
-    <div class="panel-box">
-      <div class="stat-row">
-        <span class="stat-label">Sector Blind</span>
-        <span class="stat-val" id="ui-sector">1 / Small Blind</span>
+  <!-- Right Side: Diagnostics, Node Capacity & Data Bus -->
+  <div id="diagnostics">
+    <div class="telemetry-card">
+      <div class="metric-line">
+        <span class="metric-name">Security Tier</span>
+        <span class="metric-val" id="ui-tier">Tier 1 // Low ICE</span>
       </div>
-      <div class="stat-row">
-        <span class="stat-label">Score Goal</span>
-        <span class="stat-val score-target" id="ui-quota">800</span>
+      <div class="metric-line">
+        <span class="metric-name">Bit Quota Target</span>
+        <span class="metric-val" style="color: var(--emerald);" id="ui-quota">1,200</span>
       </div>
-      <div class="stat-row">
-        <span class="stat-label">Current Bank</span>
-        <span class="stat-val" id="ui-score">0</span>
+      <div class="metric-line">
+        <span class="metric-name">Exfiltrated Bits</span>
+        <span class="metric-val" id="ui-bits">0</span>
       </div>
-      <div class="stat-row">
-        <span class="stat-label">Deployments</span>
-        <span class="stat-val" style="color: var(--accent-blue);" id="ui-drops">4</span>
+      <div class="metric-line">
+        <span class="metric-name">Payload Injections</span>
+        <span class="metric-val" style="color: var(--cyan);" id="ui-injections">4</span>
       </div>
-      <div class="stat-row">
-        <span class="stat-label">Wallet</span>
-        <span class="stat-val" style="color: var(--accent-gold);" id="ui-credits">$6</span>
+      <div class="metric-line">
+        <span class="metric-name">Crypto Ledger</span>
+        <span class="metric-val" style="color: var(--amber);" id="ui-crypto">$5</span>
       </div>
 
-      <div class="chips-mult-display">
-        <div style="flex: 1;">
-          <div style="font-size: 8px; color: var(--text-dim); text-transform: uppercase;">Previous Drop Analysis</div>
-          <span class="chips-box" id="ui-last-chips">0 CHIPS</span>
-          <span style="color: var(--text-dim); margin: 0 4px;">&times;</span>
-          <span class="mult-box" id="ui-last-mult">0.0x</span>
+      <div class="eval-box">
+        <div>
+          <div style="font-size: 8px; color: var(--dim);">LAST INJECTION</div>
+          <span class="eval-packets" id="ui-last-packets">0 PKTS</span>
+          <span style="color: var(--dim); margin: 0 4px;">&times;</span>
+          <span class="eval-amp" id="ui-last-amp">0.0x AMP</span>
         </div>
       </div>
     </div>
 
-    <!-- Active Cores -->
-    <div class="panel-box" style="flex: 1;">
-      <div class="section-title">
-        <span>Installed Cores</span>
-        <span id="ui-core-count">0 / 5</span>
+    <!-- Active Hardware Nodes -->
+    <div class="telemetry-card" style="flex: 1;">
+      <div class="inventory-title">
+        <span>Hardware Nodes</span>
+        <span id="ui-node-count">0 / 5</span>
       </div>
-      <div id="cores-tray"></div>
+      <div class="inventory-list" id="active-nodes"></div>
     </div>
 
-    <!-- Tactical Consumables -->
-    <div class="panel-box">
-      <div class="section-title">
-        <span>Consumable Hacks</span>
-        <span id="ui-overclock-count">0 / 2</span>
+    <!-- Single-Use Overrides -->
+    <div class="telemetry-card">
+      <div class="inventory-title">
+        <span>Direct Bus Overrides</span>
+        <span id="ui-override-count">0 / 2</span>
       </div>
-      <div id="consumables-tray"></div>
+      <div class="inventory-list" id="active-overrides"></div>
     </div>
   </div>
 </div>
@@ -470,252 +404,271 @@
 <script>
 window.addEventListener('DOMContentLoaded', () => {
 
-  // ==========================================
-  // BALATRO STYLE EDITIONS & CORE DEFINITIONS
-  // ==========================================
-  const EDITIONS = {
-    BASE: { id: 'base', name: '', chips: 0, mult: 0, xmult: 1.0 },
-    FOIL: { id: 'foil', name: 'Foil', chips: 50, mult: 0, xmult: 1.0, class: 'core-edition-foil', tagClass: 'tag-foil' },
-    HOLO: { id: 'holo', name: 'Holographic', chips: 0, mult: 10, xmult: 1.0, class: 'core-edition-holo', tagClass: 'tag-holo' },
-    POLY: { id: 'poly', name: 'Polychrome', chips: 0, mult: 0, xmult: 1.5, class: 'core-edition-poly', tagClass: 'tag-poly' }
-  };
-
-  const CORE_DATABASE = [
-    {
-      id: "grid_runner",
-      name: "Grid Runner",
-      cost: 4,
-      desc: "+18 Base Chips per bounce.",
-      onBounce: (ball, peg, engine) => {
-        ball.chips += 18;
-      }
-    },
-    {
-      id: "flux_accumulator",
-      name: "Flux Accelerator",
-      cost: 5,
-      desc: "+0.15x Multiplier per bounce.",
-      onBounce: (ball, peg, engine) => {
-        ball.mult += 0.15;
-      }
-    },
-    {
-      id: "high_roller",
-      name: "Lucky Roller",
-      cost: 6,
-      desc: "20% chance on peg hit to add +5.0x Multiplier.",
-      onBounce: (ball, peg, engine) => {
-        if (Math.random() < 0.2) {
-          ball.mult += 5.0;
-          engine.createPopup(ball.x, ball.y - 10, "LUCKY! +5.0x", "#ffd000");
-          engine.screenShake = 3;
-        }
-      }
-    },
-    {
-      id: "chain_fission",
-      name: "Fission Reaction",
-      cost: 8,
-      desc: "First time hitting a Flux peg, duplicates into 2 balls.",
-      onBounce: (ball, peg, engine) => {
-        if (!ball.hasSplit && peg.type === 'flux') {
-          ball.hasSplit = true;
-          engine.spawnBall(ball.x, ball.y, ball.chips * 0.6, ball.mult, true);
-          engine.createPopup(ball.x, ball.y - 12, "SPLIT!", "#bd34fe");
-        }
-      }
-    },
-    {
-      id: "golden_ratio",
-      name: "Golden Ratio",
-      cost: 7,
-      desc: "If ball scores over 15 bounces, grants +$2 instant Cash.",
-      onLand: (ball, bin, engine) => {
-        if (ball.bounces >= 15) {
-          engine.credits += 2;
-          engine.createPopup(bin.x + bin.w/2, bin.y - 20, "+$2 BONUS", "#ffd000");
-        }
-      }
-    },
-    {
-      id: "super_nova",
-      name: "Supernova Matrix",
-      cost: 9,
-      desc: "Every 6th bounce explodes in a shockwave activating all pegs in range.",
-      onBounce: (ball, peg, engine) => {
-        if (ball.bounces % 6 === 0) {
-          engine.triggerShockwave(ball.x, ball.y, 80, (affectedPeg) => {
-            ball.chips += 12;
-            ball.mult += 0.1;
-          });
-        }
-      }
-    },
-    {
-      id: "the_duo",
-      name: "The Duo",
-      cost: 8,
-      desc: "X1.5 Multiplier if you have at least 2 other installed cores.",
-      onLand: (ball, bin, engine) => {
-        if (engine.activeCores.length >= 3) {
-          ball.mult *= 1.5;
-          engine.createPopup(bin.x + bin.w/2, bin.y - 25, "X1.5 DUO", "#ff2a5f");
-        }
+  // =================================================================
+  // PROCEDURAL SOUND SYNTHESIS ENGINE (AudioContext / Web Audio API)
+  // Provides tactile mechanical audio feedback without external assets
+  // =================================================================
+  class SoundSubsystem {
+    constructor() {
+      this.ctx = null;
+    }
+    init() {
+      if (!this.ctx) {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        this.ctx = new AudioContext();
       }
     }
-  ];
-
-  const CONSUMABLE_DATABASE = [
-    {
-      id: "plasma_charge",
-      name: "Plasma Infusion",
-      cost: 3,
-      desc: "Transforms 6 random pegs into Neon Pegs (+35 Chips).",
-      use: (engine) => engine.mutatePegs('neon', 6)
-    },
-    {
-      id: "flux_overload",
-      name: "Flux Splicer",
-      cost: 4,
-      desc: "Transforms 4 random pegs into Flux Pegs (+0.4x Mult).",
-      use: (engine) => engine.mutatePegs('flux', 4)
-    },
-    {
-      id: "black_hole",
-      name: "Vortex Seed",
-      cost: 4,
-      desc: "Spawns a persistent gravity vortex peg on the board.",
-      use: (engine) => engine.spawnVortex()
-    },
-    {
-      id: "market_index",
-      name: "Venture Injection",
-      cost: 3,
-      desc: "Instantly awards +$8 Cash.",
-      use: (engine) => { engine.credits += 8; }
+    playTone(freq, type, duration, gainVal) {
+      if (!this.ctx) return;
+      try {
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+        gain.gain.setValueAtTime(gainVal, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + duration);
+      } catch (e) {}
     }
-  ];
-
-  const PACK_TYPES = [
-    {
-      id: "standard_pack",
-      name: "Standard Core Cache",
-      cost: 4,
-      class: "standard",
-      desc: "Choose 1 of 3 Passive Core Modules.",
-      generate: () => getRandomItems(CORE_DATABASE, 3, true)
-    },
-    {
-      id: "celestial_pack",
-      name: "Celestial Boost Pack",
-      cost: 5,
-      class: "celestial",
-      desc: "Choose 1 of 3 Board & Tactical Hacks.",
-      generate: () => getRandomItems(CONSUMABLE_DATABASE, 3, false)
-    },
-    {
-      id: "spectral_pack",
-      name: "Spectral Anomaly Cache",
-      cost: 7,
-      class: "spectral",
-      desc: "High risk/reward: Rare Editions and Exotic Cores.",
-      generate: () => getRandomItems(CORE_DATABASE, 3, true, true)
+    bounceSound(type) {
+      this.init();
+      if (type === 'amp') this.playTone(520, 'triangle', 0.08, 0.15);
+      else if (type === 'crypto') this.playTone(880, 'sine', 0.12, 0.2);
+      else if (type === 'bumper') this.playTone(280, 'square', 0.15, 0.18);
+      else this.playTone(380, 'sine', 0.05, 0.1);
     }
-  ];
-
-  function rollEdition(guaranteedRare = false) {
-    const roll = Math.random();
-    if (guaranteedRare) {
-      return roll < 0.5 ? EDITIONS.POLY : EDITIONS.HOLO;
+    landSound(mult) {
+      this.init();
+      const pitch = Math.min(800, 200 + mult * 100);
+      this.playTone(pitch, 'sawtooth', 0.25, 0.2);
     }
-    if (roll < 0.12) return EDITIONS.FOIL;
-    if (roll < 0.06) return EDITIONS.HOLO;
-    if (roll < 0.02) return EDITIONS.POLY;
-    return EDITIONS.BASE;
   }
 
-  function getRandomItems(pool, count, applyEditions = false, forceHighRarity = false) {
-    const shuffled = [...pool].sort(() => 0.5 - Math.random());
-    return shuffled.slice(0, count).map(item => {
-      const clone = { ...item };
-      if (applyEditions) {
-        clone.edition = rollEdition(forceHighRarity);
+  const AudioBus = new SoundSubsystem();
+
+  // =================================================================
+  // CYBERNETIC SYNTHESIS EDITIONS & MODULE REGISTRIES
+  // =================================================================
+  const SYNTHESES = {
+    STANDARD: { id: 'standard', name: '', packets: 0, amp: 0, xAmp: 1.0, css: '' },
+    OVERCLOCKED: { id: 'overclocked', name: 'Overclocked', packets: 40, amp: 0, xAmp: 1.0, css: 'synthesis-overclocked' },
+    CRYO: { id: 'cryo', name: 'Cryo-Cooled', packets: 0, amp: 8.0, xAmp: 1.0, css: 'synthesis-cryo' },
+    SUPERCONDUCTING: { id: 'superconducting', name: 'Superconducting', packets: 0, amp: 0, xAmp: 1.5, css: 'synthesis-superconducting' }
+  };
+
+  const NODE_CATALOG = [
+    {
+      id: "packet_repeater",
+      name: "Packet Repeater",
+      cost: 4,
+      desc: "Injects +16 Base Packets on every peg hit.",
+      onBounce: (ball, peg, sys) => { ball.packets += 16; }
+    },
+    {
+      id: "amp_loop",
+      name: "Resonant Amplifier",
+      cost: 5,
+      desc: "Adds +0.15x Signal Amplification on every bounce.",
+      onBounce: (ball, peg, sys) => { ball.amp += 0.15; }
+    },
+    {
+      id: "entropy_tap",
+      name: "Stochastic Tap",
+      cost: 6,
+      desc: "20% chance on peg hit to spike amplification by +3.5x.",
+      onBounce: (ball, peg, sys) => {
+        if (Math.random() < 0.2) {
+          ball.amp += 3.5;
+          sys.emitPopup(ball.x, ball.y - 12, "SPIKE! +3.5x", "#ff0055");
+          sys.shake = 3;
+        }
       }
+    },
+    {
+      id: "split_thread",
+      name: "Thread Forker",
+      cost: 8,
+      desc: "First time hitting an Amp Peg, forks into a duplicate sub-payload.",
+      onBounce: (ball, peg, sys) => {
+        if (!ball.hasForked && peg.type === 'amp') {
+          ball.hasForked = true;
+          sys.spawnPayload(ball.x, ball.y, ball.packets * 0.5, ball.amp, true);
+          sys.emitPopup(ball.x, ball.y - 12, "FORK THREAD", "#9d00ff");
+        }
+      }
+    },
+    {
+      id: "bit_siphon",
+      name: "Network Siphon",
+      cost: 7,
+      desc: "Payloads reaching at least 15 bounces deposit +$2 Crypto.",
+      onLand: (ball, bin, sys) => {
+        if (ball.bounces >= 15) {
+          sys.crypto += 2;
+          sys.emitPopup(bin.x + bin.w / 2, bin.y - 20, "+$2 CRYPTO", "#ffb700");
+        }
+      }
+    },
+    {
+      id: "parity_matrix",
+      name: "Dual-Bus Interlock",
+      cost: 8,
+      desc: "Multiplies payload total amplification by x1.5 if you hold 3+ nodes.",
+      onLand: (ball, bin, sys) => {
+        if (sys.installedNodes.length >= 3) {
+          ball.amp *= 1.5;
+          sys.emitPopup(bin.x + bin.w / 2, bin.y - 25, "x1.5 DUAL-BUS", "#00ff66");
+        }
+      }
+    }
+  ];
+
+  const OVERRIDE_CATALOG = [
+    {
+      id: "neon_surge",
+      name: "Neon Patch",
+      cost: 3,
+      desc: "Reprograms 5 standard pegs into Neon Pegs (+30 Packets).",
+      apply: (sys) => sys.convertPegs('neon', 5)
+    },
+    {
+      id: "flux_injection",
+      name: "Amp Surge",
+      cost: 4,
+      desc: "Reprograms 4 standard pegs into Amp Pegs (+0.3x Amp).",
+      apply: (sys) => sys.convertPegs('amp', 4)
+    },
+    {
+      id: "gravity_damp",
+      name: "Clock Slowdown",
+      cost: 4,
+      desc: "Reduces bus drop acceleration by 25% for high dwell time.",
+      apply: (sys) => { sys.gravityMod = 0.75; }
+    },
+    {
+      id: "darknet_wash",
+      name: "Ledger Hack",
+      cost: 3,
+      desc: "Immediately siphons +$7 Crypto into your balance.",
+      apply: (sys) => { sys.crypto += 7; }
+    }
+  ];
+
+  const FIRMWARE_CACHES = [
+    {
+      id: "kernel_cache",
+      name: "Kernel Binary Cache",
+      cost: 4,
+      desc: "Extract 1 of 3 passive hardware node modules.",
+      unpack: () => getCatalogSelection(NODE_CATALOG, 3, true)
+    },
+    {
+      id: "bus_cache",
+      name: "Bus Patch Cache",
+      cost: 5,
+      desc: "Extract 1 of 3 instant network direct bus overrides.",
+      unpack: () => getCatalogSelection(OVERRIDE_CATALOG, 3, false)
+    },
+    {
+      id: "black_cache",
+      name: "Zero-Day Exploit Archive",
+      cost: 8,
+      desc: "Rare archive guaranteed to carry advanced hardware syntheses.",
+      unpack: () => getCatalogSelection(NODE_CATALOG, 3, true, true)
+    }
+  ];
+
+  function rollSynthesis(forceRare = false) {
+    const r = Math.random();
+    if (forceRare) return r < 0.5 ? SYNTHESES.SUPERCONDUCTING : SYNTHESES.CRYO;
+    if (r < 0.14) return SYNTHESES.OVERCLOCKED;
+    if (r < 0.08) return SYNTHESES.CRYO;
+    if (r < 0.03) return SYNTHESES.SUPERCONDUCTING;
+    return SYNTHESES.STANDARD;
+  }
+
+  function getCatalogSelection(catalog, count, checkSynthesis = false, forceRare = false) {
+    const list = [...catalog].sort(() => 0.5 - Math.random());
+    return list.slice(0, count).map(base => {
+      const clone = { ...base };
+      if (checkSynthesis) clone.synthesis = rollSynthesis(forceRare);
       return clone;
     });
   }
 
-  // ==========================================
-  // GAME ENGINE
-  // ==========================================
-  class GameEngine {
+  // =================================================================
+  // SYSTEM ENGINE (PHYSICS, ROUND LIFECYCLE & AP CS DATA STRUCTURES)
+  // =================================================================
+  class SystemEngine {
     constructor() {
-      this.canvas = document.getElementById("stage");
+      this.canvas = document.getElementById("field");
       this.ctx = this.canvas.getContext("2d");
 
-      // Progression States
-      this.ante = 1;
-      this.blindIndex = 0; // 0: Small, 1: Big, 2: Boss
-      this.quota = 800;
-      this.score = 0;
-      this.maxDrops = 4;
-      this.dropsLeft = 4;
-      this.credits = 8;
-      this.rerollCost = 4;
+      // Progress Metrics
+      this.tier = 1;
+      this.stageIndex = 0; // 0: Trace, 1: Probe, 2: Countermeasure Boss
+      this.quota = 1000;
+      this.exfiltratedBits = 0;
+      this.maxInjections = 4;
+      this.injectionsRemaining = 4;
+      this.crypto = 7;
+      this.reRouteCost = 4;
 
-      this.lastChips = 0;
-      this.lastMult = 0;
+      this.lastPackets = 0;
+      this.lastAmp = 0;
 
       // Boss Constraints
-      this.currentBoss = null;
-      this.bossPool = [
-        { name: "DIRECTIVE: THE WALL", desc: "Extreme Quota Requirement.", applyQuota: (q) => q * 1.8 },
-        { name: "DIRECTIVE: ZERO-FLUX", desc: "Landing multipliers weakened by 30%.", applyBins: (bins) => bins.forEach(b => b.mult *= 0.7) },
-        { name: "DIRECTIVE: GRAVITY SINK", desc: "Heavy gravity pulls payloads rapidly downward.", gravityMod: 1.6 }
+      this.bossDirectives = [
+        { name: "COUNTERMEASURE: THE HARDWALL", desc: "Rigid encryption raises bit quota target drastically.", quotaFactor: 1.7 },
+        { name: "COUNTERMEASURE: ZERO-BUS", desc: "Terminal landing bins are degraded by 30%.", applyBins: (bins) => bins.forEach(b => b.mult *= 0.7) },
+        { name: "COUNTERMEASURE: TURBO-ICE", desc: "Heavy gravity sweeps payloads straight downward.", gravityFactor: 1.55 }
       ];
+      this.activeDirective = null;
 
-      // Board Elements
-      this.activeCores = [];
-      this.consumables = [];
+      // State Repositories
+      this.installedNodes = [];
+      this.overrides = [];
       this.pegs = [];
       this.bins = [];
-      this.balls = [];
+      this.payloads = [];
       this.popups = [];
       this.shockwaves = [];
-      this.vortexes = [];
 
       this.launcherX = this.canvas.width / 2;
-      this.screenShake = 0;
+      this.shake = 0;
+      this.gravityMod = 1.0;
 
-      this.initBoard();
-      this.initEvents();
-      this.updateUI();
+      this.initializeGrid();
+      this.registerEvents();
+      this.refreshUI();
 
-      requestAnimationFrame(() => this.loop());
+      requestAnimationFrame(() => this.engineLoop());
     }
 
-    initBoard() {
+    initializeGrid() {
       this.pegs = [];
       this.bins = [];
-      this.vortexes = [];
 
       const rows = 11;
       const spacingY = 36;
-      const startY = 120;
+      const startY = 110;
 
       for (let r = 0; r < rows; r++) {
-        const isOffset = r % 2 === 1;
-        const cols = isOffset ? 12 : 11;
+        const isOdd = r % 2 === 1;
+        const cols = isOdd ? 12 : 11;
         const spacingX = 46;
         const startX = (this.canvas.width - ((cols - 1) * spacingX)) / 2;
 
         for (let c = 0; c < cols; c++) {
-          let type = 'standard';
-          const roll = Math.random();
+          let type = 'data';
+          const dice = Math.random();
 
-          if (roll < 0.08) type = 'gold';
-          else if (roll < 0.16) type = 'flux';
-          else if (roll < 0.22) type = 'bumper';
+          if (dice < 0.08) type = 'crypto';
+          else if (dice < 0.17) type = 'amp';
+          else if (dice < 0.23) type = 'bumper';
 
           this.pegs.push({
             x: startX + c * spacingX,
@@ -727,111 +680,101 @@ window.addEventListener('DOMContentLoaded', () => {
         }
       }
 
-      // Dynamic edge multiplier bins
-      const multipliers = [3.2, 1.8, 1.2, 0.8, 1.2, 1.8, 3.2];
-      const binWidth = this.canvas.width / multipliers.length;
+      // Landing Bin Layout
+      const binLayout = [3.2, 1.8, 1.2, 0.8, 1.2, 1.8, 3.2];
+      const binWidth = this.canvas.width / binLayout.length;
 
-      for (let i = 0; i < multipliers.length; i++) {
+      for (let i = 0; i < binLayout.length; i++) {
         this.bins.push({
           x: i * binWidth,
-          y: 630,
+          y: 585,
           w: binWidth,
-          h: 60,
-          mult: multipliers[i],
+          h: 55,
+          mult: binLayout[i],
           highlight: 0
         });
       }
 
-      // Check Boss Modifiers
-      if (this.blindIndex === 2 && this.currentBoss && this.currentBoss.applyBins) {
-        this.currentBoss.applyBins(this.bins);
+      // Enforce Boss Directives
+      if (this.stageIndex === 2 && this.activeDirective && this.activeDirective.applyBins) {
+        this.activeDirective.applyBins(this.bins);
       }
     }
 
-    mutatePegs(type, count) {
-      const standardPegs = this.pegs.filter(p => p.type === 'standard');
-      for (let i = 0; i < count && standardPegs.length > 0; i++) {
-        const idx = Math.floor(Math.random() * standardPegs.length);
-        standardPegs[idx].type = type;
-        standardPegs.splice(idx, 1);
+    convertPegs(type, count) {
+      const available = this.pegs.filter(p => p.type === 'data');
+      for (let i = 0; i < count && available.length > 0; i++) {
+        const idx = Math.floor(Math.random() * available.length);
+        available[idx].type = type;
+        available.splice(idx, 1);
       }
     }
 
-    spawnVortex() {
-      this.vortexes.push({
-        x: this.canvas.width / 2 + (Math.random() - 0.5) * 200,
-        y: 280 + (Math.random() - 0.5) * 100,
-        radius: 20,
-        power: 0.8
-      });
-    }
-
-    initEvents() {
+    registerEvents() {
       this.canvas.addEventListener("mousemove", (e) => {
-        const bounds = this.canvas.getBoundingClientRect();
-        const factor = this.canvas.width / bounds.width;
-        this.launcherX = Math.max(25, Math.min(this.canvas.width - 25, (e.clientX - bounds.left) * factor));
+        const rect = this.canvas.getBoundingClientRect();
+        const ratio = this.canvas.width / rect.width;
+        this.launcherX = Math.max(20, Math.min(this.canvas.width - 20, (e.clientX - rect.left) * ratio));
       });
 
       this.canvas.addEventListener("mousedown", () => {
-        if (this.dropsLeft > 0) {
-          this.dropsLeft--;
-          this.spawnBall(this.launcherX, 35, 10, 1.0, false);
-          this.updateUI();
+        if (this.injectionsRemaining > 0) {
+          this.injectionsRemaining--;
+          this.spawnPayload(this.launcherX, 30, 10, 1.0, false);
+          this.refreshUI();
         }
       });
 
-      document.getElementById("btn-reroll").addEventListener("click", () => {
-        if (this.credits >= this.rerollCost) {
-          this.credits -= this.rerollCost;
-          this.generateShopInventory();
-          this.renderShop();
-          this.updateUI();
+      document.getElementById("btn-re-route").addEventListener("click", () => {
+        if (this.crypto >= this.reRouteCost) {
+          this.crypto -= this.reRouteCost;
+          this.generateMarketPicks();
+          this.renderMarket();
+          this.refreshUI();
         }
       });
 
-      document.getElementById("btn-next-sector").addEventListener("click", () => {
-        this.advanceBlind();
+      document.getElementById("btn-next-tier").addEventListener("click", () => {
+        this.advanceProtocol();
       });
 
-      document.getElementById("btn-skip-pack").addEventListener("click", () => {
-        document.getElementById("pack-opening-modal").style.display = "none";
+      document.getElementById("btn-abort-cache").addEventListener("click", () => {
+        document.getElementById("cache-modal").style.display = "none";
       });
     }
 
-    spawnBall(x, y, initialChips, initialMult, isSub) {
-      // Calculate editions on active cores
-      let bonusChips = 0;
-      let bonusMult = 0;
-      let xmultProduct = 1.0;
+    spawnPayload(x, y, startPackets, startAmp, isSub) {
+      let bPackets = 0;
+      let bAmp = 0;
+      let xAmpFactor = 1.0;
 
-      this.activeCores.forEach(c => {
-        if (c.edition) {
-          bonusChips += c.edition.chips;
-          bonusMult += c.edition.mult;
-          xmultProduct *= c.edition.xmult;
+      this.installedNodes.forEach(node => {
+        if (node.synthesis) {
+          bPackets += node.synthesis.packets;
+          bAmp += node.synthesis.amp;
+          xAmpFactor *= node.synthesis.xAmp;
         }
       });
 
-      this.balls.push({
+      this.payloads.push({
         x: x,
         y: y,
-        vx: (Math.random() - 0.5) * 3.5,
-        vy: 1.5 + Math.random(),
+        vx: (Math.random() - 0.5) * 3.2,
+        vy: 1.6 + Math.random(),
         radius: 6,
-        chips: initialChips + bonusChips,
-        mult: (initialMult + bonusMult) * xmultProduct,
+        packets: startPackets + bPackets,
+        amp: (startAmp + bAmp) * xAmpFactor,
         bounces: 0,
-        hasSplit: isSub,
+        hasForked: isSub,
         trail: [],
-        stuckFrames: 0,
+        deadlockFrames: 0,
         lastY: y
       });
     }
 
     triggerShockwave(x, y, radius, onHit) {
       this.shockwaves.push({ x, y, radius, curRadius: 0, life: 1.0 });
-      this.screenShake = 4;
+      this.shake = 4;
       this.pegs.forEach(peg => {
         if (Math.hypot(peg.x - x, peg.y - y) <= radius) {
           peg.pulse = 1.0;
@@ -840,433 +783,425 @@ window.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    createPopup(x, y, text, color) {
+    emitPopup(x, y, text, color) {
       this.popups.push({ x, y, text, color, life: 1.0 });
     }
 
-    // ==========================================
-    // PHYSICS LOOP & UPDATE
-    // ==========================================
-    loop() {
-      this.update();
-      this.render();
-      requestAnimationFrame(() => this.loop());
+    // =================================================================
+    // SIMULATION PIPELINE
+    // =================================================================
+    engineLoop() {
+      this.updatePhysics();
+      this.renderGraphics();
+      requestAnimationFrame(() => this.engineLoop());
     }
 
-    update() {
-      if (this.screenShake > 0) this.screenShake *= 0.88;
+    updatePhysics() {
+      if (this.shake > 0) this.shake *= 0.88;
 
       // Popups
       for (let i = this.popups.length - 1; i >= 0; i--) {
-        const p = this.popups[i];
-        p.y -= 0.8;
-        p.life -= 0.025;
-        if (p.life <= 0) this.popups.splice(i, 1);
+        const pop = this.popups[i];
+        pop.y -= 0.8;
+        pop.life -= 0.025;
+        if (pop.life <= 0) this.popups.splice(i, 1);
       }
 
       // Shockwaves
       for (let i = this.shockwaves.length - 1; i >= 0; i--) {
-        const s = this.shockwaves[i];
-        s.curRadius += (s.radius - s.curRadius) * 0.22;
-        s.life -= 0.05;
-        if (s.life <= 0) this.shockwaves.splice(i, 1);
+        const sw = this.shockwaves[i];
+        sw.curRadius += (sw.radius - sw.curRadius) * 0.22;
+        sw.life -= 0.05;
+        if (sw.life <= 0) this.shockwaves.splice(i, 1);
       }
 
       this.pegs.forEach(p => { if (p.pulse > 0) p.pulse -= 0.04; });
       this.bins.forEach(b => { if (b.highlight > 0) b.highlight -= 0.05; });
 
-      let baseGravity = 0.24;
-      if (this.blindIndex === 2 && this.currentBoss && this.currentBoss.gravityMod) {
-        baseGravity *= this.currentBoss.gravityMod;
+      let baseG = 0.24 * this.gravityMod;
+      if (this.stageIndex === 2 && this.activeDirective && this.activeDirective.gravityFactor) {
+        baseG *= this.activeDirective.gravityFactor;
       }
 
-      // Ball Update Loop
-      for (let i = this.balls.length - 1; i >= 0; i--) {
-        const b = this.balls[i];
+      // Payloads physics
+      for (let i = this.payloads.length - 1; i >= 0; i--) {
+        const p = this.payloads[i];
 
-        b.trail.push({ x: b.x, y: b.y });
-        if (b.trail.length > 7) b.trail.shift();
+        p.trail.push({ x: p.x, y: p.y });
+        if (p.trail.length > 6) p.trail.shift();
 
-        // Vortex pulling
-        this.vortexes.forEach(v => {
-          const dx = v.x - b.x;
-          const dy = v.y - b.y;
-          const dist = Math.hypot(dx, dy);
-          if (dist < 120) {
-            b.vx += (dx / dist) * v.power;
-            b.vy += (dy / dist) * v.power;
-          }
-        });
+        p.vy += baseG;
+        p.x += p.vx;
+        p.y += p.vy;
 
-        b.vy += baseGravity;
-        b.x += b.vx;
-        b.y += b.vy;
-
-        // Anti-Stuck Check
-        if (Math.abs(b.y - b.lastY) < 0.6) {
-          b.stuckFrames++;
-          if (b.stuckFrames > 25) {
-            b.vx += (Math.random() - 0.5) * 4;
-            b.vy += 2.2;
-            b.stuckFrames = 0;
+        // Anti-Deadlock Safety Check
+        if (Math.abs(p.y - p.lastY) < 0.6) {
+          p.deadlockFrames++;
+          if (p.deadlockFrames > 24) {
+            p.vx += (Math.random() - 0.5) * 4.5;
+            p.vy += 2.2;
+            p.deadlockFrames = 0;
           }
         } else {
-          b.stuckFrames = 0;
+          p.deadlockFrames = 0;
         }
-        b.lastY = b.y;
+        p.lastY = p.y;
 
-        // Wall Boundaries
-        if (b.x - b.radius < 0) {
-          b.x = b.radius;
-          b.vx = Math.abs(b.vx) * 0.8;
-        } else if (b.x + b.radius > this.canvas.width) {
-          b.x = this.canvas.width - b.radius;
-          b.vx = -Math.abs(b.vx) * 0.8;
+        // Stage Walls
+        if (p.x - p.radius < 0) {
+          p.x = p.radius;
+          p.vx = Math.abs(p.vx) * 0.8;
+        } else if (p.x + p.radius > this.canvas.width) {
+          p.x = this.canvas.width - p.radius;
+          p.vx = -Math.abs(p.vx) * 0.8;
         }
 
-        // Peg Physics
-        for (let p of this.pegs) {
-          const dx = b.x - p.x;
-          const dy = b.y - p.y;
+        // Peg Intersections
+        for (let peg of this.pegs) {
+          const dx = p.x - peg.x;
+          const dy = p.y - peg.y;
           const dist = Math.hypot(dx, dy);
 
-          if (dist < b.radius + p.radius) {
+          if (dist < p.radius + peg.radius) {
             const angle = Math.atan2(dy, dx);
-            const bouncePower = p.type === 'bumper' ? 1.5 : 0.86;
-            const speed = Math.max(Math.hypot(b.vx, b.vy) * bouncePower, 3.2);
+            const restitution = peg.type === 'bumper' ? 1.5 : 0.85;
+            const velocity = Math.max(Math.hypot(p.vx, p.vy) * restitution, 3.2);
 
-            b.vx = Math.cos(angle) * speed;
-            b.vy = Math.sin(angle) * speed;
+            p.vx = Math.cos(angle) * velocity;
+            p.vy = Math.sin(angle) * velocity;
 
-            b.x = p.x + Math.cos(angle) * (b.radius + p.radius + 1.2);
-            b.y = p.y + Math.sin(angle) * (b.radius + p.radius + 1.2);
+            p.x = peg.x + Math.cos(angle) * (p.radius + peg.radius + 1.2);
+            p.y = peg.y + Math.sin(angle) * (p.radius + peg.radius + 1.2);
 
-            b.bounces++;
-            p.pulse = 1.0;
+            p.bounces++;
+            peg.pulse = 1.0;
 
-            if (p.type === 'standard') b.chips += 6;
-            if (p.type === 'neon') b.chips += 35;
-            if (p.type === 'flux') b.mult += 0.3;
-            if (p.type === 'bumper') { b.chips += 12; b.mult += 0.2; }
-            if (p.type === 'gold') {
-              this.credits += 1;
-              this.createPopup(p.x, p.y - 10, "+$1", "#ffd000");
+            if (peg.type === 'data') p.packets += 6;
+            if (peg.type === 'neon') p.packets += 30;
+            if (peg.type === 'amp') p.amp += 0.3;
+            if (peg.type === 'bumper') { p.packets += 12; p.amp += 0.15; }
+            if (peg.type === 'crypto') {
+              this.crypto += 1;
+              this.emitPopup(peg.x, peg.y - 10, "+$1 CRYPTO", "#ffb700");
             }
 
-            for (let core of this.activeCores) {
-              if (core.onBounce) core.onBounce(b, p, this);
+            AudioBus.bounceSound(peg.type);
+
+            for (let node of this.installedNodes) {
+              if (node.onBounce) node.onBounce(p, peg, this);
             }
             break;
           }
         }
 
-        // Bottom Landings
-        if (b.y > 630) {
-          let bin = this.bins.find(bin => b.x >= bin.x && b.x <= bin.x + bin.w) || this.bins[0];
-          bin.highlight = 1.0;
-          b.mult *= bin.mult;
+        // Terminal Bins
+        if (p.y > 585) {
+          let landed = this.bins.find(b => p.x >= b.x && p.x <= b.x + b.w) || this.bins[0];
+          landed.highlight = 1.0;
+          p.amp *= landed.mult;
 
-          for (let core of this.activeCores) {
-            if (core.onLand) core.onLand(b, bin, this);
+          for (let node of this.installedNodes) {
+            if (node.onLand) node.onLand(p, landed, this);
           }
 
-          const dropScore = Math.floor(b.chips * b.mult);
-          this.score += dropScore;
-          this.lastChips = b.chips;
-          this.lastMult = b.mult;
+          const evaluatedBits = Math.floor(p.packets * p.amp);
+          this.exfiltratedBits += evaluatedBits;
+          this.lastPackets = p.packets;
+          this.lastAmp = p.amp;
 
-          this.createPopup(b.x, 610, `+${dropScore.toLocaleString()}`, "#00ff88");
-          this.balls.splice(i, 1);
+          AudioBus.landSound(landed.mult);
+          this.emitPopup(p.x, 565, `+${evaluatedBits.toLocaleString()}`, "#00ff66");
+          this.payloads.splice(i, 1);
 
-          if (this.balls.length === 0) {
-            this.evaluateRunEnd();
+          if (this.payloads.length === 0) {
+            this.evaluateRunOutcome();
           }
-          this.updateUI();
+          this.refreshUI();
         }
       }
     }
 
-    evaluateRunEnd() {
-      if (this.score >= this.quota) {
-        // Balatro Interest: 1$ per 5$ saved up to 25$ + leftover drop bonus
-        const interest = Math.min(5, Math.floor(this.credits / 5));
-        const payout = 4 + this.dropsLeft + interest;
-        this.credits += payout;
-        this.openShop();
-      } else if (this.dropsLeft <= 0 && this.balls.length === 0) {
-        alert(`FAILURE TO MEET QUOTA!\nAnte reached: ${this.ante}\nScore: ${this.score.toLocaleString()}`);
-        this.resetGame();
+    evaluateRunOutcome() {
+      if (this.exfiltratedBits >= this.quota) {
+        // Yield Crypto interest (1$ per 5$ held, up to 5$) + unused injections
+        const interest = Math.min(5, Math.floor(this.crypto / 5));
+        const payout = 4 + this.injectionsRemaining + interest;
+        this.crypto += payout;
+        this.openMarket();
+      } else if (this.injectionsRemaining <= 0 && this.payloads.length === 0) {
+        alert(`NETWORK INTRUSION FAILED // INSUFFICIENT DATA BITS\nSecurity Tier Reached: ${this.tier}\nTotal Bits: ${this.exfiltratedBits.toLocaleString()}`);
+        this.resetAll();
       }
     }
 
-    // ==========================================
-    // SHOPPING & BOOSTER PACK CRACKING
-    // ==========================================
-    openShop() {
-      this.generateShopInventory();
-      this.renderShop();
-      document.getElementById("shop-overlay").style.display = "flex";
-      this.updateUI();
+    // =================================================================
+    // MARKET & FIRMWARE DECOMPILATION INTERFACES
+    // =================================================================
+    openMarket() {
+      this.generateMarketPicks();
+      this.renderMarket();
+      document.getElementById("tactical-overlay").style.display = "flex";
+      this.refreshUI();
     }
 
-    generateShopInventory() {
-      // 2 Booster packs
-      this.shopPacks = [...PACK_TYPES].sort(() => 0.5 - Math.random()).slice(0, 2).map(p => ({ ...p, sold: false }));
+    generateMarketPicks() {
+      this.marketCaches = [...FIRMWARE_CACHES].sort(() => 0.5 - Math.random()).slice(0, 2).map(c => ({ ...c, consumed: false }));
 
-      // 2 Cards / Consumables
-      const availableCores = CORE_DATABASE.filter(c => !this.activeCores.some(ac => ac.id === c.id));
-      const coreOffers = getRandomItems(availableCores, 1, true);
-      const consumableOffers = getRandomItems(CONSUMABLE_DATABASE, 1, false);
+      const availableNodes = NODE_CATALOG.filter(n => !this.installedNodes.some(inNode => inNode.id === n.id));
+      const nodePicks = getCatalogSelection(availableNodes, 1, true);
+      const overridePicks = getCatalogSelection(OVERRIDE_CATALOG, 1, false);
 
-      this.shopItems = [...coreOffers, ...consumableOffers].map(item => ({ ...item, sold: false }));
+      this.marketHardware = [...nodePicks, ...overridePicks].map(item => ({ ...item, consumed: false }));
     }
 
-    renderShop() {
-      document.getElementById("shop-credits").innerText = `$${this.credits}`;
+    renderMarket() {
+      document.getElementById("market-crypto").innerText = `$${this.crypto}`;
 
-      // Render Packs
-      const packBox = document.getElementById("shop-packs");
-      packBox.innerHTML = "";
-      this.shopPacks.forEach(pack => {
-        const pcard = document.createElement("div");
-        pcard.className = `pack-card ${pack.class} ${pack.sold ? 'sold' : ''}`;
-        pcard.innerHTML = `
+      // Render Caches
+      const cacheRack = document.getElementById("cache-rack");
+      cacheRack.innerHTML = "";
+      this.marketCaches.forEach(cache => {
+        const card = document.createElement("div");
+        card.className = `cache-unit ${cache.consumed ? 'consumed' : ''}`;
+        card.innerHTML = `
           <div>
-            <div style="font-size:12px; font-weight:900; color:var(--accent-blue);">${pack.name}</div>
-            <div style="font-size:9.5px; color:var(--text-dim); margin: 6px 0;">${pack.desc}</div>
+            <div style="font-size: 11px; font-weight: bold; color: var(--cyan);">${cache.name}</div>
+            <div style="font-size: 9px; color: var(--dim); margin: 6px 0;">${cache.desc}</div>
           </div>
-          <button ${this.credits < pack.cost || pack.sold ? 'disabled' : ''}>OPEN ($${pack.cost})</button>
+          <button ${this.crypto < cache.cost || cache.consumed ? 'disabled' : ''}>DECOMPILE ($${cache.cost})</button>
         `;
-        pcard.querySelector("button").onclick = () => {
-          this.credits -= pack.cost;
-          pack.sold = true;
-          this.openPackModal(pack);
-          this.renderShop();
-          this.updateUI();
+        card.querySelector("button").onclick = () => {
+          this.crypto -= cache.cost;
+          cache.consumed = true;
+          this.openCacheModal(cache);
+          this.renderMarket();
+          this.refreshUI();
         };
-        packBox.appendChild(pcard);
+        cacheRack.appendChild(card);
       });
 
-      // Render Individual items
-      const itemBox = document.getElementById("shop-items");
-      itemBox.innerHTML = "";
-      this.shopItems.forEach(item => {
-        const icard = document.createElement("div");
-        icard.className = `shop-card ${item.sold ? 'sold' : ''}`;
+      // Render Individual Hardware
+      const hardwareRack = document.getElementById("hardware-rack");
+      hardwareRack.innerHTML = "";
+      this.marketHardware.forEach(item => {
+        const card = document.createElement("div");
+        card.className = `market-unit ${item.consumed ? 'consumed' : ''}`;
 
-        const isCore = !!item.onBounce || !!item.onLand;
-        const tag = isCore ? "CORE PASSIVE" : "HACK OVERCLOCK";
-        const editionName = item.edition && item.edition.id !== 'base' ? `[${item.edition.name}] ` : '';
+        const isNode = !!item.onBounce || !!item.onLand;
+        const typeName = isNode ? "HARDWARE NODE" : "DIRECT OVERRIDE";
+        const synthPrefix = item.synthesis && item.synthesis.id !== 'standard' ? `[${item.synthesis.name}] ` : '';
 
-        icard.innerHTML = `
+        card.innerHTML = `
           <div>
-            <div style="display:flex; justify-content:space-between; font-size:9px;">
-              <span style="color:var(--accent-blue); font-weight:bold;">${tag}</span>
-              <span style="color:var(--accent-gold); font-weight:bold;">$${item.cost}</span>
+            <div style="display:flex; justify-content:space-between; font-size: 8px;">
+              <span style="color: var(--cyan); font-weight: bold;">${typeName}</span>
+              <span style="color: var(--amber); font-weight: bold;">$${item.cost}</span>
             </div>
-            <div style="font-size:12px; font-weight:bold; margin-top:2px;">${editionName}${item.name}</div>
-            <div style="font-size:9px; color:var(--text-dim); margin-top:4px;">${item.desc}</div>
+            <div style="font-size: 11px; font-weight: bold; margin-top: 3px;">${synthPrefix}${item.name}</div>
+            <div style="font-size: 9px; color: var(--dim); margin-top: 4px;">${item.desc}</div>
           </div>
-          <button style="margin-top:6px;" ${this.credits < item.cost || item.sold ? 'disabled' : ''}>ACQUIRE</button>
+          <button style="margin-top: 6px;" ${this.crypto < item.cost || item.consumed ? 'disabled' : ''}>INTEGRATE</button>
         `;
 
-        icard.querySelector("button").onclick = () => {
-          if (isCore && this.activeCores.length >= 5) return alert("Core storage full!");
-          if (!isCore && this.consumables.length >= 2) return alert("Consumable cache full!");
+        card.querySelector("button").onclick = () => {
+          if (isNode && this.installedNodes.length >= 5) return alert("Hardware Bus full (5 max)!");
+          if (!isNode && this.overrides.length >= 2) return alert("Override Cache full (2 max)!");
 
-          this.credits -= item.cost;
-          item.sold = true;
+          this.crypto -= item.cost;
+          item.consumed = true;
 
-          if (isCore) this.activeCores.push(item);
-          else this.consumables.push(item);
+          if (isNode) this.installedNodes.push(item);
+          else this.overrides.push(item);
 
-          this.renderShop();
-          this.updateUI();
+          this.renderMarket();
+          this.refreshUI();
         };
-        itemBox.appendChild(icard);
+        hardwareRack.appendChild(card);
       });
 
-      document.getElementById("btn-reroll").disabled = this.credits < this.rerollCost;
+      document.getElementById("btn-re-route").disabled = this.crypto < this.reRouteCost;
     }
 
-    openPackModal(pack) {
-      const modal = document.getElementById("pack-opening-modal");
-      const title = document.getElementById("pack-title");
-      const container = document.getElementById("pack-options");
+    openCacheModal(cache) {
+      const modal = document.getElementById("cache-modal");
+      const title = document.getElementById("modal-cache-title");
+      const container = document.getElementById("modal-cache-options");
 
-      title.innerText = pack.name;
+      title.innerText = cache.name;
       container.innerHTML = "";
 
-      const choices = pack.generate();
-      choices.forEach(item => {
-        const isCore = !!item.onBounce || !!item.onLand;
-        const ccard = document.createElement("div");
-        ccard.className = `pack-choice-card ${item.edition ? item.edition.class : ''}`;
+      const options = cache.unpack();
+      options.forEach(opt => {
+        const isNode = !!opt.onBounce || !!opt.onLand;
+        const card = document.createElement("div");
+        card.className = `firmware-card ${opt.synthesis ? opt.synthesis.css : ''}`;
 
-        const editionBadge = item.edition && item.edition.id !== 'base' ? 
-          `<span class="edition-tag ${item.edition.tagClass}">${item.edition.name}</span>` : '';
+        const synthTag = opt.synthesis && opt.synthesis.id !== 'standard' ? 
+          `<div style="font-size: 8px; color: var(--cyan); font-weight: bold;">${opt.synthesis.name}</div>` : '';
 
-        ccard.innerHTML = `
+        card.innerHTML = `
           <div>
-            <div style="font-size:8px; text-transform:uppercase; color:var(--accent-blue);">${isCore ? 'CORE' : 'HACK'}</div>
-            <div style="font-size:13px; font-weight:900; margin-top:4px;">${item.name} ${editionBadge}</div>
-            <div style="font-size:10px; color:var(--text-dim); margin-top:8px;">${item.desc}</div>
+            <div style="font-size: 8px; color: var(--dim);">${isNode ? 'NODE' : 'OVERRIDE'}</div>
+            ${synthTag}
+            <div style="font-size: 12px; font-weight: bold; margin-top: 4px;">${opt.name}</div>
+            <div style="font-size: 9px; color: var(--dim); margin-top: 6px;">${opt.desc}</div>
           </div>
-          <button style="width:100%;">INTEGRATE</button>
+          <button style="width: 100%;">INSTALL</button>
         `;
 
-        ccard.querySelector("button").onclick = () => {
-          if (isCore) {
-            if (this.activeCores.length >= 5) return alert("Core capacity full (5 max)!");
-            this.activeCores.push(item);
+        card.querySelector("button").onclick = () => {
+          if (isNode) {
+            if (this.installedNodes.length >= 5) return alert("Node Bus is full (5 Max)!");
+            this.installedNodes.push(opt);
           } else {
-            if (this.consumables.length >= 2) return alert("Consumable capacity full (2 max)!");
-            this.consumables.push(item);
+            if (this.overrides.length >= 2) return alert("Override memory is full (2 Max)!");
+            this.overrides.push(opt);
           }
           modal.style.display = "none";
-          this.updateUI();
+          this.refreshUI();
         };
-
-        container.appendChild(ccard);
+        container.appendChild(card);
       });
 
       modal.style.display = "flex";
     }
 
-    advanceBlind() {
-      document.getElementById("shop-overlay").style.display = "none";
-      this.blindIndex++;
+    advanceProtocol() {
+      document.getElementById("tactical-overlay").style.display = "none";
+      this.stageIndex++;
 
-      if (this.blindIndex > 2) {
-        this.blindIndex = 0;
-        this.ante++;
+      if (this.stageIndex > 2) {
+        this.stageIndex = 0;
+        this.tier++;
       }
 
-      // Base Quota calculations (Balatro style curve)
-      let baseQuota = Math.floor(800 * Math.pow(1.5, this.ante - 1));
-      if (this.blindIndex === 0) {
-        this.quota = baseQuota;
-        this.currentBoss = null;
-      } else if (this.blindIndex === 1) {
-        this.quota = Math.floor(baseQuota * 1.4);
-        this.currentBoss = null;
-      } else if (this.blindIndex === 2) {
-        this.currentBoss = this.bossPool[Math.floor(Math.random() * this.bossPool.length)];
-        this.quota = Math.floor(baseQuota * 2.0);
-        if (this.currentBoss.applyQuota) {
-          this.quota = Math.floor(this.currentBoss.applyQuota(this.quota));
+      // Quota Scaling
+      let baseTarget = Math.floor(1000 * Math.pow(1.5, this.tier - 1));
+      if (this.stageIndex === 0) {
+        this.quota = baseTarget;
+        this.activeDirective = null;
+      } else if (this.stageIndex === 1) {
+        this.quota = Math.floor(baseTarget * 1.4);
+        this.activeDirective = null;
+      } else if (this.stageIndex === 2) {
+        this.activeDirective = this.bossDirectives[Math.floor(Math.random() * this.bossDirectives.length)];
+        this.quota = Math.floor(baseTarget * 2.0);
+        if (this.activeDirective.quotaFactor) {
+          this.quota = Math.floor(this.quota * this.activeDirective.quotaFactor);
         }
       }
 
-      this.score = 0;
-      this.dropsLeft = this.maxDrops;
-      this.initBoard();
-      this.updateUI();
+      this.exfiltratedBits = 0;
+      this.injectionsRemaining = this.maxInjections;
+      this.gravityMod = 1.0;
+      this.initializeGrid();
+      this.refreshUI();
     }
 
-    resetGame() {
-      this.ante = 1;
-      this.blindIndex = 0;
-      this.quota = 800;
-      this.score = 0;
-      this.dropsLeft = 4;
-      this.credits = 8;
-      this.activeCores = [];
-      this.consumables = [];
-      this.currentBoss = null;
-      this.initBoard();
-      this.updateUI();
+    resetAll() {
+      this.tier = 1;
+      this.stageIndex = 0;
+      this.quota = 1000;
+      this.exfiltratedBits = 0;
+      this.injectionsRemaining = 4;
+      this.crypto = 7;
+      this.installedNodes = [];
+      this.overrides = [];
+      this.activeDirective = null;
+      this.gravityMod = 1.0;
+      this.initializeGrid();
+      this.refreshUI();
     }
 
-    updateUI() {
-      const blinds = ["Small Blind", "Big Blind", "BOSS BLIND"];
-      document.getElementById("ui-sector").innerText = `Ante ${this.ante} / ${blinds[this.blindIndex]}`;
+    refreshUI() {
+      const stages = ["Trace Probe", "Subnet Scan", "COUNTERMEASURE BOSS"];
+      document.getElementById("ui-tier").innerText = `Tier ${this.tier} // ${stages[this.stageIndex]}`;
       document.getElementById("ui-quota").innerText = this.quota.toLocaleString();
-      document.getElementById("ui-score").innerText = this.score.toLocaleString();
-      document.getElementById("ui-drops").innerText = this.dropsLeft;
-      document.getElementById("ui-credits").innerText = `$${this.credits}`;
-      document.getElementById("ui-last-chips").innerText = `${this.lastChips} CHIPS`;
-      document.getElementById("ui-last-mult").innerText = `${this.lastMult.toFixed(1)}x`;
+      document.getElementById("ui-bits").innerText = this.exfiltratedBits.toLocaleString();
+      document.getElementById("ui-injections").innerText = this.injectionsRemaining;
+      document.getElementById("ui-crypto").innerText = `$${this.crypto}`;
+      document.getElementById("ui-last-packets").innerText = `${this.lastPackets} PKTS`;
+      document.getElementById("ui-last-amp").innerText = `${this.lastAmp.toFixed(1)}x AMP`;
 
-      const directiveEl = document.getElementById("boss-directive");
-      if (this.blindIndex === 2 && this.currentBoss) {
-        directiveEl.innerText = this.currentBoss.name;
+      const directiveTag = document.getElementById("directive-indicator");
+      if (this.stageIndex === 2 && this.activeDirective) {
+        directiveTag.innerText = this.activeDirective.name;
       } else {
-        directiveEl.innerText = "DIRECTIVE: STANDARD EVALUATION";
+        directiveTag.innerText = "COUNTERMEASURE: NONE DETECTED";
       }
 
-      // Active Cores Tray
-      const tray = document.getElementById("cores-tray");
-      tray.innerHTML = "";
-      document.getElementById("ui-core-count").innerText = `${this.activeCores.length} / 5`;
+      // Render Installed Node Tray
+      const nodesTray = document.getElementById("active-nodes");
+      nodesTray.innerHTML = "";
+      document.getElementById("ui-node-count").innerText = `${this.installedNodes.length} / 5`;
 
-      this.activeCores.forEach((core, idx) => {
-        const el = document.createElement("div");
-        el.className = `core-card ${core.edition ? core.edition.class : ''}`;
+      this.installedNodes.forEach((node, idx) => {
+        const item = document.createElement("div");
+        item.className = `node-item ${node.synthesis ? node.synthesis.css : ''}`;
 
-        const editionTag = core.edition && core.edition.id !== 'base' ? 
-          `<span class="edition-tag ${core.edition.tagClass}">${core.edition.name}</span>` : '';
+        const synthDisplay = node.synthesis && node.synthesis.id !== 'standard' ? 
+          `<span style="color: var(--cyan); font-weight: bold;">[${node.synthesis.name}] </span>` : '';
 
-        el.innerHTML = `
+        item.innerHTML = `
           <div style="display:flex; justify-content:space-between; align-items:center;">
-            <span style="font-weight:bold; font-size:11px;">${core.name} ${editionTag}</span>
-            <span style="color:var(--accent-red); font-size:8px;">SELL +$${Math.floor(core.cost/2)}</span>
+            <span>${synthDisplay}${node.name}</span>
+            <span style="color: var(--crimson); font-size: 8px;">DUMP +$${Math.floor(node.cost / 2)}</span>
           </div>
-          <div style="font-size:9.5px; color:var(--text-dim); margin-top:3px;">${core.desc}</div>
+          <div style="font-size: 8.5px; color: var(--dim); margin-top: 2px;">${node.desc}</div>
         `;
-        el.onclick = () => {
-          this.credits += Math.floor(core.cost / 2);
-          this.activeCores.splice(idx, 1);
-          this.updateUI();
-          if (document.getElementById("shop-overlay").style.display === "flex") {
-            this.renderShop();
+        item.onclick = () => {
+          this.crypto += Math.floor(node.cost / 2);
+          this.installedNodes.splice(idx, 1);
+          this.refreshUI();
+          if (document.getElementById("tactical-overlay").style.display === "flex") {
+            this.renderMarket();
           }
         };
-        tray.appendChild(el);
+        nodesTray.appendChild(item);
       });
 
-      // Tactical Consumables Tray
-      const ctray = document.getElementById("consumables-tray");
-      ctray.innerHTML = "";
-      document.getElementById("ui-overclock-count").innerText = `${this.consumables.length} / 2`;
+      // Render Overrides Tray
+      const overridesTray = document.getElementById("active-overrides");
+      overridesTray.innerHTML = "";
+      document.getElementById("ui-override-count").innerText = `${this.overrides.length} / 2`;
 
-      this.consumables.forEach((item, idx) => {
-        const el = document.createElement("div");
-        el.className = "core-card";
-        el.style.borderLeft = "3px solid var(--accent-purple)";
-        el.innerHTML = `
-          <div style="display:flex; justify-content:space-between; font-weight:bold; font-size:11px;">
-            <span style="color:var(--accent-purple);">${item.name}</span>
-            <span style="color:var(--accent-green); font-size:9px;">USE</span>
+      this.overrides.forEach((override, idx) => {
+        const item = document.createElement("div");
+        item.className = "node-item";
+        item.style.borderLeft = "3px solid var(--violet)";
+        item.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span style="color: var(--violet); font-weight: bold;">${override.name}</span>
+            <span style="color: var(--emerald); font-size: 8px;">EXECUTE</span>
           </div>
-          <div style="font-size:9px; color:var(--text-dim); margin-top:2px;">${item.desc}</div>
+          <div style="font-size: 8.5px; color: var(--dim); margin-top: 2px;">${override.desc}</div>
         `;
-        el.onclick = () => {
-          item.use(this);
-          this.consumables.splice(idx, 1);
-          this.updateUI();
+        item.onclick = () => {
+          override.apply(this);
+          this.overrides.splice(idx, 1);
+          this.refreshUI();
         };
-        ctray.appendChild(el);
+        overridesTray.appendChild(item);
       });
     }
 
-    // ==========================================
-    // RENDER PIPELINE
-    // ==========================================
-    render() {
+    // =================================================================
+    // RENDERING ENGINE
+    // =================================================================
+    renderGraphics() {
       this.ctx.save();
 
-      if (this.screenShake > 0) {
+      if (this.shake > 0) {
         this.ctx.translate(
-          (Math.random() - 0.5) * this.screenShake,
-          (Math.random() - 0.5) * this.screenShake
+          (Math.random() - 0.5) * this.shake,
+          (Math.random() - 0.5) * this.shake
         );
       }
 
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-      // Launcher Guide Line
-      this.ctx.strokeStyle = "rgba(0, 229, 255, 0.18)";
+      // Trajectory Targeting Laser
+      this.ctx.strokeStyle = "rgba(0, 240, 255, 0.15)";
       this.ctx.setLineDash([4, 4]);
       this.ctx.beginPath();
       this.ctx.moveTo(this.launcherX, 0);
@@ -1274,52 +1209,43 @@ window.addEventListener('DOMContentLoaded', () => {
       this.ctx.stroke();
       this.ctx.setLineDash([]);
 
-      // Vortex Hazards
-      this.vortexes.forEach(v => {
-        this.ctx.strokeStyle = "rgba(189, 52, 254, 0.4)";
-        this.ctx.lineWidth = 2;
-        this.ctx.beginPath();
-        this.ctx.arc(v.x, v.y, v.radius + Math.sin(Date.now() * 0.005) * 4, 0, Math.PI * 2);
-        this.ctx.stroke();
-      });
-
-      // Shockwaves
+      // Shockwave Radii
       this.shockwaves.forEach(sw => {
-        this.ctx.strokeStyle = `rgba(0, 229, 255, ${sw.life})`;
-        this.ctx.lineWidth = 3;
+        this.ctx.strokeStyle = `rgba(0, 240, 255, ${sw.life})`;
+        this.ctx.lineWidth = 2;
         this.ctx.beginPath();
         this.ctx.arc(sw.x, sw.y, sw.curRadius, 0, Math.PI * 2);
         this.ctx.stroke();
       });
 
-      // Pegs
+      // Interactive Pegs
       this.pegs.forEach(p => {
         this.ctx.beginPath();
-        let drawRad = p.radius + (p.pulse * 3);
-        this.ctx.arc(p.x, p.y, drawRad, 0, Math.PI * 2);
+        const displayRadius = p.radius + (p.pulse * 2.5);
+        this.ctx.arc(p.x, p.y, displayRadius, 0, Math.PI * 2);
 
         if (p.pulse > 0.05) {
           this.ctx.fillStyle = "#fff";
-          this.ctx.shadowColor = "#00e5ff";
+          this.ctx.shadowColor = "#00f0ff";
           this.ctx.shadowBlur = 12;
         } else if (p.type === 'neon') {
-          this.ctx.fillStyle = "#00ff88";
-          this.ctx.shadowColor = "#00ff88";
+          this.ctx.fillStyle = "#00ff66";
+          this.ctx.shadowColor = "#00ff66";
           this.ctx.shadowBlur = 6;
-        } else if (p.type === 'flux') {
-          this.ctx.fillStyle = "#ff2a5f";
-          this.ctx.shadowColor = "#ff2a5f";
+        } else if (p.type === 'amp') {
+          this.ctx.fillStyle = "#ff0055";
+          this.ctx.shadowColor = "#ff0055";
           this.ctx.shadowBlur = 6;
         } else if (p.type === 'bumper') {
-          this.ctx.fillStyle = "#bd34fe";
-          this.ctx.shadowColor = "#bd34fe";
+          this.ctx.fillStyle = "#9d00ff";
+          this.ctx.shadowColor = "#9d00ff";
           this.ctx.shadowBlur = 8;
-        } else if (p.type === 'gold') {
-          this.ctx.fillStyle = "#ffd000";
-          this.ctx.shadowColor = "#ffd000";
+        } else if (p.type === 'crypto') {
+          this.ctx.fillStyle = "#ffb700";
+          this.ctx.shadowColor = "#ffb700";
           this.ctx.shadowBlur = 6;
         } else {
-          this.ctx.fillStyle = "#162233";
+          this.ctx.fillStyle = "#121b28";
           this.ctx.shadowBlur = 0;
         }
 
@@ -1327,67 +1253,70 @@ window.addEventListener('DOMContentLoaded', () => {
         this.ctx.shadowBlur = 0;
       });
 
-      // Bottom Bins
+      // Terminal Landing Bins
       this.bins.forEach(b => {
-        this.ctx.fillStyle = b.highlight > 0 ? `rgba(0, 255, 136, ${b.highlight * 0.35})` : "#070c14";
+        this.ctx.fillStyle = b.highlight > 0 ? `rgba(0, 255, 102, ${b.highlight * 0.3})` : "#040910";
         this.ctx.fillRect(b.x, b.y, b.w, b.h);
-        this.ctx.strokeStyle = b.mult >= 2.0 ? "#ffd000" : "#1a2536";
+        this.ctx.strokeStyle = b.mult >= 2.0 ? "#ffb700" : "#142030";
         this.ctx.strokeRect(b.x, b.y, b.w, b.h);
 
-        this.ctx.fillStyle = b.mult >= 2.0 ? "#ffd000" : "#64748b";
-        this.ctx.font = "bold 13px monospace";
+        this.ctx.fillStyle = b.mult >= 2.0 ? "#ffb700" : "#576574";
+        this.ctx.font = "bold 12px monospace";
         this.ctx.textAlign = "center";
-        this.ctx.fillText(`${b.mult.toFixed(1)}x`, b.x + b.w / 2, b.y + 35);
+        this.ctx.fillText(`${b.mult.toFixed(1)}x`, b.x + b.w / 2, b.y + 32);
       });
 
-      // Payloads & Motion Trails
-      this.balls.forEach(b => {
+      // Data Payloads
+      this.payloads.forEach(p => {
+        // Trail
         this.ctx.beginPath();
-        for (let i = 0; i < b.trail.length; i++) {
-          const pt = b.trail[i];
+        for (let i = 0; i < p.trail.length; i++) {
+          const pt = p.trail[i];
           if (i === 0) this.ctx.moveTo(pt.x, pt.y);
           else this.ctx.lineTo(pt.x, pt.y);
         }
-        this.ctx.strokeStyle = "rgba(0, 229, 255, 0.45)";
+        this.ctx.strokeStyle = "rgba(0, 240, 255, 0.4)";
         this.ctx.lineWidth = 2;
         this.ctx.stroke();
 
+        // Sphere
         this.ctx.beginPath();
-        this.ctx.arc(b.x, b.y, b.radius, 0, Math.PI * 2);
+        this.ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
         this.ctx.fillStyle = "#fff";
-        this.ctx.shadowColor = "#00e5ff";
+        this.ctx.shadowColor = "#00f0ff";
         this.ctx.shadowBlur = 10;
         this.ctx.fill();
         this.ctx.shadowBlur = 0;
 
-        // Floating Chips / Mult above payload
+        // Diagnostic readout tags floating over payload
         this.ctx.font = "bold 9px monospace";
         this.ctx.textAlign = "center";
-        this.ctx.fillStyle = "#00e5ff";
-        this.ctx.fillText(`${b.chips}`, b.x, b.y - 14);
-        this.ctx.fillStyle = "#ff2a5f";
-        this.ctx.fillText(`${b.mult.toFixed(1)}x`, b.x, b.y - 5);
+        this.ctx.fillStyle = "#00f0ff";
+        this.ctx.fillText(`${p.packets}`, p.x, p.y - 14);
+        this.ctx.fillStyle = "#ff0055";
+        this.ctx.fillText(`${p.amp.toFixed(1)}x`, p.x, p.y - 5);
       });
 
-      // Floating Score Tags
-      this.popups.forEach(p => {
-        this.ctx.fillStyle = p.color;
-        this.ctx.globalAlpha = p.life;
+      // Floating Evaluation Popups
+      this.popups.forEach(pop => {
+        this.ctx.fillStyle = pop.color;
+        this.ctx.globalAlpha = pop.life;
         this.ctx.font = "bold 11px monospace";
         this.ctx.textAlign = "center";
-        this.ctx.fillText(p.text, p.x, p.y);
+        this.ctx.fillText(pop.text, pop.x, pop.y);
       });
       this.ctx.globalAlpha = 1.0;
 
-      // Drop Origin Marker
-      this.ctx.fillStyle = "#00e5ff";
+      // Injection Point Port
+      this.ctx.fillStyle = "#00f0ff";
       this.ctx.fillRect(this.launcherX - 10, 0, 20, 6);
 
       this.ctx.restore();
     }
   }
 
-  new GameEngine();
+  // Initialize the platform instance
+  new SystemEngine();
 });
 </script>
 </body>

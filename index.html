@@ -3,19 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dead Drop: Hyper-Grid Protocol</title>
+  <title>Dead Drop: Hyper-Grid Overhaul</title>
   <style>
     :root {
-      --bg: #05070b;
-      --panel: #0d121d;
-      --panel-border: #1a2336;
+      --bg: #04060a;
+      --panel: #0b1019;
+      --panel-border: #1b263b;
       --accent-blue: #00e5ff;
       --accent-gold: #ffd000;
       --accent-red: #ff2a5f;
       --accent-green: #00ff88;
       --accent-purple: #bd34fe;
-      --text-main: #e2e8f0;
-      --text-dim: #64748b;
+      --foil: linear-gradient(135deg, #00e5ff, #bd34fe, #ffd000);
+      --holo: #ff2a5f;
+      --poly: linear-gradient(90deg, #ff2a5f, #ffd000, #00ff88, #00e5ff, #bd34fe);
+      --text-main: #f0f6fc;
+      --text-dim: #768390;
     }
 
     * {
@@ -26,10 +29,10 @@
 
     body {
       margin: 0;
-      padding: 16px;
+      padding: 14px;
       background-color: var(--bg);
       color: var(--text-main);
-      font-family: 'JetBrains Mono', 'Consolas', monospace;
+      font-family: 'Consolas', 'Courier New', monospace;
       display: flex;
       justify-content: center;
       align-items: flex-start;
@@ -39,14 +42,14 @@
 
     #app {
       display: grid;
-      grid-template-columns: 600px 320px;
-      gap: 16px;
-      max-width: 940px;
+      grid-template-columns: 620px 330px;
+      gap: 14px;
+      max-width: 980px;
       width: 100%;
       position: relative;
     }
 
-    /* Left Column: Canvas + Controls */
+    /* Left Stage */
     #stage-panel {
       display: flex;
       flex-direction: column;
@@ -59,35 +62,35 @@
       justify-content: space-between;
       align-items: baseline;
       padding-bottom: 4px;
-      border-bottom: 1px solid var(--panel-border);
+      border-bottom: 2px solid var(--panel-border);
     }
 
     .title {
-      font-size: 20px;
+      font-size: 22px;
       font-weight: 900;
       letter-spacing: 2px;
-      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-gold));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       text-transform: uppercase;
     }
 
-    .directive-tag {
+    .boss-directive {
       font-size: 11px;
+      font-weight: 800;
       color: var(--accent-red);
-      font-weight: 700;
       letter-spacing: 1px;
     }
 
     #canvas-wrap {
       position: relative;
-      width: 600px;
-      height: 680px;
-      background: #000;
+      width: 620px;
+      height: 690px;
+      background: #020305;
       border: 1px solid var(--panel-border);
-      border-radius: 6px;
+      border-radius: 8px;
       overflow: hidden;
-      box-shadow: 0 0 30px rgba(0,0,0,0.8);
+      box-shadow: 0 0 35px rgba(0,0,0,0.85);
     }
 
     canvas {
@@ -95,22 +98,11 @@
       cursor: crosshair;
     }
 
-    /* CRT Scanline Overlay */
-    #canvas-wrap::after {
-      content: " ";
-      position: absolute;
-      top: 0; left: 0; bottom: 0; right: 0;
-      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
-      background-size: 100% 4px;
-      pointer-events: none;
-      opacity: 0.6;
-    }
-
-    /* Right Column: Dash & Synergies */
+    /* Dashboard UI */
     #dash-panel {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 8px;
     }
 
     .panel-box {
@@ -118,25 +110,25 @@
       border: 1px solid var(--panel-border);
       border-radius: 6px;
       padding: 12px;
-      box-shadow: inset 0 0 8px rgba(0,0,0,0.5);
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.4);
     }
 
     .stat-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
 
     .stat-label {
       font-size: 11px;
       text-transform: uppercase;
       color: var(--text-dim);
-      letter-spacing: 1px;
+      font-weight: bold;
     }
 
     .stat-val {
-      font-size: 20px;
+      font-size: 18px;
       font-weight: 800;
     }
 
@@ -149,23 +141,22 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      background: rgba(0,0,0,0.4);
-      padding: 6px 10px;
-      border-radius: 4px;
-      border: 1px solid #161f30;
-      margin-top: 4px;
+      background: rgba(0,0,0,0.5);
+      padding: 8px 12px;
+      border-radius: 6px;
+      border: 1px solid var(--panel-border);
+      margin-top: 6px;
     }
 
-    .chips-box { color: var(--accent-blue); font-weight: 800; font-size: 16px; }
-    .mult-box { color: var(--accent-red); font-weight: 800; font-size: 16px; }
+    .chips-box { color: var(--accent-blue); font-weight: 900; font-size: 18px; }
+    .mult-box { color: var(--accent-red); font-weight: 900; font-size: 18px; }
 
-    /* Inventory Trays */
     .section-title {
       font-size: 10px;
       font-weight: 800;
       color: var(--text-dim);
       text-transform: uppercase;
-      letter-spacing: 1.5px;
+      letter-spacing: 1px;
       margin-bottom: 6px;
       display: flex;
       justify-content: space-between;
@@ -175,17 +166,16 @@
       display: flex;
       flex-direction: column;
       gap: 6px;
-      min-height: 50px;
     }
 
     .core-card {
-      background: #090d14;
-      border: 1px solid #202b3d;
-      border-radius: 4px;
-      padding: 8px;
+      background: #070a0f;
+      border: 1px solid #1a2538;
+      border-radius: 5px;
+      padding: 8px 10px;
       position: relative;
       cursor: pointer;
-      transition: all 0.15s ease;
+      transition: all 0.15s;
     }
 
     .core-card:hover {
@@ -193,85 +183,118 @@
       transform: translateX(2px);
     }
 
-    .core-card.rarity-uncommon { border-left: 3px solid var(--accent-green); }
-    .core-card.rarity-rare { border-left: 3px solid var(--accent-blue); }
-    .core-card.rarity-exotic { border-left: 3px solid var(--accent-purple); }
+    .core-edition-foil { box-shadow: 0 0 8px rgba(0, 229, 255, 0.5); border-color: var(--accent-blue); }
+    .core-edition-holo { box-shadow: 0 0 8px rgba(255, 42, 95, 0.5); border-color: var(--accent-red); }
+    .core-edition-poly { box-shadow: 0 0 10px rgba(189, 52, 254, 0.6); border-color: var(--accent-purple); }
 
-    .core-header {
-      display: flex;
-      justify-content: space-between;
-      font-size: 11px;
-      font-weight: bold;
+    .edition-tag {
+      font-size: 8px;
+      font-weight: 900;
+      text-transform: uppercase;
+      padding: 1px 4px;
+      border-radius: 3px;
+      margin-left: 4px;
     }
+    .tag-foil { background: var(--accent-blue); color: #000; }
+    .tag-holo { background: var(--accent-red); color: #fff; }
+    .tag-poly { background: var(--accent-purple); color: #fff; }
 
-    .core-desc {
-      font-size: 9.5px;
-      color: var(--text-dim);
-      margin-top: 4px;
-      line-height: 1.3;
-    }
-
-    /* Balatro-like Overlay Market */
+    /* Balatro Style Market & Booster Packs */
     #shop-overlay {
       position: absolute;
       top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(5, 7, 11, 0.96);
-      backdrop-filter: blur(4px);
-      z-index: 100;
-      border-radius: 6px;
-      border: 1px solid var(--accent-green);
+      background: rgba(3, 5, 8, 0.98);
+      z-index: 50;
+      border-radius: 8px;
+      border: 2px solid var(--accent-green);
       display: none;
       flex-direction: column;
-      padding: 18px;
-      box-shadow: 0 0 40px rgba(0, 255, 136, 0.2);
+      padding: 16px;
+      box-shadow: 0 0 45px rgba(0, 255, 136, 0.25);
     }
 
-    .shop-top {
+    .shop-header {
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid #1a2b22;
-      padding-bottom: 10px;
-      margin-bottom: 12px;
+      align-items: baseline;
+      border-bottom: 1px solid #1a2c22;
+      padding-bottom: 8px;
+      margin-bottom: 10px;
     }
 
-    .shop-shelf {
+    .shop-shelf-title {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin: 6px 0;
+    }
+
+    .market-row {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-      flex: 1;
-      overflow-y: auto;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .pack-row {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
       margin-bottom: 12px;
     }
 
-    .shop-item-card {
-      background: #0a0f16;
+    .shop-card, .pack-card {
+      background: #080d14;
       border: 1px solid var(--panel-border);
       border-radius: 6px;
       padding: 10px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      transition: border-color 0.2s;
+      transition: all 0.2s;
     }
 
-    .shop-item-card:hover {
-      border-color: var(--accent-blue);
+    .pack-card {
+      background: radial-gradient(circle at 50% 0%, #152238, #070c14);
+      border: 1px solid var(--accent-blue);
+      cursor: pointer;
+      text-align: center;
+      padding: 14px 10px;
     }
 
-    .shop-btn-row {
+    .pack-card:hover:not(.sold) {
+      transform: translateY(-2px);
+      box-shadow: 0 0 16px rgba(0, 229, 255, 0.35);
+      border-color: #fff;
+    }
+
+    .pack-card.spectral {
+      border-color: var(--accent-purple);
+      background: radial-gradient(circle at 50% 0%, #2f143d, #070c14);
+    }
+
+    .pack-card.sold, .shop-card.sold {
+      opacity: 0.3;
+      pointer-events: none;
+      filter: grayscale(1);
+    }
+
+    .shop-controls {
       display: flex;
-      gap: 10px;
+      gap: 8px;
+      margin-top: auto;
     }
 
     button {
-      background: #13271f;
+      background: #11281d;
       color: var(--accent-green);
       border: 1px solid var(--accent-green);
-      padding: 10px 16px;
+      padding: 10px 14px;
       font-family: inherit;
-      font-weight: bold;
-      font-size: 12px;
+      font-weight: 800;
+      font-size: 11px;
       border-radius: 4px;
       cursor: pointer;
       transition: all 0.15s;
@@ -291,91 +314,132 @@
     }
 
     .btn-reroll {
-      background: #181d2a;
+      background: #141c2b;
       border-color: var(--accent-blue);
       color: var(--accent-blue);
     }
     .btn-reroll:hover:not(:disabled) {
       background: var(--accent-blue);
       color: #000;
-      box-shadow: 0 0 12px rgba(0,229,255,0.4);
     }
 
-    .badge-pill {
-      font-size: 8px;
-      padding: 2px 5px;
-      border-radius: 3px;
-      text-transform: uppercase;
-      font-weight: 800;
+    /* Booster Pack Opening Overlay */
+    #pack-opening-modal {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(2, 3, 5, 0.98);
+      z-index: 100;
+      border-radius: 8px;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
     }
-    .pill-core { background: #12213a; color: var(--accent-blue); }
-    .pill-hack { background: #26173a; color: var(--accent-purple); }
-    .pill-boost { background: #1a2e1d; color: var(--accent-green); }
+
+    #pack-options {
+      display: flex;
+      gap: 16px;
+      margin: 20px 0;
+    }
+
+    .pack-choice-card {
+      width: 160px;
+      min-height: 220px;
+      background: #080d15;
+      border: 2px solid var(--accent-blue);
+      border-radius: 6px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      cursor: pointer;
+      box-shadow: 0 0 20px rgba(0, 229, 255, 0.2);
+      transition: all 0.2s;
+    }
+
+    .pack-choice-card:hover {
+      transform: translateY(-6px) scale(1.03);
+      border-color: #fff;
+      box-shadow: 0 0 25px rgba(0, 229, 255, 0.5);
+    }
   </style>
 </head>
 <body>
 
 <div id="app">
-  <!-- Left Side: Board & Action -->
+  <!-- Left Side: Physics Canvas & Boss Directive -->
   <div id="stage-panel">
     <div id="header-bar">
-      <div class="title">Dead Drop // Protocol</div>
-      <div class="directive-tag" id="directive-display">DIRECTIVE: REGULAR CYCLE</div>
+      <div class="title">Dead Drop // Overhaul</div>
+      <div class="boss-directive" id="boss-directive">DIRECTIVE: ALL SYSTEMS NORMAL</div>
     </div>
 
     <div id="canvas-wrap">
-      <canvas id="stage" width="600" height="680"></canvas>
+      <canvas id="stage" width="620" height="690"></canvas>
 
       <!-- Shop Overlay -->
       <div id="shop-overlay">
-        <div class="shop-top">
+        <div class="shop-header">
           <div>
-            <div style="font-size: 18px; font-weight: 900; color: var(--accent-green); letter-spacing: 1px;">SUPPLY NODE // BLACK MARKET</div>
-            <div style="font-size: 10px; color: var(--text-dim);">INSTALL CYBERNETIC CORES, HACKS & MULTIPLIERS</div>
+            <div style="font-size: 18px; font-weight: 900; color: var(--accent-green); letter-spacing: 1px;">THE BLACK MARKET</div>
+            <div style="font-size: 10px; color: var(--text-dim);">PURCHASE PASSIVES, OPEN BOOSTER CACHES, REROLL ODDS</div>
           </div>
           <div style="text-align: right;">
-            <div style="font-size: 9px; color: var(--text-dim);">LIQUID ASSETS</div>
+            <div style="font-size: 9px; color: var(--text-dim);">CREDITS</div>
             <div style="font-size: 22px; font-weight: 900; color: var(--accent-gold);" id="shop-credits">$0</div>
           </div>
         </div>
 
-        <div class="shop-shelf" id="shop-items"></div>
+        <div class="shop-shelf-title">BOOSTER PACKS (SELECT 1 OF CHOICES)</div>
+        <div class="pack-row" id="shop-packs"></div>
 
-        <div class="shop-btn-row">
-          <button class="btn-reroll" id="btn-reroll">RE-ROLL MARKET ($3)</button>
-          <button style="flex: 1;" id="btn-next-sector">COMMENCE NEXT DIRECTIVE</button>
+        <div class="shop-shelf-title">INDIVIDUAL INVENTORY & DIRECTIVES</div>
+        <div class="market-row" id="shop-items"></div>
+
+        <div class="shop-controls">
+          <button class="btn-reroll" id="btn-reroll">REROLL MARKET ($4)</button>
+          <button style="flex: 1;" id="btn-next-sector">COMMENCE NEXT DROP RUN</button>
         </div>
+      </div>
+
+      <!-- Booster Pack Opening Modal -->
+      <div id="pack-opening-modal">
+        <div style="font-size: 18px; font-weight: 900; color: var(--accent-blue);" id="pack-title">CYBER PACK</div>
+        <div style="font-size: 11px; color: var(--text-dim);">SELECT 1 OPTION TO INTEGRATE PERMANENTLY</div>
+        <div id="pack-options"></div>
+        <button id="btn-skip-pack" style="border-color: var(--accent-red); color: var(--accent-red); background: transparent;">SKIP CACHE</button>
       </div>
     </div>
   </div>
 
-  <!-- Right Side: System Monitor & Build -->
+  <!-- Right Side: Build, Stats & Synergies -->
   <div id="dash-panel">
     <div class="panel-box">
       <div class="stat-row">
-        <span class="stat-label">Sector Tier</span>
-        <span class="stat-val" id="ui-sector">1</span>
+        <span class="stat-label">Sector Blind</span>
+        <span class="stat-val" id="ui-sector">1 / Small Blind</span>
       </div>
       <div class="stat-row">
-        <span class="stat-label">Quota Requirement</span>
-        <span class="stat-val score-target" id="ui-quota">1,200</span>
+        <span class="stat-label">Score Goal</span>
+        <span class="stat-val score-target" id="ui-quota">800</span>
       </div>
       <div class="stat-row">
-        <span class="stat-label">Banked Score</span>
+        <span class="stat-label">Current Bank</span>
         <span class="stat-val" id="ui-score">0</span>
       </div>
       <div class="stat-row">
-        <span class="stat-label">Deployments Left</span>
+        <span class="stat-label">Deployments</span>
         <span class="stat-val" style="color: var(--accent-blue);" id="ui-drops">4</span>
       </div>
-      <div class="stat-row" style="margin-bottom: 0;">
-        <span class="stat-label">Credits</span>
-        <span class="stat-val" style="color: var(--accent-gold);" id="ui-credits">$4</span>
+      <div class="stat-row">
+        <span class="stat-label">Wallet</span>
+        <span class="stat-val" style="color: var(--accent-gold);" id="ui-credits">$6</span>
       </div>
 
       <div class="chips-mult-display">
-        <div style="flex:1;">
-          <div style="font-size: 8px; color: var(--text-dim);">LAST DROP EVALUATION</div>
+        <div style="flex: 1;">
+          <div style="font-size: 8px; color: var(--text-dim); text-transform: uppercase;">Previous Drop Analysis</div>
           <span class="chips-box" id="ui-last-chips">0 CHIPS</span>
           <span style="color: var(--text-dim); margin: 0 4px;">&times;</span>
           <span class="mult-box" id="ui-last-mult">0.0x</span>
@@ -395,7 +459,7 @@
     <!-- Tactical Consumables -->
     <div class="panel-box">
       <div class="section-title">
-        <span>Overclock Directives</span>
+        <span>Consumable Hacks</span>
         <span id="ui-overclock-count">0 / 2</span>
       </div>
       <div id="consumables-tray"></div>
@@ -405,104 +469,97 @@
 
 <script>
 window.addEventListener('DOMContentLoaded', () => {
+
   // ==========================================
-  // ITEM & SYNERGY POOL ARCHITECTURE
+  // BALATRO STYLE EDITIONS & CORE DEFINITIONS
   // ==========================================
-  const RARITY = {
-    COMMON: 'rarity-common',
-    UNCOMMON: 'rarity-uncommon',
-    RARE: 'rarity-rare',
-    EXOTIC: 'rarity-exotic'
+  const EDITIONS = {
+    BASE: { id: 'base', name: '', chips: 0, mult: 0, xmult: 1.0 },
+    FOIL: { id: 'foil', name: 'Foil', chips: 50, mult: 0, xmult: 1.0, class: 'core-edition-foil', tagClass: 'tag-foil' },
+    HOLO: { id: 'holo', name: 'Holographic', chips: 0, mult: 10, xmult: 1.0, class: 'core-edition-holo', tagClass: 'tag-holo' },
+    POLY: { id: 'poly', name: 'Polychrome', chips: 0, mult: 0, xmult: 1.5, class: 'core-edition-poly', tagClass: 'tag-poly' }
   };
 
   const CORE_DATABASE = [
     {
-      id: "hyper_threader",
-      name: "Hyper-Threader",
-      rarity: RARITY.COMMON,
+      id: "grid_runner",
+      name: "Grid Runner",
       cost: 4,
-      desc: "+20 Base Chips for every peg hit.",
+      desc: "+18 Base Chips per bounce.",
       onBounce: (ball, peg, engine) => {
-        ball.chips += 20;
-        engine.createPopup(peg.x, peg.y - 8, "+20", "#00e5ff");
+        ball.chips += 18;
       }
     },
     {
-      id: "flux_capacitor",
-      name: "Flux Multiplier",
-      rarity: RARITY.COMMON,
+      id: "flux_accumulator",
+      name: "Flux Accelerator",
       cost: 5,
-      desc: "+0.15x Multiplier for every bounce.",
+      desc: "+0.15x Multiplier per bounce.",
       onBounce: (ball, peg, engine) => {
         ball.mult += 0.15;
       }
     },
     {
-      id: "chain_reaction",
-      name: "Resonance Cascade",
-      rarity: RARITY.UNCOMMON,
-      cost: 7,
-      desc: "Every 5th peg hit triggers an ionization shockwave that collects nearby pegs.",
-      onBounce: (ball, peg, engine) => {
-        if (ball.bounces % 5 === 0) {
-          engine.triggerShockwave(peg.x, peg.y, 75, (affectedPeg) => {
-            ball.chips += 15;
-            ball.mult += 0.05;
-          });
-        }
-      }
-    },
-    {
-      id: "critical_path",
-      name: "Critical Point",
-      rarity: RARITY.UNCOMMON,
+      id: "high_roller",
+      name: "Lucky Roller",
       cost: 6,
-      desc: "25% chance for a peg hit to yield +1.5x Multiplier instead of standard.",
+      desc: "20% chance on peg hit to add +5.0x Multiplier.",
       onBounce: (ball, peg, engine) => {
-        if (Math.random() < 0.25) {
-          ball.mult += 1.5;
-          engine.createPopup(peg.x, peg.y - 10, "+1.5x CRIT!", "#ffd000");
+        if (Math.random() < 0.2) {
+          ball.mult += 5.0;
+          engine.createPopup(ball.x, ball.y - 10, "LUCKY! +5.0x", "#ffd000");
           engine.screenShake = 3;
         }
       }
     },
     {
-      id: "singularity_seed",
-      name: "Fission Engine",
-      rarity: RARITY.RARE,
+      id: "chain_fission",
+      name: "Fission Reaction",
       cost: 8,
-      desc: "First time hitting a Golden Peg, duplicates into a synchronized twin ball.",
+      desc: "First time hitting a Flux peg, duplicates into 2 balls.",
       onBounce: (ball, peg, engine) => {
-        if (!ball.hasSplit && peg.type === 'gold') {
+        if (!ball.hasSplit && peg.type === 'flux') {
           ball.hasSplit = true;
-          engine.spawnBall(ball.x, ball.y, ball.chips * 0.5, ball.mult, true);
-          engine.createPopup(ball.x, ball.y - 12, "SPLIT PROTOCOL", "#bd34fe");
+          engine.spawnBall(ball.x, ball.y, ball.chips * 0.6, ball.mult, true);
+          engine.createPopup(ball.x, ball.y - 12, "SPLIT!", "#bd34fe");
         }
       }
     },
     {
-      id: "quantum_tunnel",
-      name: "Chrono Harvester",
-      rarity: RARITY.RARE,
-      cost: 9,
-      desc: "Bin multipliers grow by +0.1x permanently whenever a drop scores over 800.",
-      onDropEnd: (score, engine) => {
-        if (score >= 800) {
-          engine.bins.forEach(b => b.mult += 0.1);
-          engine.createPopup(300, 600, "BINS UPGRADED!", "#00ff88");
-        }
-      }
-    },
-    {
-      id: "ouroboros",
-      name: "Ouroboros Void",
-      rarity: RARITY.EXOTIC,
-      cost: 12,
-      desc: "X2 Multiplier upon drop landing if it sustained over 18 bounces.",
+      id: "golden_ratio",
+      name: "Golden Ratio",
+      cost: 7,
+      desc: "If ball scores over 15 bounces, grants +$2 instant Cash.",
       onLand: (ball, bin, engine) => {
-        if (ball.bounces >= 18) {
-          ball.mult *= 2.0;
-          engine.createPopup(bin.x + bin.w/2, bin.y - 20, "x2.0 OUROBOROS!", "#ff2a5f");
+        if (ball.bounces >= 15) {
+          engine.credits += 2;
+          engine.createPopup(bin.x + bin.w/2, bin.y - 20, "+$2 BONUS", "#ffd000");
+        }
+      }
+    },
+    {
+      id: "super_nova",
+      name: "Supernova Matrix",
+      cost: 9,
+      desc: "Every 6th bounce explodes in a shockwave activating all pegs in range.",
+      onBounce: (ball, peg, engine) => {
+        if (ball.bounces % 6 === 0) {
+          engine.triggerShockwave(ball.x, ball.y, 80, (affectedPeg) => {
+            ball.chips += 12;
+            ball.mult += 0.1;
+          });
+        }
+      }
+    },
+    {
+      id: "the_duo",
+      name: "The Duo",
+      cost: 8,
+      desc: "X1.5 Multiplier if you have at least 2 other installed cores.",
+      onLand: (ball, bin, engine) => {
+        if (engine.activeCores.length >= 3) {
+          ball.mult *= 1.5;
+          engine.createPopup(bin.x + bin.w/2, bin.y - 25, "X1.5 DUO", "#ff2a5f");
         }
       }
     }
@@ -510,74 +567,128 @@ window.addEventListener('DOMContentLoaded', () => {
 
   const CONSUMABLE_DATABASE = [
     {
-      id: "overcharge_pack",
-      name: "Plasma Injector",
+      id: "plasma_charge",
+      name: "Plasma Infusion",
       cost: 3,
-      desc: "Permanently supercharges 6 random pegs into Neon Pegs (Triple Chips).",
+      desc: "Transforms 6 random pegs into Neon Pegs (+35 Chips).",
       use: (engine) => engine.mutatePegs('neon', 6)
     },
     {
-      id: "sub_zero",
-      name: "Cryo Damper",
+      id: "flux_overload",
+      name: "Flux Splicer",
       cost: 4,
-      desc: "Slows gravity by 30% for the next 3 drops, granting immense airtime.",
-      use: (engine) => { engine.gravityMod = 0.7; engine.gravityTimer = 3; }
+      desc: "Transforms 4 random pegs into Flux Pegs (+0.4x Mult).",
+      use: (engine) => engine.mutatePegs('flux', 4)
     },
     {
-      id: "speculation",
-      name: "Venture Hack",
-      cost: 2,
-      desc: "Gain +$2 immediate credits for each unused core slot.",
-      use: (engine) => {
-        const freeSlots = 5 - engine.activeCores.length;
-        engine.credits += freeSlots * 2;
-        engine.updateUI();
-      }
+      id: "black_hole",
+      name: "Vortex Seed",
+      cost: 4,
+      desc: "Spawns a persistent gravity vortex peg on the board.",
+      use: (engine) => engine.spawnVortex()
+    },
+    {
+      id: "market_index",
+      name: "Venture Injection",
+      cost: 3,
+      desc: "Instantly awards +$8 Cash.",
+      use: (engine) => { engine.credits += 8; }
     }
   ];
 
+  const PACK_TYPES = [
+    {
+      id: "standard_pack",
+      name: "Standard Core Cache",
+      cost: 4,
+      class: "standard",
+      desc: "Choose 1 of 3 Passive Core Modules.",
+      generate: () => getRandomItems(CORE_DATABASE, 3, true)
+    },
+    {
+      id: "celestial_pack",
+      name: "Celestial Boost Pack",
+      cost: 5,
+      class: "celestial",
+      desc: "Choose 1 of 3 Board & Tactical Hacks.",
+      generate: () => getRandomItems(CONSUMABLE_DATABASE, 3, false)
+    },
+    {
+      id: "spectral_pack",
+      name: "Spectral Anomaly Cache",
+      cost: 7,
+      class: "spectral",
+      desc: "High risk/reward: Rare Editions and Exotic Cores.",
+      generate: () => getRandomItems(CORE_DATABASE, 3, true, true)
+    }
+  ];
+
+  function rollEdition(guaranteedRare = false) {
+    const roll = Math.random();
+    if (guaranteedRare) {
+      return roll < 0.5 ? EDITIONS.POLY : EDITIONS.HOLO;
+    }
+    if (roll < 0.12) return EDITIONS.FOIL;
+    if (roll < 0.06) return EDITIONS.HOLO;
+    if (roll < 0.02) return EDITIONS.POLY;
+    return EDITIONS.BASE;
+  }
+
+  function getRandomItems(pool, count, applyEditions = false, forceHighRarity = false) {
+    const shuffled = [...pool].sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, count).map(item => {
+      const clone = { ...item };
+      if (applyEditions) {
+        clone.edition = rollEdition(forceHighRarity);
+      }
+      return clone;
+    });
+  }
+
   // ==========================================
-  // MAIN ENGINE CLASS
+  // GAME ENGINE
   // ==========================================
   class GameEngine {
     constructor() {
       this.canvas = document.getElementById("stage");
       this.ctx = this.canvas.getContext("2d");
 
-      // Game Loop States
-      this.sector = 1;
-      this.quota = 1000;
+      // Progression States
+      this.ante = 1;
+      this.blindIndex = 0; // 0: Small, 1: Big, 2: Boss
+      this.quota = 800;
       this.score = 0;
       this.maxDrops = 4;
       this.dropsLeft = 4;
       this.credits = 8;
-      this.rerollCost = 3;
+      this.rerollCost = 4;
 
-      // Drop Statistics
       this.lastChips = 0;
       this.lastMult = 0;
 
-      // Modifiers & Synergy Stacks
-      this.gravity = 0.24;
-      this.gravityMod = 1.0;
-      this.gravityTimer = 0;
+      // Boss Constraints
+      this.currentBoss = null;
+      this.bossPool = [
+        { name: "DIRECTIVE: THE WALL", desc: "Extreme Quota Requirement.", applyQuota: (q) => q * 1.8 },
+        { name: "DIRECTIVE: ZERO-FLUX", desc: "Landing multipliers weakened by 30%.", applyBins: (bins) => bins.forEach(b => b.mult *= 0.7) },
+        { name: "DIRECTIVE: GRAVITY SINK", desc: "Heavy gravity pulls payloads rapidly downward.", gravityMod: 1.6 }
+      ];
+
+      // Board Elements
       this.activeCores = [];
       this.consumables = [];
-      this.shopInventory = [];
-
-      // Physics World
       this.pegs = [];
       this.bins = [];
       this.balls = [];
-      this.particles = [];
       this.popups = [];
       this.shockwaves = [];
+      this.vortexes = [];
 
       this.launcherX = this.canvas.width / 2;
       this.screenShake = 0;
 
       this.initBoard();
-      this.attachEvents();
+      this.initEvents();
       this.updateUI();
 
       requestAnimationFrame(() => this.loop());
@@ -586,16 +697,16 @@ window.addEventListener('DOMContentLoaded', () => {
     initBoard() {
       this.pegs = [];
       this.bins = [];
+      this.vortexes = [];
 
       const rows = 11;
       const spacingY = 36;
       const startY = 120;
 
-      // Procedural peg layout with responsive types
       for (let r = 0; r < rows; r++) {
         const isOffset = r % 2 === 1;
         const cols = isOffset ? 12 : 11;
-        const spacingX = 44;
+        const spacingX = 46;
         const startX = (this.canvas.width - ((cols - 1) * spacingX)) / 2;
 
         for (let c = 0; c < cols; c++) {
@@ -610,39 +721,52 @@ window.addEventListener('DOMContentLoaded', () => {
             x: startX + c * spacingX,
             y: startY + r * spacingY,
             radius: type === 'bumper' ? 7 : 5,
-            baseRadius: type === 'bumper' ? 7 : 5,
             pulse: 0,
             type: type
           });
         }
       }
 
-      // Balatro-like high-risk edges, stable-center bins
-      const binDist = [3.0, 1.8, 1.2, 0.8, 1.2, 1.8, 3.0];
-      const binWidth = this.canvas.width / binDist.length;
+      // Dynamic edge multiplier bins
+      const multipliers = [3.2, 1.8, 1.2, 0.8, 1.2, 1.8, 3.2];
+      const binWidth = this.canvas.width / multipliers.length;
 
-      for (let i = 0; i < binDist.length; i++) {
+      for (let i = 0; i < multipliers.length; i++) {
         this.bins.push({
           x: i * binWidth,
-          y: 620,
+          y: 630,
           w: binWidth,
           h: 60,
-          mult: binDist[i],
+          mult: multipliers[i],
           highlight: 0
         });
+      }
+
+      // Check Boss Modifiers
+      if (this.blindIndex === 2 && this.currentBoss && this.currentBoss.applyBins) {
+        this.currentBoss.applyBins(this.bins);
       }
     }
 
     mutatePegs(type, count) {
-      const candidates = this.pegs.filter(p => p.type === 'standard');
-      for (let i = 0; i < count && candidates.length > 0; i++) {
-        const idx = Math.floor(Math.random() * candidates.length);
-        candidates[idx].type = type;
-        candidates.splice(idx, 1);
+      const standardPegs = this.pegs.filter(p => p.type === 'standard');
+      for (let i = 0; i < count && standardPegs.length > 0; i++) {
+        const idx = Math.floor(Math.random() * standardPegs.length);
+        standardPegs[idx].type = type;
+        standardPegs.splice(idx, 1);
       }
     }
 
-    attachEvents() {
+    spawnVortex() {
+      this.vortexes.push({
+        x: this.canvas.width / 2 + (Math.random() - 0.5) * 200,
+        y: 280 + (Math.random() - 0.5) * 100,
+        radius: 20,
+        power: 0.8
+      });
+    }
+
+    initEvents() {
       this.canvas.addEventListener("mousemove", (e) => {
         const bounds = this.canvas.getBoundingClientRect();
         const factor = this.canvas.width / bounds.width;
@@ -660,26 +784,43 @@ window.addEventListener('DOMContentLoaded', () => {
       document.getElementById("btn-reroll").addEventListener("click", () => {
         if (this.credits >= this.rerollCost) {
           this.credits -= this.rerollCost;
-          this.generateShop();
+          this.generateShopInventory();
           this.renderShop();
           this.updateUI();
         }
       });
 
       document.getElementById("btn-next-sector").addEventListener("click", () => {
-        this.advanceSector();
+        this.advanceBlind();
+      });
+
+      document.getElementById("btn-skip-pack").addEventListener("click", () => {
+        document.getElementById("pack-opening-modal").style.display = "none";
       });
     }
 
     spawnBall(x, y, initialChips, initialMult, isSub) {
+      // Calculate editions on active cores
+      let bonusChips = 0;
+      let bonusMult = 0;
+      let xmultProduct = 1.0;
+
+      this.activeCores.forEach(c => {
+        if (c.edition) {
+          bonusChips += c.edition.chips;
+          bonusMult += c.edition.mult;
+          xmultProduct *= c.edition.xmult;
+        }
+      });
+
       this.balls.push({
         x: x,
         y: y,
-        vx: (Math.random() - 0.5) * 3,
+        vx: (Math.random() - 0.5) * 3.5,
         vy: 1.5 + Math.random(),
         radius: 6,
-        chips: initialChips,
-        mult: initialMult,
+        chips: initialChips + bonusChips,
+        mult: (initialMult + bonusMult) * xmultProduct,
         bounces: 0,
         hasSplit: isSub,
         trail: [],
@@ -688,15 +829,13 @@ window.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    triggerShockwave(x, y, radius, onHitCallback) {
-      this.shockwaves.push({ x, y, radius, currentRadius: 0, life: 1.0 });
+    triggerShockwave(x, y, radius, onHit) {
+      this.shockwaves.push({ x, y, radius, curRadius: 0, life: 1.0 });
       this.screenShake = 4;
-
       this.pegs.forEach(peg => {
-        const d = Math.hypot(peg.x - x, peg.y - y);
-        if (d <= radius) {
+        if (Math.hypot(peg.x - x, peg.y - y) <= radius) {
           peg.pulse = 1.0;
-          if (onHitCallback) onHitCallback(peg);
+          if (onHit) onHit(peg);
         }
       });
     }
@@ -706,7 +845,7 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
     // ==========================================
-    // GAME CYCLE & EVALUATION
+    // PHYSICS LOOP & UPDATE
     // ==========================================
     loop() {
       this.update();
@@ -715,9 +854,9 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
     update() {
-      if (this.screenShake > 0) this.screenShake *= 0.86;
+      if (this.screenShake > 0) this.screenShake *= 0.88;
 
-      // Update Popups
+      // Popups
       for (let i = this.popups.length - 1; i >= 0; i--) {
         const p = this.popups[i];
         p.y -= 0.8;
@@ -725,37 +864,50 @@ window.addEventListener('DOMContentLoaded', () => {
         if (p.life <= 0) this.popups.splice(i, 1);
       }
 
-      // Update Shockwaves
+      // Shockwaves
       for (let i = this.shockwaves.length - 1; i >= 0; i--) {
-        const sw = this.shockwaves[i];
-        sw.currentRadius += (sw.radius - sw.currentRadius) * 0.2;
-        sw.life -= 0.05;
-        if (sw.life <= 0) this.shockwaves.splice(i, 1);
+        const s = this.shockwaves[i];
+        s.curRadius += (s.radius - s.curRadius) * 0.22;
+        s.life -= 0.05;
+        if (s.life <= 0) this.shockwaves.splice(i, 1);
       }
 
-      // Decay peg pulses
-      this.pegs.forEach(p => { if (p.pulse > 0) p.pulse -= 0.03; });
-      this.bins.forEach(b => { if (b.highlight > 0) b.highlight -= 0.04; });
+      this.pegs.forEach(p => { if (p.pulse > 0) p.pulse -= 0.04; });
+      this.bins.forEach(b => { if (b.highlight > 0) b.highlight -= 0.05; });
 
-      // Physics Pipeline for Balls
-      const activeGravity = this.gravity * (this.gravityTimer > 0 ? this.gravityMod : 1.0);
+      let baseGravity = 0.24;
+      if (this.blindIndex === 2 && this.currentBoss && this.currentBoss.gravityMod) {
+        baseGravity *= this.currentBoss.gravityMod;
+      }
 
+      // Ball Update Loop
       for (let i = this.balls.length - 1; i >= 0; i--) {
         const b = this.balls[i];
 
         b.trail.push({ x: b.x, y: b.y });
-        if (b.trail.length > 8) b.trail.shift();
+        if (b.trail.length > 7) b.trail.shift();
 
-        b.vy += activeGravity;
+        // Vortex pulling
+        this.vortexes.forEach(v => {
+          const dx = v.x - b.x;
+          const dy = v.y - b.y;
+          const dist = Math.hypot(dx, dy);
+          if (dist < 120) {
+            b.vx += (dx / dist) * v.power;
+            b.vy += (dy / dist) * v.power;
+          }
+        });
+
+        b.vy += baseGravity;
         b.x += b.vx;
         b.y += b.vy;
 
-        // Anti-Trap Mechanism
-        if (Math.abs(b.y - b.lastY) < 0.5) {
+        // Anti-Stuck Check
+        if (Math.abs(b.y - b.lastY) < 0.6) {
           b.stuckFrames++;
           if (b.stuckFrames > 25) {
             b.vx += (Math.random() - 0.5) * 4;
-            b.vy += 2.0;
+            b.vy += 2.2;
             b.stuckFrames = 0;
           }
         } else {
@@ -766,13 +918,13 @@ window.addEventListener('DOMContentLoaded', () => {
         // Wall Boundaries
         if (b.x - b.radius < 0) {
           b.x = b.radius;
-          b.vx = Math.abs(b.vx) * 0.75;
+          b.vx = Math.abs(b.vx) * 0.8;
         } else if (b.x + b.radius > this.canvas.width) {
           b.x = this.canvas.width - b.radius;
-          b.vx = -Math.abs(b.vx) * 0.75;
+          b.vx = -Math.abs(b.vx) * 0.8;
         }
 
-        // Peg Collisions
+        // Peg Physics
         for (let p of this.pegs) {
           const dx = b.x - p.x;
           const dy = b.y - p.y;
@@ -780,29 +932,27 @@ window.addEventListener('DOMContentLoaded', () => {
 
           if (dist < b.radius + p.radius) {
             const angle = Math.atan2(dy, dx);
-            let restitution = p.type === 'bumper' ? 1.4 : 0.85;
-            let speed = Math.max(Math.hypot(b.vx, b.vy) * restitution, 3.2);
+            const bouncePower = p.type === 'bumper' ? 1.5 : 0.86;
+            const speed = Math.max(Math.hypot(b.vx, b.vy) * bouncePower, 3.2);
 
             b.vx = Math.cos(angle) * speed;
             b.vy = Math.sin(angle) * speed;
 
-            b.x = p.x + Math.cos(angle) * (b.radius + p.radius + 1);
-            b.y = p.y + Math.sin(angle) * (b.radius + p.radius + 1);
+            b.x = p.x + Math.cos(angle) * (b.radius + p.radius + 1.2);
+            b.y = p.y + Math.sin(angle) * (b.radius + p.radius + 1.2);
 
             b.bounces++;
             p.pulse = 1.0;
 
-            // Intrinsic Peg Rewards
-            if (p.type === 'standard') b.chips += 8;
-            if (p.type === 'neon') b.chips += 24;
-            if (p.type === 'flux') b.mult += 0.2;
-            if (p.type === 'bumper') { b.chips += 15; b.mult += 0.1; }
+            if (p.type === 'standard') b.chips += 6;
+            if (p.type === 'neon') b.chips += 35;
+            if (p.type === 'flux') b.mult += 0.3;
+            if (p.type === 'bumper') { b.chips += 12; b.mult += 0.2; }
             if (p.type === 'gold') {
               this.credits += 1;
-              this.createPopup(p.x, p.y - 12, "+$1", "#ffd000");
+              this.createPopup(p.x, p.y - 10, "+$1", "#ffd000");
             }
 
-            // Execute Core Triggers
             for (let core of this.activeCores) {
               if (core.onBounce) core.onBounce(b, p, this);
             }
@@ -810,8 +960,8 @@ window.addEventListener('DOMContentLoaded', () => {
           }
         }
 
-        // Landing Zone Detection
-        if (b.y > 620) {
+        // Bottom Landings
+        if (b.y > 630) {
           let bin = this.bins.find(bin => b.x >= bin.x && b.x <= bin.x + bin.w) || this.bins[0];
           bin.highlight = 1.0;
           b.mult *= bin.mult;
@@ -820,140 +970,217 @@ window.addEventListener('DOMContentLoaded', () => {
             if (core.onLand) core.onLand(b, bin, this);
           }
 
-          const dropYield = Math.floor(b.chips * b.mult);
-          this.score += dropYield;
+          const dropScore = Math.floor(b.chips * b.mult);
+          this.score += dropScore;
           this.lastChips = b.chips;
           this.lastMult = b.mult;
 
-          this.createPopup(b.x, 600, `+${dropYield}`, "#00ff88");
+          this.createPopup(b.x, 610, `+${dropScore.toLocaleString()}`, "#00ff88");
           this.balls.splice(i, 1);
 
-          for (let core of this.activeCores) {
-            if (core.onDropEnd) core.onDropEnd(dropYield, this);
-          }
-
           if (this.balls.length === 0) {
-            if (this.gravityTimer > 0) this.gravityTimer--;
-            this.evaluateState();
+            this.evaluateRunEnd();
           }
           this.updateUI();
         }
       }
     }
 
-    evaluateState() {
+    evaluateRunEnd() {
       if (this.score >= this.quota) {
-        // Balatro-style interest + drops cashout
-        const surplusMoney = 3 + Math.max(0, this.dropsLeft);
-        this.credits += surplusMoney;
+        // Balatro Interest: 1$ per 5$ saved up to 25$ + leftover drop bonus
+        const interest = Math.min(5, Math.floor(this.credits / 5));
+        const payout = 4 + this.dropsLeft + interest;
+        this.credits += payout;
         this.openShop();
       } else if (this.dropsLeft <= 0 && this.balls.length === 0) {
-        alert(`DIRECTIVE CRITICAL TERMINATION!\nSector Cleared: ${this.sector - 1}\nScore Achieved: ${this.score}`);
+        alert(`FAILURE TO MEET QUOTA!\nAnte reached: ${this.ante}\nScore: ${this.score.toLocaleString()}`);
         this.resetGame();
       }
     }
 
+    // ==========================================
+    // SHOPPING & BOOSTER PACK CRACKING
+    // ==========================================
     openShop() {
-      this.generateShop();
+      this.generateShopInventory();
       this.renderShop();
       document.getElementById("shop-overlay").style.display = "flex";
       this.updateUI();
     }
 
-    generateShop() {
-      this.shopInventory = [];
+    generateShopInventory() {
+      // 2 Booster packs
+      this.shopPacks = [...PACK_TYPES].sort(() => 0.5 - Math.random()).slice(0, 2).map(p => ({ ...p, sold: false }));
 
-      // Fetch random non-installed cores
+      // 2 Cards / Consumables
       const availableCores = CORE_DATABASE.filter(c => !this.activeCores.some(ac => ac.id === c.id));
-      const shuffledCores = availableCores.sort(() => 0.5 - Math.random()).slice(0, 2);
+      const coreOffers = getRandomItems(availableCores, 1, true);
+      const consumableOffers = getRandomItems(CONSUMABLE_DATABASE, 1, false);
 
-      // Fetch random consumables
-      const shuffledConsumables = [...CONSUMABLE_DATABASE].sort(() => 0.5 - Math.random()).slice(0, 2);
-
-      this.shopInventory = [...shuffledCores, ...shuffledConsumables].map(item => ({
-        ...item,
-        sold: false
-      }));
+      this.shopItems = [...coreOffers, ...consumableOffers].map(item => ({ ...item, sold: false }));
     }
 
     renderShop() {
       document.getElementById("shop-credits").innerText = `$${this.credits}`;
-      const shelf = document.getElementById("shop-items");
-      shelf.innerHTML = "";
 
-      this.shopInventory.forEach((item) => {
-        const card = document.createElement("div");
-        card.className = "shop-item-card";
-
-        const isCore = !!item.onBounce || !!item.onLand || !!item.onDropEnd;
-        const tag = isCore ? "CORE UNIT" : "TACTICAL OVERCLOCK";
-        const tagClass = isCore ? "pill-core" : "pill-hack";
-
-        card.innerHTML = `
+      // Render Packs
+      const packBox = document.getElementById("shop-packs");
+      packBox.innerHTML = "";
+      this.shopPacks.forEach(pack => {
+        const pcard = document.createElement("div");
+        pcard.className = `pack-card ${pack.class} ${pack.sold ? 'sold' : ''}`;
+        pcard.innerHTML = `
           <div>
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
-              <span class="badge-pill ${tagClass}">${tag}</span>
-              <span style="color: var(--accent-gold); font-weight: 800;">$${item.cost}</span>
-            </div>
-            <div style="font-size: 12px; font-weight: bold; color: #fff;">${item.name}</div>
-            <div style="font-size: 9.5px; color: var(--text-dim); margin-top: 4px;">${item.desc}</div>
+            <div style="font-size:12px; font-weight:900; color:var(--accent-blue);">${pack.name}</div>
+            <div style="font-size:9.5px; color:var(--text-dim); margin: 6px 0;">${pack.desc}</div>
           </div>
+          <button ${this.credits < pack.cost || pack.sold ? 'disabled' : ''}>OPEN ($${pack.cost})</button>
+        `;
+        pcard.querySelector("button").onclick = () => {
+          this.credits -= pack.cost;
+          pack.sold = true;
+          this.openPackModal(pack);
+          this.renderShop();
+          this.updateUI();
+        };
+        packBox.appendChild(pcard);
+      });
+
+      // Render Individual items
+      const itemBox = document.getElementById("shop-items");
+      itemBox.innerHTML = "";
+      this.shopItems.forEach(item => {
+        const icard = document.createElement("div");
+        icard.className = `shop-card ${item.sold ? 'sold' : ''}`;
+
+        const isCore = !!item.onBounce || !!item.onLand;
+        const tag = isCore ? "CORE PASSIVE" : "HACK OVERCLOCK";
+        const editionName = item.edition && item.edition.id !== 'base' ? `[${item.edition.name}] ` : '';
+
+        icard.innerHTML = `
+          <div>
+            <div style="display:flex; justify-content:space-between; font-size:9px;">
+              <span style="color:var(--accent-blue); font-weight:bold;">${tag}</span>
+              <span style="color:var(--accent-gold); font-weight:bold;">$${item.cost}</span>
+            </div>
+            <div style="font-size:12px; font-weight:bold; margin-top:2px;">${editionName}${item.name}</div>
+            <div style="font-size:9px; color:var(--text-dim); margin-top:4px;">${item.desc}</div>
+          </div>
+          <button style="margin-top:6px;" ${this.credits < item.cost || item.sold ? 'disabled' : ''}>ACQUIRE</button>
         `;
 
-        const buyBtn = document.createElement("button");
-        buyBtn.style.marginTop = "8px";
-        buyBtn.innerText = item.sold ? "INSTALLED" : "PROCURE";
+        icard.querySelector("button").onclick = () => {
+          if (isCore && this.activeCores.length >= 5) return alert("Core storage full!");
+          if (!isCore && this.consumables.length >= 2) return alert("Consumable cache full!");
 
-        const canAfford = this.credits >= item.cost;
-        const slotRestricted = isCore ? this.activeCores.length >= 5 : this.consumables.length >= 2;
-        buyBtn.disabled = item.sold || !canAfford || slotRestricted;
-
-        if (slotRestricted && !item.sold) buyBtn.innerText = "NO CAPACITY";
-
-        buyBtn.onclick = () => {
           this.credits -= item.cost;
           item.sold = true;
 
-          if (isCore) {
-            this.activeCores.push(item);
-          } else {
-            this.consumables.push(item);
-          }
+          if (isCore) this.activeCores.push(item);
+          else this.consumables.push(item);
 
-          this.updateUI();
           this.renderShop();
+          this.updateUI();
         };
-
-        card.appendChild(buyBtn);
-        shelf.appendChild(card);
+        itemBox.appendChild(icard);
       });
 
       document.getElementById("btn-reroll").disabled = this.credits < this.rerollCost;
     }
 
-    advanceSector() {
+    openPackModal(pack) {
+      const modal = document.getElementById("pack-opening-modal");
+      const title = document.getElementById("pack-title");
+      const container = document.getElementById("pack-options");
+
+      title.innerText = pack.name;
+      container.innerHTML = "";
+
+      const choices = pack.generate();
+      choices.forEach(item => {
+        const isCore = !!item.onBounce || !!item.onLand;
+        const ccard = document.createElement("div");
+        ccard.className = `pack-choice-card ${item.edition ? item.edition.class : ''}`;
+
+        const editionBadge = item.edition && item.edition.id !== 'base' ? 
+          `<span class="edition-tag ${item.edition.tagClass}">${item.edition.name}</span>` : '';
+
+        ccard.innerHTML = `
+          <div>
+            <div style="font-size:8px; text-transform:uppercase; color:var(--accent-blue);">${isCore ? 'CORE' : 'HACK'}</div>
+            <div style="font-size:13px; font-weight:900; margin-top:4px;">${item.name} ${editionBadge}</div>
+            <div style="font-size:10px; color:var(--text-dim); margin-top:8px;">${item.desc}</div>
+          </div>
+          <button style="width:100%;">INTEGRATE</button>
+        `;
+
+        ccard.querySelector("button").onclick = () => {
+          if (isCore) {
+            if (this.activeCores.length >= 5) return alert("Core capacity full (5 max)!");
+            this.activeCores.push(item);
+          } else {
+            if (this.consumables.length >= 2) return alert("Consumable capacity full (2 max)!");
+            this.consumables.push(item);
+          }
+          modal.style.display = "none";
+          this.updateUI();
+        };
+
+        container.appendChild(ccard);
+      });
+
+      modal.style.display = "flex";
+    }
+
+    advanceBlind() {
       document.getElementById("shop-overlay").style.display = "none";
-      this.sector++;
-      this.quota = Math.floor(this.quota * 1.85 + 250);
+      this.blindIndex++;
+
+      if (this.blindIndex > 2) {
+        this.blindIndex = 0;
+        this.ante++;
+      }
+
+      // Base Quota calculations (Balatro style curve)
+      let baseQuota = Math.floor(800 * Math.pow(1.5, this.ante - 1));
+      if (this.blindIndex === 0) {
+        this.quota = baseQuota;
+        this.currentBoss = null;
+      } else if (this.blindIndex === 1) {
+        this.quota = Math.floor(baseQuota * 1.4);
+        this.currentBoss = null;
+      } else if (this.blindIndex === 2) {
+        this.currentBoss = this.bossPool[Math.floor(Math.random() * this.bossPool.length)];
+        this.quota = Math.floor(baseQuota * 2.0);
+        if (this.currentBoss.applyQuota) {
+          this.quota = Math.floor(this.currentBoss.applyQuota(this.quota));
+        }
+      }
+
       this.score = 0;
       this.dropsLeft = this.maxDrops;
+      this.initBoard();
       this.updateUI();
     }
 
     resetGame() {
-      this.sector = 1;
-      this.quota = 1000;
+      this.ante = 1;
+      this.blindIndex = 0;
+      this.quota = 800;
       this.score = 0;
       this.dropsLeft = 4;
       this.credits = 8;
       this.activeCores = [];
       this.consumables = [];
+      this.currentBoss = null;
       this.initBoard();
       this.updateUI();
     }
 
     updateUI() {
-      document.getElementById("ui-sector").innerText = this.sector;
+      const blinds = ["Small Blind", "Big Blind", "BOSS BLIND"];
+      document.getElementById("ui-sector").innerText = `Ante ${this.ante} / ${blinds[this.blindIndex]}`;
       document.getElementById("ui-quota").innerText = this.quota.toLocaleString();
       document.getElementById("ui-score").innerText = this.score.toLocaleString();
       document.getElementById("ui-drops").innerText = this.dropsLeft;
@@ -961,61 +1188,74 @@ window.addEventListener('DOMContentLoaded', () => {
       document.getElementById("ui-last-chips").innerText = `${this.lastChips} CHIPS`;
       document.getElementById("ui-last-mult").innerText = `${this.lastMult.toFixed(1)}x`;
 
-      // Render Installed Cores
-      const coresTray = document.getElementById("cores-tray");
-      coresTray.innerHTML = "";
+      const directiveEl = document.getElementById("boss-directive");
+      if (this.blindIndex === 2 && this.currentBoss) {
+        directiveEl.innerText = this.currentBoss.name;
+      } else {
+        directiveEl.innerText = "DIRECTIVE: STANDARD EVALUATION";
+      }
+
+      // Active Cores Tray
+      const tray = document.getElementById("cores-tray");
+      tray.innerHTML = "";
       document.getElementById("ui-core-count").innerText = `${this.activeCores.length} / 5`;
 
-      this.activeCores.forEach((c, index) => {
+      this.activeCores.forEach((core, idx) => {
         const el = document.createElement("div");
-        el.className = `core-card ${c.rarity || 'rarity-common'}`;
+        el.className = `core-card ${core.edition ? core.edition.class : ''}`;
+
+        const editionTag = core.edition && core.edition.id !== 'base' ? 
+          `<span class="edition-tag ${core.edition.tagClass}">${core.edition.name}</span>` : '';
+
         el.innerHTML = `
-          <div class="core-header">
-            <span style="color:#fff;">${c.name}</span>
-            <span style="color:var(--accent-red); font-size:9px;">RECYCLE +$${Math.floor(c.cost/2)}</span>
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-weight:bold; font-size:11px;">${core.name} ${editionTag}</span>
+            <span style="color:var(--accent-red); font-size:8px;">SELL +$${Math.floor(core.cost/2)}</span>
           </div>
-          <div class="core-desc">${c.desc}</div>
+          <div style="font-size:9.5px; color:var(--text-dim); margin-top:3px;">${core.desc}</div>
         `;
         el.onclick = () => {
-          this.credits += Math.floor(c.cost / 2);
-          this.activeCores.splice(index, 1);
+          this.credits += Math.floor(core.cost / 2);
+          this.activeCores.splice(idx, 1);
           this.updateUI();
           if (document.getElementById("shop-overlay").style.display === "flex") {
             this.renderShop();
           }
         };
-        coresTray.appendChild(el);
+        tray.appendChild(el);
       });
 
-      // Render Consumables
-      const consTray = document.getElementById("consumables-tray");
-      consTray.innerHTML = "";
+      // Tactical Consumables Tray
+      const ctray = document.getElementById("consumables-tray");
+      ctray.innerHTML = "";
       document.getElementById("ui-overclock-count").innerText = `${this.consumables.length} / 2`;
 
-      this.consumables.forEach((item, index) => {
+      this.consumables.forEach((item, idx) => {
         const el = document.createElement("div");
         el.className = "core-card";
         el.style.borderLeft = "3px solid var(--accent-purple)";
         el.innerHTML = `
-          <div class="core-header">
+          <div style="display:flex; justify-content:space-between; font-weight:bold; font-size:11px;">
             <span style="color:var(--accent-purple);">${item.name}</span>
-            <span style="color:var(--accent-green); font-size:9px;">DEPLOY</span>
+            <span style="color:var(--accent-green); font-size:9px;">USE</span>
           </div>
-          <div class="core-desc">${item.desc}</div>
+          <div style="font-size:9px; color:var(--text-dim); margin-top:2px;">${item.desc}</div>
         `;
         el.onclick = () => {
           item.use(this);
-          this.consumables.splice(index, 1);
+          this.consumables.splice(idx, 1);
           this.updateUI();
         };
-        consTray.appendChild(el);
+        ctray.appendChild(el);
       });
     }
 
+    // ==========================================
+    // RENDER PIPELINE
+    // ==========================================
     render() {
       this.ctx.save();
 
-      // Screen Shake
       if (this.screenShake > 0) {
         this.ctx.translate(
           (Math.random() - 0.5) * this.screenShake,
@@ -1025,8 +1265,8 @@ window.addEventListener('DOMContentLoaded', () => {
 
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-      // Trajectory Guide
-      this.ctx.strokeStyle = "rgba(0, 229, 255, 0.15)";
+      // Launcher Guide Line
+      this.ctx.strokeStyle = "rgba(0, 229, 255, 0.18)";
       this.ctx.setLineDash([4, 4]);
       this.ctx.beginPath();
       this.ctx.moveTo(this.launcherX, 0);
@@ -1034,43 +1274,52 @@ window.addEventListener('DOMContentLoaded', () => {
       this.ctx.stroke();
       this.ctx.setLineDash([]);
 
+      // Vortex Hazards
+      this.vortexes.forEach(v => {
+        this.ctx.strokeStyle = "rgba(189, 52, 254, 0.4)";
+        this.ctx.lineWidth = 2;
+        this.ctx.beginPath();
+        this.ctx.arc(v.x, v.y, v.radius + Math.sin(Date.now() * 0.005) * 4, 0, Math.PI * 2);
+        this.ctx.stroke();
+      });
+
       // Shockwaves
       this.shockwaves.forEach(sw => {
         this.ctx.strokeStyle = `rgba(0, 229, 255, ${sw.life})`;
         this.ctx.lineWidth = 3;
         this.ctx.beginPath();
-        this.ctx.arc(sw.x, sw.y, sw.currentRadius, 0, Math.PI * 2);
+        this.ctx.arc(sw.x, sw.y, sw.curRadius, 0, Math.PI * 2);
         this.ctx.stroke();
       });
 
       // Pegs
       this.pegs.forEach(p => {
         this.ctx.beginPath();
-        let drawRadius = p.radius + (p.pulse * 3);
-        this.ctx.arc(p.x, p.y, drawRadius, 0, Math.PI * 2);
+        let drawRad = p.radius + (p.pulse * 3);
+        this.ctx.arc(p.x, p.y, drawRad, 0, Math.PI * 2);
 
         if (p.pulse > 0.05) {
-          this.ctx.fillStyle = "#ffffff";
+          this.ctx.fillStyle = "#fff";
           this.ctx.shadowColor = "#00e5ff";
-          this.ctx.shadowBlur = 15;
+          this.ctx.shadowBlur = 12;
         } else if (p.type === 'neon') {
           this.ctx.fillStyle = "#00ff88";
           this.ctx.shadowColor = "#00ff88";
-          this.ctx.shadowBlur = 8;
+          this.ctx.shadowBlur = 6;
         } else if (p.type === 'flux') {
           this.ctx.fillStyle = "#ff2a5f";
           this.ctx.shadowColor = "#ff2a5f";
-          this.ctx.shadowBlur = 8;
+          this.ctx.shadowBlur = 6;
         } else if (p.type === 'bumper') {
           this.ctx.fillStyle = "#bd34fe";
           this.ctx.shadowColor = "#bd34fe";
-          this.ctx.shadowBlur = 10;
+          this.ctx.shadowBlur = 8;
         } else if (p.type === 'gold') {
           this.ctx.fillStyle = "#ffd000";
           this.ctx.shadowColor = "#ffd000";
-          this.ctx.shadowBlur = 8;
+          this.ctx.shadowBlur = 6;
         } else {
-          this.ctx.fillStyle = "#162032";
+          this.ctx.fillStyle = "#162233";
           this.ctx.shadowBlur = 0;
         }
 
@@ -1078,42 +1327,40 @@ window.addEventListener('DOMContentLoaded', () => {
         this.ctx.shadowBlur = 0;
       });
 
-      // Bins
+      // Bottom Bins
       this.bins.forEach(b => {
-        this.ctx.fillStyle = b.highlight > 0 ? `rgba(0, 255, 136, ${b.highlight * 0.4})` : "#090d14";
+        this.ctx.fillStyle = b.highlight > 0 ? `rgba(0, 255, 136, ${b.highlight * 0.35})` : "#070c14";
         this.ctx.fillRect(b.x, b.y, b.w, b.h);
-        this.ctx.strokeStyle = b.mult >= 2.0 ? "#ffd000" : "#1a2537";
+        this.ctx.strokeStyle = b.mult >= 2.0 ? "#ffd000" : "#1a2536";
         this.ctx.strokeRect(b.x, b.y, b.w, b.h);
 
         this.ctx.fillStyle = b.mult >= 2.0 ? "#ffd000" : "#64748b";
-        this.ctx.font = "bold 12px monospace";
+        this.ctx.font = "bold 13px monospace";
         this.ctx.textAlign = "center";
         this.ctx.fillText(`${b.mult.toFixed(1)}x`, b.x + b.w / 2, b.y + 35);
       });
 
-      // Balls & Kinetic Trails
+      // Payloads & Motion Trails
       this.balls.forEach(b => {
-        // Draw Trail
         this.ctx.beginPath();
         for (let i = 0; i < b.trail.length; i++) {
           const pt = b.trail[i];
           if (i === 0) this.ctx.moveTo(pt.x, pt.y);
           else this.ctx.lineTo(pt.x, pt.y);
         }
-        this.ctx.strokeStyle = "rgba(0, 229, 255, 0.4)";
+        this.ctx.strokeStyle = "rgba(0, 229, 255, 0.45)";
         this.ctx.lineWidth = 2;
         this.ctx.stroke();
 
-        // Draw Core Sphere
         this.ctx.beginPath();
         this.ctx.arc(b.x, b.y, b.radius, 0, Math.PI * 2);
-        this.ctx.fillStyle = "#ffffff";
+        this.ctx.fillStyle = "#fff";
         this.ctx.shadowColor = "#00e5ff";
         this.ctx.shadowBlur = 10;
         this.ctx.fill();
         this.ctx.shadowBlur = 0;
 
-        // Dynamic Chips/Mult Tag above ball
+        // Floating Chips / Mult above payload
         this.ctx.font = "bold 9px monospace";
         this.ctx.textAlign = "center";
         this.ctx.fillStyle = "#00e5ff";
@@ -1122,7 +1369,7 @@ window.addEventListener('DOMContentLoaded', () => {
         this.ctx.fillText(`${b.mult.toFixed(1)}x`, b.x, b.y - 5);
       });
 
-      // Floating Dynamic Popups
+      // Floating Score Tags
       this.popups.forEach(p => {
         this.ctx.fillStyle = p.color;
         this.ctx.globalAlpha = p.life;
@@ -1134,7 +1381,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
       // Drop Origin Marker
       this.ctx.fillStyle = "#00e5ff";
-      this.ctx.fillRect(this.launcherX - 10, 0, 20, 8);
+      this.ctx.fillRect(this.launcherX - 10, 0, 20, 6);
 
       this.ctx.restore();
     }

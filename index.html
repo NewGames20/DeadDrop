@@ -1,1323 +1,296 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CYBER-DROP // NETWORK BREACH</title>
-  <style>
-    :root {
-      --bg: #03070d;
-      --panel: #0a111a;
-      --panel-border: #152232;
-      --cyan: #00f0ff;
-      --amber: #ffb700;
-      --crimson: #ff0055;
-      --emerald: #00ff66;
-      --violet: #9d00ff;
-      --text: #c8d6e5;
-      --dim: #576574;
-    }
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Dead Drop: The Descent</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;500;700&display=swap');
+:root{color-scheme:dark;--bg:#100c1e;--panel:#241c3d;--ink:#eee7ff;--gold:#ffcf65;--red:#ff5876;--blue:#68baff;--green:#72e5ab}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#302044,var(--bg) 65%);color:var(--ink);font:16px 'Pixelify Sans',monospace;min-height:100dvh}button,input,select{font:inherit}button{cursor:pointer;color:inherit;border:1px solid #68537e;border-radius:9px;background:#352747;padding:10px 13px;transition:background .15s,transform .15s}button:hover:not(:disabled){background:#4a355d;transform:translateY(-1px)}button:disabled{opacity:.38;cursor:default}.gold{background:var(--gold);color:#281b10;border-color:var(--gold)}.gold:hover:not(:disabled){background:#ffe3a1}.danger{color:#ff9caf}.muted{color:#b6a8cb}.tiny{font-size:12px}.good{color:var(--green)}.money{color:var(--gold)}h1{font-size:clamp(48px,10vw,84px);line-height:.85;letter-spacing:-2px;margin:16px 0}h1 em{font-style:normal;color:var(--red)}h2{font-size:30px;margin:8px 0}h3{margin:5px 0;font-size:19px}p{line-height:1.4;margin:8px 0}#app{max-width:1100px;margin:auto;padding:12px;padding-top:max(12px,env(safe-area-inset-top));padding-bottom:max(12px,env(safe-area-inset-bottom))}.row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.between{justify-content:space-between}.panel{background:#21192fe8;border:1px solid #49365c;border-radius:13px;padding:14px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:10px}.card{display:flex;flex-direction:column;gap:6px;text-align:left;padding:14px;min-height:175px;background:linear-gradient(135deg,#30213f,#211b30);border:1px solid #665077;border-radius:12px}.card .desc{font-size:14px;color:#d5c6e6;flex:1}.card .icon{font-size:25px}.card.rare{border-color:#ac7de5}.card.legendary{border-color:var(--gold)}.card.selected{outline:2px solid var(--gold)}.tag{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--green)}.lock{opacity:.55}.sep{height:1px;background:#49365c;margin:15px 0}.buttons{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.hero{max-width:760px;margin:24px auto}.hero .panel{margin:14px 0}.layout{display:grid;grid-template-columns:minmax(280px,440px) 1fr;gap:14px;align-items:start}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}.stat{background:var(--panel);border-radius:8px;padding:8px;text-align:center}.stat small{display:block;font-size:11px;color:#b6a8cb}.stat b{font-size:21px;color:var(--gold)}#board{display:block;width:100%;height:auto;aspect-ratio:400/560;background:#171122;border-radius:12px;touch-action:none;cursor:crosshair}.progress{background:#0d0914;height:23px;border-radius:7px;position:relative;overflow:hidden;margin:8px 0}.progress i{display:block;height:100%;background:linear-gradient(90deg,#923753,#d6a64a);transition:width .25s}.progress span{position:absolute;inset:0;text-align:center;font-size:13px;line-height:23px}.scoreline{display:flex;justify-content:center;gap:12px;font-size:25px;padding:7px}.scoreline .chip{color:var(--blue)}.scoreline .mult{color:var(--red)}.relicrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:7px}.owned{padding:10px;background:#30233e;border:1px solid #634978;border-radius:9px;font-size:13px}.owned p{margin:5px 0}.owned button{font-size:12px;padding:4px 7px}.empty{border:1px dashed #5c466d;border-radius:9px;color:#8e7b9c;padding:15px;text-align:center}#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);max-width:90vw;background:#32233f;border:1px solid var(--gold);border-radius:10px;padding:12px 20px;z-index:100;box-shadow:0 5px 30px #0008;pointer-events:none;display:none}.log{font-size:13px;line-height:1.6;max-height:145px;overflow:auto}.badge{border:1px solid #826440;color:var(--gold);border-radius:5px;padding:2px 5px;font-size:11px}.hudbuttons button{font-size:12px;padding:5px 8px}details{margin:9px 0}summary{cursor:pointer;color:var(--gold)}input{background:#130e1d;border:1px solid #655073;color:var(--ink);border-radius:7px;padding:9px;width:180px}#modal{position:fixed;inset:0;z-index:80;background:#100b17df;display:none;align-items:center;justify-content:center;padding:16px}#modal>div{max-height:90dvh;overflow:auto;width:650px;max-width:100%;background:#20162e;border:1px solid #74578e;border-radius:14px;padding:22px}.breakdown{background:#15101e;border-radius:9px;padding:10px;font-size:14px}.boss{color:var(--red)}.screen-title{margin:14px 0}.choice{cursor:pointer}.footer{font-size:12px;color:#9c8aaf;margin:16px 0}@media(max-width:740px){.layout{grid-template-columns:1fr}.layout>aside{order:2}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.card{padding:10px;min-height:195px;font-size:14px}#app{padding:7px}.hero{margin:8px auto}#board{max-height:64dvh;object-fit:contain}.stats .stat{padding:5px}.stat b{font-size:18px}}@media(prefers-reduced-motion:reduce){*{transition:none!important}}
 
-    * {
-      box-sizing: border-box;
-      user-select: none;
-      -webkit-user-select: none;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      background-color: var(--bg);
-      color: var(--text);
-      font-family: 'Courier New', Courier, monospace;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      overflow: hidden;
-      padding: 10px;
-    }
-
-    #workspace {
-      display: grid;
-      grid-template-columns: 600px 320px;
-      gap: 12px;
-      background: #020408;
-      padding: 14px;
-      border: 1px solid var(--panel-border);
-      border-radius: 6px;
-      box-shadow: 0 0 40px rgba(0, 240, 255, 0.08);
-      position: relative;
-    }
-
-    /* Primary Terminal Stage */
-    #terminal-view {
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .status-ribbon {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 11px;
-      font-weight: bold;
-      letter-spacing: 1.5px;
-      padding-bottom: 4px;
-      border-bottom: 1px solid var(--panel-border);
-    }
-
-    #canvas-container {
-      position: relative;
-      width: 600px;
-      height: 640px;
-      border: 1px solid var(--panel-border);
-      background: #010204;
-      border-radius: 4px;
-      overflow: hidden;
-    }
-
-    canvas {
-      display: block;
-      cursor: crosshair;
-    }
-
-    /* Retro Scanline Overlay */
-    #canvas-container::after {
-      content: " ";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.4) 50%);
-      background-size: 100% 4px;
-      pointer-events: none;
-      opacity: 0.7;
-    }
-
-    /* Diagnostics Panel */
-    #diagnostics {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .telemetry-card {
-      background: var(--panel);
-      border: 1px solid var(--panel-border);
-      border-radius: 4px;
-      padding: 10px;
-    }
-
-    .metric-line {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 6px;
-    }
-
-    .metric-name {
-      font-size: 10px;
-      text-transform: uppercase;
-      color: var(--dim);
-      font-weight: bold;
-    }
-
-    .metric-val {
-      font-size: 16px;
-      font-weight: bold;
-    }
-
-    .eval-box {
-      background: rgba(0, 0, 0, 0.6);
-      border: 1px solid var(--panel-border);
-      border-radius: 4px;
-      padding: 8px;
-      margin-top: 6px;
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-    }
-
-    .eval-packets { color: var(--cyan); font-weight: bold; font-size: 15px; }
-    .eval-amp { color: var(--crimson); font-weight: bold; font-size: 15px; }
-
-    .inventory-title {
-      font-size: 10px;
-      font-weight: bold;
-      color: var(--dim);
-      text-transform: uppercase;
-      margin-bottom: 6px;
-      display: flex;
-      justify-content: space-between;
-    }
-
-    .inventory-list {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      min-height: 48px;
-    }
-
-    .node-item {
-      background: #060a10;
-      border: 1px solid var(--panel-border);
-      border-radius: 3px;
-      padding: 6px 8px;
-      font-size: 10px;
-      cursor: pointer;
-      transition: all 0.15s ease;
-    }
-
-    .node-item:hover {
-      border-color: var(--cyan);
-      transform: translateX(2px);
-    }
-
-    .synthesis-overclocked { border-left: 3px solid var(--cyan); }
-    .synthesis-cryo { border-left: 3px solid var(--crimson); }
-    .synthesis-superconducting { border-left: 3px solid var(--violet); }
-
-    /* Tactical Terminal / Market Interface */
-    #tactical-overlay {
-      position: absolute;
-      inset: 0;
-      background: rgba(2, 5, 9, 0.96);
-      z-index: 20;
-      display: none;
-      flex-direction: column;
-      padding: 16px;
-      border: 1px solid var(--emerald);
-    }
-
-    .market-section-title {
-      font-size: 10px;
-      font-weight: bold;
-      color: var(--emerald);
-      letter-spacing: 1px;
-      margin: 8px 0 4px 0;
-      text-transform: uppercase;
-    }
-
-    .cache-row, .market-row {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 8px;
-      margin-bottom: 8px;
-    }
-
-    .cache-unit, .market-unit {
-      background: #060c14;
-      border: 1px solid var(--panel-border);
-      border-radius: 4px;
-      padding: 10px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      transition: all 0.2s;
-    }
-
-    .cache-unit {
-      border-color: var(--cyan);
-      background: radial-gradient(circle at 50% 0%, #0d1e30, #040810);
-      cursor: pointer;
-    }
-
-    .cache-unit:hover:not(.consumed) {
-      box-shadow: 0 0 12px rgba(0, 240, 255, 0.25);
-      border-color: #fff;
-    }
-
-    .consumed {
-      opacity: 0.25;
-      pointer-events: none;
-      filter: grayscale(1);
-    }
-
-    button {
-      background: #091a14;
-      color: var(--emerald);
-      border: 1px solid var(--emerald);
-      font-family: inherit;
-      font-weight: bold;
-      font-size: 11px;
-      padding: 8px 12px;
-      border-radius: 3px;
-      cursor: pointer;
-      transition: all 0.15s;
-    }
-
-    button:hover:not(:disabled) {
-      background: var(--emerald);
-      color: #000;
-      box-shadow: 0 0 10px rgba(0, 255, 102, 0.4);
-    }
-
-    button:disabled {
-      opacity: 0.3;
-      cursor: not-allowed;
-      border-color: var(--dim);
-      color: var(--dim);
-    }
-
-    /* Firmware Cache Decompilation Modal */
-    #cache-modal {
-      position: absolute;
-      inset: 0;
-      background: rgba(1, 3, 6, 0.98);
-      z-index: 40;
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-
-    .options-grid {
-      display: flex;
-      gap: 12px;
-      margin: 18px 0;
-    }
-
-    .firmware-card {
-      width: 160px;
-      min-height: 200px;
-      background: #060b12;
-      border: 1px solid var(--cyan);
-      border-radius: 4px;
-      padding: 10px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      cursor: pointer;
-      transition: transform 0.15s;
-    }
-
-    .firmware-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 0 16px rgba(0, 240, 255, 0.3);
-    }
-  </style>
-</head>
-<body>
-
-<div id="workspace">
-  <!-- Left Side: Interactive Physics Execution Stage -->
-  <div id="terminal-view">
-    <div class="status-ribbon">
-      <span style="color: var(--cyan);">CYBER-DROP // TERMINAL BREACH</span>
-      <span id="directive-indicator" style="color: var(--crimson);">COUNTERMEASURE: NONE DETECTED</span>
-    </div>
-
-    <div id="canvas-container">
-      <canvas id="field" width="600" height="640"></canvas>
-
-      <!-- Tactical Market Overlay -->
-      <div id="tactical-overlay">
-        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--panel-border); padding-bottom: 6px;">
-          <div>
-            <div style="font-weight: bold; color: var(--emerald);">DARKNET SECURE RELAY</div>
-            <div style="font-size: 9px; color: var(--dim);">ACQUIRE HARDWARE PATCHES & DECOMPILE FIRMWARE CACHES</div>
-          </div>
-          <div style="text-align: right;">
-            <div style="font-size: 8px; color: var(--dim);">AVAILABLE CRYPTO</div>
-            <div style="font-size: 18px; font-weight: bold; color: var(--amber);" id="market-crypto">$0</div>
-          </div>
-        </div>
-
-        <div class="market-section-title">ENCRYPTED FIRMWARE CACHES (SELECT 1 DECOMPILATION)</div>
-        <div class="cache-row" id="cache-rack"></div>
-
-        <div class="market-section-title">HARDWARE INTERFACES & BUS OVERRIDES</div>
-        <div class="market-row" id="hardware-rack"></div>
-
-        <div style="display: flex; gap: 8px; margin-top: auto;">
-          <button id="btn-re-route" style="border-color: var(--cyan); color: var(--cyan); background: #071520;">RE-ROUTE NODES ($4)</button>
-          <button id="btn-next-tier" style="flex: 1;">EXECUTE NEXT NETWORK INTRUSION</button>
-        </div>
-      </div>
-
-      <!-- Cache Unpacking Modal -->
-      <div id="cache-modal">
-        <div style="font-size: 16px; font-weight: bold; color: var(--cyan);" id="modal-cache-title">CACHE TITLE</div>
-        <div style="font-size: 10px; color: var(--dim);">CHOOSE 1 SIGNATURE PATTERN TO INJECT</div>
-        <div class="options-grid" id="modal-cache-options"></div>
-        <button id="btn-abort-cache" style="border-color: var(--crimson); color: var(--crimson); background: transparent;">ABORT EXTRACTION</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Right Side: Diagnostics, Node Capacity & Data Bus -->
-  <div id="diagnostics">
-    <div class="telemetry-card">
-      <div class="metric-line">
-        <span class="metric-name">Security Tier</span>
-        <span class="metric-val" id="ui-tier">Tier 1 // Low ICE</span>
-      </div>
-      <div class="metric-line">
-        <span class="metric-name">Bit Quota Target</span>
-        <span class="metric-val" style="color: var(--emerald);" id="ui-quota">1,200</span>
-      </div>
-      <div class="metric-line">
-        <span class="metric-name">Exfiltrated Bits</span>
-        <span class="metric-val" id="ui-bits">0</span>
-      </div>
-      <div class="metric-line">
-        <span class="metric-name">Payload Injections</span>
-        <span class="metric-val" style="color: var(--cyan);" id="ui-injections">4</span>
-      </div>
-      <div class="metric-line">
-        <span class="metric-name">Crypto Ledger</span>
-        <span class="metric-val" style="color: var(--amber);" id="ui-crypto">$5</span>
-      </div>
-
-      <div class="eval-box">
-        <div>
-          <div style="font-size: 8px; color: var(--dim);">LAST INJECTION</div>
-          <span class="eval-packets" id="ui-last-packets">0 PKTS</span>
-          <span style="color: var(--dim); margin: 0 4px;">&times;</span>
-          <span class="eval-amp" id="ui-last-amp">0.0x AMP</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Active Hardware Nodes -->
-    <div class="telemetry-card" style="flex: 1;">
-      <div class="inventory-title">
-        <span>Hardware Nodes</span>
-        <span id="ui-node-count">0 / 5</span>
-      </div>
-      <div class="inventory-list" id="active-nodes"></div>
-    </div>
-
-    <!-- Single-Use Overrides -->
-    <div class="telemetry-card">
-      <div class="inventory-title">
-        <span>Direct Bus Overrides</span>
-        <span id="ui-override-count">0 / 2</span>
-      </div>
-      <div class="inventory-list" id="active-overrides"></div>
-    </div>
-  </div>
-</div>
-
+.route-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:18px 0}.route-card{min-height:260px;border-top:4px solid var(--green)}.route-card.risk{border-top-color:var(--red)}.actline{display:flex;gap:6px;margin:12px 0}.actline span{flex:1;height:6px;border-radius:4px;background:#44334f}.actline .done{background:var(--gold)}.edit-layout{display:grid;grid-template-columns:minmax(280px,440px) 1fr;gap:14px}.edit-layout canvas{width:100%;height:auto;touch-action:none;background:#171122;border-radius:12px}.toolrow{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}.toolrow button{font-size:12px;padding:7px 10px}.toolrow .armed{outline:2px solid var(--gold)}.picked{outline:2px solid var(--green)}.contract{border-left:3px solid var(--gold);padding:8px 12px;margin:8px 0;background:#33263b}.pulse{animation:relicpulse .4s ease-out}@keyframes relicpulse{50%{background:#67503d;border-color:#ffcf65}}.score-popup{font-size:16px}.route-note{max-width:800px;margin:auto}.recipe{border:1px solid #87613f}.mapdot{display:inline-block;border:1px solid #6b537d;border-radius:50%;width:30px;height:30px;text-align:center;line-height:28px;margin:3px}.mapdot.current{background:var(--gold);color:#24172b}.contrib{font-size:12px;border-left:2px solid #7e5a8b;padding-left:8px;margin:5px 0}@media(max-width:740px){.route-grid{grid-template-columns:1fr}.route-card{min-height:180px}.edit-layout{grid-template-columns:1fr}}@media(prefers-reduced-motion:reduce){.pulse{animation:none}}
+</style></head><body><div id="app"></div><div id="toast" role="status"></div><div id="modal"></div>
 <script>
-window.addEventListener('DOMContentLoaded', () => {
-
-  // =================================================================
-  // PROCEDURAL SOUND SYNTHESIS ENGINE (AudioContext / Web Audio API)
-  // Provides tactile mechanical audio feedback without external assets
-  // =================================================================
-  class SoundSubsystem {
-    constructor() {
-      this.ctx = null;
-    }
-    init() {
-      if (!this.ctx) {
-        const AudioContext = window.AudioContext || window.webkitAudioContext;
-        this.ctx = new AudioContext();
-      }
-    }
-    playTone(freq, type, duration, gainVal) {
-      if (!this.ctx) return;
-      try {
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
-        osc.type = type;
-        osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
-        gain.gain.setValueAtTime(gainVal, this.ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + duration);
-        osc.connect(gain);
-        gain.connect(this.ctx.destination);
-        osc.start();
-        osc.stop(this.ctx.currentTime + duration);
-      } catch (e) {}
-    }
-    bounceSound(type) {
-      this.init();
-      if (type === 'amp') this.playTone(520, 'triangle', 0.08, 0.15);
-      else if (type === 'crypto') this.playTone(880, 'sine', 0.12, 0.2);
-      else if (type === 'bumper') this.playTone(280, 'square', 0.15, 0.18);
-      else this.playTone(380, 'sine', 0.05, 0.1);
-    }
-    landSound(mult) {
-      this.init();
-      const pitch = Math.min(800, 200 + mult * 100);
-      this.playTone(pitch, 'sawtooth', 0.25, 0.2);
-    }
-  }
-
-  const AudioBus = new SoundSubsystem();
-
-  // =================================================================
-  // CYBERNETIC SYNTHESIS EDITIONS & MODULE REGISTRIES
-  // =================================================================
-  const SYNTHESES = {
-    STANDARD: { id: 'standard', name: '', packets: 0, amp: 0, xAmp: 1.0, css: '' },
-    OVERCLOCKED: { id: 'overclocked', name: 'Overclocked', packets: 40, amp: 0, xAmp: 1.0, css: 'synthesis-overclocked' },
-    CRYO: { id: 'cryo', name: 'Cryo-Cooled', packets: 0, amp: 8.0, xAmp: 1.0, css: 'synthesis-cryo' },
-    SUPERCONDUCTING: { id: 'superconducting', name: 'Superconducting', packets: 0, amp: 0, xAmp: 1.5, css: 'synthesis-superconducting' }
-  };
-
-  const NODE_CATALOG = [
-    {
-      id: "packet_repeater",
-      name: "Packet Repeater",
-      cost: 4,
-      desc: "Injects +16 Base Packets on every peg hit.",
-      onBounce: (ball, peg, sys) => { ball.packets += 16; }
-    },
-    {
-      id: "amp_loop",
-      name: "Resonant Amplifier",
-      cost: 5,
-      desc: "Adds +0.15x Signal Amplification on every bounce.",
-      onBounce: (ball, peg, sys) => { ball.amp += 0.15; }
-    },
-    {
-      id: "entropy_tap",
-      name: "Stochastic Tap",
-      cost: 6,
-      desc: "20% chance on peg hit to spike amplification by +3.5x.",
-      onBounce: (ball, peg, sys) => {
-        if (Math.random() < 0.2) {
-          ball.amp += 3.5;
-          sys.emitPopup(ball.x, ball.y - 12, "SPIKE! +3.5x", "#ff0055");
-          sys.shake = 3;
-        }
-      }
-    },
-    {
-      id: "split_thread",
-      name: "Thread Forker",
-      cost: 8,
-      desc: "First time hitting an Amp Peg, forks into a duplicate sub-payload.",
-      onBounce: (ball, peg, sys) => {
-        if (!ball.hasForked && peg.type === 'amp') {
-          ball.hasForked = true;
-          sys.spawnPayload(ball.x, ball.y, ball.packets * 0.5, ball.amp, true);
-          sys.emitPopup(ball.x, ball.y - 12, "FORK THREAD", "#9d00ff");
-        }
-      }
-    },
-    {
-      id: "bit_siphon",
-      name: "Network Siphon",
-      cost: 7,
-      desc: "Payloads reaching at least 15 bounces deposit +$2 Crypto.",
-      onLand: (ball, bin, sys) => {
-        if (ball.bounces >= 15) {
-          sys.crypto += 2;
-          sys.emitPopup(bin.x + bin.w / 2, bin.y - 20, "+$2 CRYPTO", "#ffb700");
-        }
-      }
-    },
-    {
-      id: "parity_matrix",
-      name: "Dual-Bus Interlock",
-      cost: 8,
-      desc: "Multiplies payload total amplification by x1.5 if you hold 3+ nodes.",
-      onLand: (ball, bin, sys) => {
-        if (sys.installedNodes.length >= 3) {
-          ball.amp *= 1.5;
-          sys.emitPopup(bin.x + bin.w / 2, bin.y - 25, "x1.5 DUAL-BUS", "#00ff66");
-        }
-      }
-    }
-  ];
-
-  const OVERRIDE_CATALOG = [
-    {
-      id: "neon_surge",
-      name: "Neon Patch",
-      cost: 3,
-      desc: "Reprograms 5 standard pegs into Neon Pegs (+30 Packets).",
-      apply: (sys) => sys.convertPegs('neon', 5)
-    },
-    {
-      id: "flux_injection",
-      name: "Amp Surge",
-      cost: 4,
-      desc: "Reprograms 4 standard pegs into Amp Pegs (+0.3x Amp).",
-      apply: (sys) => sys.convertPegs('amp', 4)
-    },
-    {
-      id: "gravity_damp",
-      name: "Clock Slowdown",
-      cost: 4,
-      desc: "Reduces bus drop acceleration by 25% for high dwell time.",
-      apply: (sys) => { sys.gravityMod = 0.75; }
-    },
-    {
-      id: "darknet_wash",
-      name: "Ledger Hack",
-      cost: 3,
-      desc: "Immediately siphons +$7 Crypto into your balance.",
-      apply: (sys) => { sys.crypto += 7; }
-    }
-  ];
-
-  const FIRMWARE_CACHES = [
-    {
-      id: "kernel_cache",
-      name: "Kernel Binary Cache",
-      cost: 4,
-      desc: "Extract 1 of 3 passive hardware node modules.",
-      unpack: () => getCatalogSelection(NODE_CATALOG, 3, true)
-    },
-    {
-      id: "bus_cache",
-      name: "Bus Patch Cache",
-      cost: 5,
-      desc: "Extract 1 of 3 instant network direct bus overrides.",
-      unpack: () => getCatalogSelection(OVERRIDE_CATALOG, 3, false)
-    },
-    {
-      id: "black_cache",
-      name: "Zero-Day Exploit Archive",
-      cost: 8,
-      desc: "Rare archive guaranteed to carry advanced hardware syntheses.",
-      unpack: () => getCatalogSelection(NODE_CATALOG, 3, true, true)
-    }
-  ];
-
-  function rollSynthesis(forceRare = false) {
-    const r = Math.random();
-    if (forceRare) return r < 0.5 ? SYNTHESES.SUPERCONDUCTING : SYNTHESES.CRYO;
-    if (r < 0.14) return SYNTHESES.OVERCLOCKED;
-    if (r < 0.08) return SYNTHESES.CRYO;
-    if (r < 0.03) return SYNTHESES.SUPERCONDUCTING;
-    return SYNTHESES.STANDARD;
-  }
-
-  function getCatalogSelection(catalog, count, checkSynthesis = false, forceRare = false) {
-    const list = [...catalog].sort(() => 0.5 - Math.random());
-    return list.slice(0, count).map(base => {
-      const clone = { ...base };
-      if (checkSynthesis) clone.synthesis = rollSynthesis(forceRare);
-      return clone;
-    });
-  }
-
-  // =================================================================
-  // SYSTEM ENGINE (PHYSICS, ROUND LIFECYCLE & AP CS DATA STRUCTURES)
-  // =================================================================
-  class SystemEngine {
-    constructor() {
-      this.canvas = document.getElementById("field");
-      this.ctx = this.canvas.getContext("2d");
-
-      // Progress Metrics
-      this.tier = 1;
-      this.stageIndex = 0; // 0: Trace, 1: Probe, 2: Countermeasure Boss
-      this.quota = 1000;
-      this.exfiltratedBits = 0;
-      this.maxInjections = 4;
-      this.injectionsRemaining = 4;
-      this.crypto = 7;
-      this.reRouteCost = 4;
-
-      this.lastPackets = 0;
-      this.lastAmp = 0;
-
-      // Boss Constraints
-      this.bossDirectives = [
-        { name: "COUNTERMEASURE: THE HARDWALL", desc: "Rigid encryption raises bit quota target drastically.", quotaFactor: 1.7 },
-        { name: "COUNTERMEASURE: ZERO-BUS", desc: "Terminal landing bins are degraded by 30%.", applyBins: (bins) => bins.forEach(b => b.mult *= 0.7) },
-        { name: "COUNTERMEASURE: TURBO-ICE", desc: "Heavy gravity sweeps payloads straight downward.", gravityFactor: 1.55 }
-      ];
-      this.activeDirective = null;
-
-      // State Repositories
-      this.installedNodes = [];
-      this.overrides = [];
-      this.pegs = [];
-      this.bins = [];
-      this.payloads = [];
-      this.popups = [];
-      this.shockwaves = [];
-
-      this.launcherX = this.canvas.width / 2;
-      this.shake = 0;
-      this.gravityMod = 1.0;
-
-      this.initializeGrid();
-      this.registerEvents();
-      this.refreshUI();
-
-      requestAnimationFrame(() => this.engineLoop());
-    }
-
-    initializeGrid() {
-      this.pegs = [];
-      this.bins = [];
-
-      const rows = 11;
-      const spacingY = 36;
-      const startY = 110;
-
-      for (let r = 0; r < rows; r++) {
-        const isOdd = r % 2 === 1;
-        const cols = isOdd ? 12 : 11;
-        const spacingX = 46;
-        const startX = (this.canvas.width - ((cols - 1) * spacingX)) / 2;
-
-        for (let c = 0; c < cols; c++) {
-          let type = 'data';
-          const dice = Math.random();
-
-          if (dice < 0.08) type = 'crypto';
-          else if (dice < 0.17) type = 'amp';
-          else if (dice < 0.23) type = 'bumper';
-
-          this.pegs.push({
-            x: startX + c * spacingX,
-            y: startY + r * spacingY,
-            radius: type === 'bumper' ? 7 : 5,
-            pulse: 0,
-            type: type
-          });
-        }
-      }
-
-      // Landing Bin Layout
-      const binLayout = [3.2, 1.8, 1.2, 0.8, 1.2, 1.8, 3.2];
-      const binWidth = this.canvas.width / binLayout.length;
-
-      for (let i = 0; i < binLayout.length; i++) {
-        this.bins.push({
-          x: i * binWidth,
-          y: 585,
-          w: binWidth,
-          h: 55,
-          mult: binLayout[i],
-          highlight: 0
-        });
-      }
-
-      // Enforce Boss Directives
-      if (this.stageIndex === 2 && this.activeDirective && this.activeDirective.applyBins) {
-        this.activeDirective.applyBins(this.bins);
-      }
-    }
-
-    convertPegs(type, count) {
-      const available = this.pegs.filter(p => p.type === 'data');
-      for (let i = 0; i < count && available.length > 0; i++) {
-        const idx = Math.floor(Math.random() * available.length);
-        available[idx].type = type;
-        available.splice(idx, 1);
-      }
-    }
-
-    registerEvents() {
-      this.canvas.addEventListener("mousemove", (e) => {
-        const rect = this.canvas.getBoundingClientRect();
-        const ratio = this.canvas.width / rect.width;
-        this.launcherX = Math.max(20, Math.min(this.canvas.width - 20, (e.clientX - rect.left) * ratio));
-      });
-
-      this.canvas.addEventListener("mousedown", () => {
-        if (this.injectionsRemaining > 0) {
-          this.injectionsRemaining--;
-          this.spawnPayload(this.launcherX, 30, 10, 1.0, false);
-          this.refreshUI();
-        }
-      });
-
-      document.getElementById("btn-re-route").addEventListener("click", () => {
-        if (this.crypto >= this.reRouteCost) {
-          this.crypto -= this.reRouteCost;
-          this.generateMarketPicks();
-          this.renderMarket();
-          this.refreshUI();
-        }
-      });
-
-      document.getElementById("btn-next-tier").addEventListener("click", () => {
-        this.advanceProtocol();
-      });
-
-      document.getElementById("btn-abort-cache").addEventListener("click", () => {
-        document.getElementById("cache-modal").style.display = "none";
-      });
-    }
-
-    spawnPayload(x, y, startPackets, startAmp, isSub) {
-      let bPackets = 0;
-      let bAmp = 0;
-      let xAmpFactor = 1.0;
-
-      this.installedNodes.forEach(node => {
-        if (node.synthesis) {
-          bPackets += node.synthesis.packets;
-          bAmp += node.synthesis.amp;
-          xAmpFactor *= node.synthesis.xAmp;
-        }
-      });
-
-      this.payloads.push({
-        x: x,
-        y: y,
-        vx: (Math.random() - 0.5) * 3.2,
-        vy: 1.6 + Math.random(),
-        radius: 6,
-        packets: startPackets + bPackets,
-        amp: (startAmp + bAmp) * xAmpFactor,
-        bounces: 0,
-        hasForked: isSub,
-        trail: [],
-        deadlockFrames: 0,
-        lastY: y
-      });
-    }
-
-    triggerShockwave(x, y, radius, onHit) {
-      this.shockwaves.push({ x, y, radius, curRadius: 0, life: 1.0 });
-      this.shake = 4;
-      this.pegs.forEach(peg => {
-        if (Math.hypot(peg.x - x, peg.y - y) <= radius) {
-          peg.pulse = 1.0;
-          if (onHit) onHit(peg);
-        }
-      });
-    }
-
-    emitPopup(x, y, text, color) {
-      this.popups.push({ x, y, text, color, life: 1.0 });
-    }
-
-    // =================================================================
-    // SIMULATION PIPELINE
-    // =================================================================
-    engineLoop() {
-      this.updatePhysics();
-      this.renderGraphics();
-      requestAnimationFrame(() => this.engineLoop());
-    }
-
-    updatePhysics() {
-      if (this.shake > 0) this.shake *= 0.88;
-
-      // Popups
-      for (let i = this.popups.length - 1; i >= 0; i--) {
-        const pop = this.popups[i];
-        pop.y -= 0.8;
-        pop.life -= 0.025;
-        if (pop.life <= 0) this.popups.splice(i, 1);
-      }
-
-      // Shockwaves
-      for (let i = this.shockwaves.length - 1; i >= 0; i--) {
-        const sw = this.shockwaves[i];
-        sw.curRadius += (sw.radius - sw.curRadius) * 0.22;
-        sw.life -= 0.05;
-        if (sw.life <= 0) this.shockwaves.splice(i, 1);
-      }
-
-      this.pegs.forEach(p => { if (p.pulse > 0) p.pulse -= 0.04; });
-      this.bins.forEach(b => { if (b.highlight > 0) b.highlight -= 0.05; });
-
-      let baseG = 0.24 * this.gravityMod;
-      if (this.stageIndex === 2 && this.activeDirective && this.activeDirective.gravityFactor) {
-        baseG *= this.activeDirective.gravityFactor;
-      }
-
-      // Payloads physics
-      for (let i = this.payloads.length - 1; i >= 0; i--) {
-        const p = this.payloads[i];
-
-        p.trail.push({ x: p.x, y: p.y });
-        if (p.trail.length > 6) p.trail.shift();
-
-        p.vy += baseG;
-        p.x += p.vx;
-        p.y += p.vy;
-
-        // Anti-Deadlock Safety Check
-        if (Math.abs(p.y - p.lastY) < 0.6) {
-          p.deadlockFrames++;
-          if (p.deadlockFrames > 24) {
-            p.vx += (Math.random() - 0.5) * 4.5;
-            p.vy += 2.2;
-            p.deadlockFrames = 0;
-          }
-        } else {
-          p.deadlockFrames = 0;
-        }
-        p.lastY = p.y;
-
-        // Stage Walls
-        if (p.x - p.radius < 0) {
-          p.x = p.radius;
-          p.vx = Math.abs(p.vx) * 0.8;
-        } else if (p.x + p.radius > this.canvas.width) {
-          p.x = this.canvas.width - p.radius;
-          p.vx = -Math.abs(p.vx) * 0.8;
-        }
-
-        // Peg Intersections
-        for (let peg of this.pegs) {
-          const dx = p.x - peg.x;
-          const dy = p.y - peg.y;
-          const dist = Math.hypot(dx, dy);
-
-          if (dist < p.radius + peg.radius) {
-            const angle = Math.atan2(dy, dx);
-            const restitution = peg.type === 'bumper' ? 1.5 : 0.85;
-            const velocity = Math.max(Math.hypot(p.vx, p.vy) * restitution, 3.2);
-
-            p.vx = Math.cos(angle) * velocity;
-            p.vy = Math.sin(angle) * velocity;
-
-            p.x = peg.x + Math.cos(angle) * (p.radius + peg.radius + 1.2);
-            p.y = peg.y + Math.sin(angle) * (p.radius + peg.radius + 1.2);
-
-            p.bounces++;
-            peg.pulse = 1.0;
-
-            if (peg.type === 'data') p.packets += 6;
-            if (peg.type === 'neon') p.packets += 30;
-            if (peg.type === 'amp') p.amp += 0.3;
-            if (peg.type === 'bumper') { p.packets += 12; p.amp += 0.15; }
-            if (peg.type === 'crypto') {
-              this.crypto += 1;
-              this.emitPopup(peg.x, peg.y - 10, "+$1 CRYPTO", "#ffb700");
-            }
-
-            AudioBus.bounceSound(peg.type);
-
-            for (let node of this.installedNodes) {
-              if (node.onBounce) node.onBounce(p, peg, this);
-            }
-            break;
-          }
-        }
-
-        // Terminal Bins
-        if (p.y > 585) {
-          let landed = this.bins.find(b => p.x >= b.x && p.x <= b.x + b.w) || this.bins[0];
-          landed.highlight = 1.0;
-          p.amp *= landed.mult;
-
-          for (let node of this.installedNodes) {
-            if (node.onLand) node.onLand(p, landed, this);
-          }
-
-          const evaluatedBits = Math.floor(p.packets * p.amp);
-          this.exfiltratedBits += evaluatedBits;
-          this.lastPackets = p.packets;
-          this.lastAmp = p.amp;
-
-          AudioBus.landSound(landed.mult);
-          this.emitPopup(p.x, 565, `+${evaluatedBits.toLocaleString()}`, "#00ff66");
-          this.payloads.splice(i, 1);
-
-          if (this.payloads.length === 0) {
-            this.evaluateRunOutcome();
-          }
-          this.refreshUI();
-        }
-      }
-    }
-
-    evaluateRunOutcome() {
-      if (this.exfiltratedBits >= this.quota) {
-        // Yield Crypto interest (1$ per 5$ held, up to 5$) + unused injections
-        const interest = Math.min(5, Math.floor(this.crypto / 5));
-        const payout = 4 + this.injectionsRemaining + interest;
-        this.crypto += payout;
-        this.openMarket();
-      } else if (this.injectionsRemaining <= 0 && this.payloads.length === 0) {
-        alert(`NETWORK INTRUSION FAILED // INSUFFICIENT DATA BITS\nSecurity Tier Reached: ${this.tier}\nTotal Bits: ${this.exfiltratedBits.toLocaleString()}`);
-        this.resetAll();
-      }
-    }
-
-    // =================================================================
-    // MARKET & FIRMWARE DECOMPILATION INTERFACES
-    // =================================================================
-    openMarket() {
-      this.generateMarketPicks();
-      this.renderMarket();
-      document.getElementById("tactical-overlay").style.display = "flex";
-      this.refreshUI();
-    }
-
-    generateMarketPicks() {
-      this.marketCaches = [...FIRMWARE_CACHES].sort(() => 0.5 - Math.random()).slice(0, 2).map(c => ({ ...c, consumed: false }));
-
-      const availableNodes = NODE_CATALOG.filter(n => !this.installedNodes.some(inNode => inNode.id === n.id));
-      const nodePicks = getCatalogSelection(availableNodes, 1, true);
-      const overridePicks = getCatalogSelection(OVERRIDE_CATALOG, 1, false);
-
-      this.marketHardware = [...nodePicks, ...overridePicks].map(item => ({ ...item, consumed: false }));
-    }
-
-    renderMarket() {
-      document.getElementById("market-crypto").innerText = `$${this.crypto}`;
-
-      // Render Caches
-      const cacheRack = document.getElementById("cache-rack");
-      cacheRack.innerHTML = "";
-      this.marketCaches.forEach(cache => {
-        const card = document.createElement("div");
-        card.className = `cache-unit ${cache.consumed ? 'consumed' : ''}`;
-        card.innerHTML = `
-          <div>
-            <div style="font-size: 11px; font-weight: bold; color: var(--cyan);">${cache.name}</div>
-            <div style="font-size: 9px; color: var(--dim); margin: 6px 0;">${cache.desc}</div>
-          </div>
-          <button ${this.crypto < cache.cost || cache.consumed ? 'disabled' : ''}>DECOMPILE ($${cache.cost})</button>
-        `;
-        card.querySelector("button").onclick = () => {
-          this.crypto -= cache.cost;
-          cache.consumed = true;
-          this.openCacheModal(cache);
-          this.renderMarket();
-          this.refreshUI();
-        };
-        cacheRack.appendChild(card);
-      });
-
-      // Render Individual Hardware
-      const hardwareRack = document.getElementById("hardware-rack");
-      hardwareRack.innerHTML = "";
-      this.marketHardware.forEach(item => {
-        const card = document.createElement("div");
-        card.className = `market-unit ${item.consumed ? 'consumed' : ''}`;
-
-        const isNode = !!item.onBounce || !!item.onLand;
-        const typeName = isNode ? "HARDWARE NODE" : "DIRECT OVERRIDE";
-        const synthPrefix = item.synthesis && item.synthesis.id !== 'standard' ? `[${item.synthesis.name}] ` : '';
-
-        card.innerHTML = `
-          <div>
-            <div style="display:flex; justify-content:space-between; font-size: 8px;">
-              <span style="color: var(--cyan); font-weight: bold;">${typeName}</span>
-              <span style="color: var(--amber); font-weight: bold;">$${item.cost}</span>
-            </div>
-            <div style="font-size: 11px; font-weight: bold; margin-top: 3px;">${synthPrefix}${item.name}</div>
-            <div style="font-size: 9px; color: var(--dim); margin-top: 4px;">${item.desc}</div>
-          </div>
-          <button style="margin-top: 6px;" ${this.crypto < item.cost || item.consumed ? 'disabled' : ''}>INTEGRATE</button>
-        `;
-
-        card.querySelector("button").onclick = () => {
-          if (isNode && this.installedNodes.length >= 5) return alert("Hardware Bus full (5 max)!");
-          if (!isNode && this.overrides.length >= 2) return alert("Override Cache full (2 max)!");
-
-          this.crypto -= item.cost;
-          item.consumed = true;
-
-          if (isNode) this.installedNodes.push(item);
-          else this.overrides.push(item);
-
-          this.renderMarket();
-          this.refreshUI();
-        };
-        hardwareRack.appendChild(card);
-      });
-
-      document.getElementById("btn-re-route").disabled = this.crypto < this.reRouteCost;
-    }
-
-    openCacheModal(cache) {
-      const modal = document.getElementById("cache-modal");
-      const title = document.getElementById("modal-cache-title");
-      const container = document.getElementById("modal-cache-options");
-
-      title.innerText = cache.name;
-      container.innerHTML = "";
-
-      const options = cache.unpack();
-      options.forEach(opt => {
-        const isNode = !!opt.onBounce || !!opt.onLand;
-        const card = document.createElement("div");
-        card.className = `firmware-card ${opt.synthesis ? opt.synthesis.css : ''}`;
-
-        const synthTag = opt.synthesis && opt.synthesis.id !== 'standard' ? 
-          `<div style="font-size: 8px; color: var(--cyan); font-weight: bold;">${opt.synthesis.name}</div>` : '';
-
-        card.innerHTML = `
-          <div>
-            <div style="font-size: 8px; color: var(--dim);">${isNode ? 'NODE' : 'OVERRIDE'}</div>
-            ${synthTag}
-            <div style="font-size: 12px; font-weight: bold; margin-top: 4px;">${opt.name}</div>
-            <div style="font-size: 9px; color: var(--dim); margin-top: 6px;">${opt.desc}</div>
-          </div>
-          <button style="width: 100%;">INSTALL</button>
-        `;
-
-        card.querySelector("button").onclick = () => {
-          if (isNode) {
-            if (this.installedNodes.length >= 5) return alert("Node Bus is full (5 Max)!");
-            this.installedNodes.push(opt);
-          } else {
-            if (this.overrides.length >= 2) return alert("Override memory is full (2 Max)!");
-            this.overrides.push(opt);
-          }
-          modal.style.display = "none";
-          this.refreshUI();
-        };
-        container.appendChild(card);
-      });
-
-      modal.style.display = "flex";
-    }
-
-    advanceProtocol() {
-      document.getElementById("tactical-overlay").style.display = "none";
-      this.stageIndex++;
-
-      if (this.stageIndex > 2) {
-        this.stageIndex = 0;
-        this.tier++;
-      }
-
-      // Quota Scaling
-      let baseTarget = Math.floor(1000 * Math.pow(1.5, this.tier - 1));
-      if (this.stageIndex === 0) {
-        this.quota = baseTarget;
-        this.activeDirective = null;
-      } else if (this.stageIndex === 1) {
-        this.quota = Math.floor(baseTarget * 1.4);
-        this.activeDirective = null;
-      } else if (this.stageIndex === 2) {
-        this.activeDirective = this.bossDirectives[Math.floor(Math.random() * this.bossDirectives.length)];
-        this.quota = Math.floor(baseTarget * 2.0);
-        if (this.activeDirective.quotaFactor) {
-          this.quota = Math.floor(this.quota * this.activeDirective.quotaFactor);
-        }
-      }
-
-      this.exfiltratedBits = 0;
-      this.injectionsRemaining = this.maxInjections;
-      this.gravityMod = 1.0;
-      this.initializeGrid();
-      this.refreshUI();
-    }
-
-    resetAll() {
-      this.tier = 1;
-      this.stageIndex = 0;
-      this.quota = 1000;
-      this.exfiltratedBits = 0;
-      this.injectionsRemaining = 4;
-      this.crypto = 7;
-      this.installedNodes = [];
-      this.overrides = [];
-      this.activeDirective = null;
-      this.gravityMod = 1.0;
-      this.initializeGrid();
-      this.refreshUI();
-    }
-
-    refreshUI() {
-      const stages = ["Trace Probe", "Subnet Scan", "COUNTERMEASURE BOSS"];
-      document.getElementById("ui-tier").innerText = `Tier ${this.tier} // ${stages[this.stageIndex]}`;
-      document.getElementById("ui-quota").innerText = this.quota.toLocaleString();
-      document.getElementById("ui-bits").innerText = this.exfiltratedBits.toLocaleString();
-      document.getElementById("ui-injections").innerText = this.injectionsRemaining;
-      document.getElementById("ui-crypto").innerText = `$${this.crypto}`;
-      document.getElementById("ui-last-packets").innerText = `${this.lastPackets} PKTS`;
-      document.getElementById("ui-last-amp").innerText = `${this.lastAmp.toFixed(1)}x AMP`;
-
-      const directiveTag = document.getElementById("directive-indicator");
-      if (this.stageIndex === 2 && this.activeDirective) {
-        directiveTag.innerText = this.activeDirective.name;
-      } else {
-        directiveTag.innerText = "COUNTERMEASURE: NONE DETECTED";
-      }
-
-      // Render Installed Node Tray
-      const nodesTray = document.getElementById("active-nodes");
-      nodesTray.innerHTML = "";
-      document.getElementById("ui-node-count").innerText = `${this.installedNodes.length} / 5`;
-
-      this.installedNodes.forEach((node, idx) => {
-        const item = document.createElement("div");
-        item.className = `node-item ${node.synthesis ? node.synthesis.css : ''}`;
-
-        const synthDisplay = node.synthesis && node.synthesis.id !== 'standard' ? 
-          `<span style="color: var(--cyan); font-weight: bold;">[${node.synthesis.name}] </span>` : '';
-
-        item.innerHTML = `
-          <div style="display:flex; justify-content:space-between; align-items:center;">
-            <span>${synthDisplay}${node.name}</span>
-            <span style="color: var(--crimson); font-size: 8px;">DUMP +$${Math.floor(node.cost / 2)}</span>
-          </div>
-          <div style="font-size: 8.5px; color: var(--dim); margin-top: 2px;">${node.desc}</div>
-        `;
-        item.onclick = () => {
-          this.crypto += Math.floor(node.cost / 2);
-          this.installedNodes.splice(idx, 1);
-          this.refreshUI();
-          if (document.getElementById("tactical-overlay").style.display === "flex") {
-            this.renderMarket();
-          }
-        };
-        nodesTray.appendChild(item);
-      });
-
-      // Render Overrides Tray
-      const overridesTray = document.getElementById("active-overrides");
-      overridesTray.innerHTML = "";
-      document.getElementById("ui-override-count").innerText = `${this.overrides.length} / 2`;
-
-      this.overrides.forEach((override, idx) => {
-        const item = document.createElement("div");
-        item.className = "node-item";
-        item.style.borderLeft = "3px solid var(--violet)";
-        item.innerHTML = `
-          <div style="display:flex; justify-content:space-between; align-items:center;">
-            <span style="color: var(--violet); font-weight: bold;">${override.name}</span>
-            <span style="color: var(--emerald); font-size: 8px;">EXECUTE</span>
-          </div>
-          <div style="font-size: 8.5px; color: var(--dim); margin-top: 2px;">${override.desc}</div>
-        `;
-        item.onclick = () => {
-          override.apply(this);
-          this.overrides.splice(idx, 1);
-          this.refreshUI();
-        };
-        overridesTray.appendChild(item);
-      });
-    }
-
-    // =================================================================
-    // RENDERING ENGINE
-    // =================================================================
-    renderGraphics() {
-      this.ctx.save();
-
-      if (this.shake > 0) {
-        this.ctx.translate(
-          (Math.random() - 0.5) * this.shake,
-          (Math.random() - 0.5) * this.shake
-        );
-      }
-
-      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
-      // Trajectory Targeting Laser
-      this.ctx.strokeStyle = "rgba(0, 240, 255, 0.15)";
-      this.ctx.setLineDash([4, 4]);
-      this.ctx.beginPath();
-      this.ctx.moveTo(this.launcherX, 0);
-      this.ctx.lineTo(this.launcherX, this.canvas.height);
-      this.ctx.stroke();
-      this.ctx.setLineDash([]);
-
-      // Shockwave Radii
-      this.shockwaves.forEach(sw => {
-        this.ctx.strokeStyle = `rgba(0, 240, 255, ${sw.life})`;
-        this.ctx.lineWidth = 2;
-        this.ctx.beginPath();
-        this.ctx.arc(sw.x, sw.y, sw.curRadius, 0, Math.PI * 2);
-        this.ctx.stroke();
-      });
-
-      // Interactive Pegs
-      this.pegs.forEach(p => {
-        this.ctx.beginPath();
-        const displayRadius = p.radius + (p.pulse * 2.5);
-        this.ctx.arc(p.x, p.y, displayRadius, 0, Math.PI * 2);
-
-        if (p.pulse > 0.05) {
-          this.ctx.fillStyle = "#fff";
-          this.ctx.shadowColor = "#00f0ff";
-          this.ctx.shadowBlur = 12;
-        } else if (p.type === 'neon') {
-          this.ctx.fillStyle = "#00ff66";
-          this.ctx.shadowColor = "#00ff66";
-          this.ctx.shadowBlur = 6;
-        } else if (p.type === 'amp') {
-          this.ctx.fillStyle = "#ff0055";
-          this.ctx.shadowColor = "#ff0055";
-          this.ctx.shadowBlur = 6;
-        } else if (p.type === 'bumper') {
-          this.ctx.fillStyle = "#9d00ff";
-          this.ctx.shadowColor = "#9d00ff";
-          this.ctx.shadowBlur = 8;
-        } else if (p.type === 'crypto') {
-          this.ctx.fillStyle = "#ffb700";
-          this.ctx.shadowColor = "#ffb700";
-          this.ctx.shadowBlur = 6;
-        } else {
-          this.ctx.fillStyle = "#121b28";
-          this.ctx.shadowBlur = 0;
-        }
-
-        this.ctx.fill();
-        this.ctx.shadowBlur = 0;
-      });
-
-      // Terminal Landing Bins
-      this.bins.forEach(b => {
-        this.ctx.fillStyle = b.highlight > 0 ? `rgba(0, 255, 102, ${b.highlight * 0.3})` : "#040910";
-        this.ctx.fillRect(b.x, b.y, b.w, b.h);
-        this.ctx.strokeStyle = b.mult >= 2.0 ? "#ffb700" : "#142030";
-        this.ctx.strokeRect(b.x, b.y, b.w, b.h);
-
-        this.ctx.fillStyle = b.mult >= 2.0 ? "#ffb700" : "#576574";
-        this.ctx.font = "bold 12px monospace";
-        this.ctx.textAlign = "center";
-        this.ctx.fillText(`${b.mult.toFixed(1)}x`, b.x + b.w / 2, b.y + 32);
-      });
-
-      // Data Payloads
-      this.payloads.forEach(p => {
-        // Trail
-        this.ctx.beginPath();
-        for (let i = 0; i < p.trail.length; i++) {
-          const pt = p.trail[i];
-          if (i === 0) this.ctx.moveTo(pt.x, pt.y);
-          else this.ctx.lineTo(pt.x, pt.y);
-        }
-        this.ctx.strokeStyle = "rgba(0, 240, 255, 0.4)";
-        this.ctx.lineWidth = 2;
-        this.ctx.stroke();
-
-        // Sphere
-        this.ctx.beginPath();
-        this.ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-        this.ctx.fillStyle = "#fff";
-        this.ctx.shadowColor = "#00f0ff";
-        this.ctx.shadowBlur = 10;
-        this.ctx.fill();
-        this.ctx.shadowBlur = 0;
-
-        // Diagnostic readout tags floating over payload
-        this.ctx.font = "bold 9px monospace";
-        this.ctx.textAlign = "center";
-        this.ctx.fillStyle = "#00f0ff";
-        this.ctx.fillText(`${p.packets}`, p.x, p.y - 14);
-        this.ctx.fillStyle = "#ff0055";
-        this.ctx.fillText(`${p.amp.toFixed(1)}x`, p.x, p.y - 5);
-      });
-
-      // Floating Evaluation Popups
-      this.popups.forEach(pop => {
-        this.ctx.fillStyle = pop.color;
-        this.ctx.globalAlpha = pop.life;
-        this.ctx.font = "bold 11px monospace";
-        this.ctx.textAlign = "center";
-        this.ctx.fillText(pop.text, pop.x, pop.y);
-      });
-      this.ctx.globalAlpha = 1.0;
-
-      // Injection Point Port
-      this.ctx.fillStyle = "#00f0ff";
-      this.ctx.fillRect(this.launcherX - 10, 0, 20, 6);
-
-      this.ctx.restore();
-    }
-  }
-
-  // Initialize the platform instance
-  new SystemEngine();
-});
-</script>
-</body>
-</html>
+'use strict';
+const $=s=>document.querySelector(s),W=400,H=560,KEY='dead_drop_afterlife_v1',COL=['#eee7ff','#68baff','#ff5876','#ffcf65','#ff965b','#72e5ab'];
+const safeRead=()=>{try{return JSON.parse(localStorage.getItem(KEY))||{}}catch{return {}}};
+let store=safeRead();store.meta=Object.assign({runs:0,wins:0,best:0,total:0,unlocks:['plain'],relics:[],stakes:{},feats:{},records:[],daily:{}},store.meta||{});let M=store.meta,S=null,B=null,P=[],screen='menu',canvas,ctx,aim=200,drag=false,acc=0,last=0,effects=[],floats=[],trail=[],audio,mute=!!store.mute,paused=false,selected='plain',selectedHeat=0,toastTimer,fxTime=0;
+function persist(){try{localStorage.setItem(KEY,JSON.stringify(store))}catch{}}
+function save(){if(S)store.run=JSON.parse(JSON.stringify(S));persist()}
+function toast(t){$('#toast').textContent=t;$('#toast').style.display='block';clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('#toast').style.display='none',4200)}
+function sound(f=400,d=.07,type='triangle'){if(mute)return;try{audio=audio||new(window.AudioContext||window.webkitAudioContext)();audio.resume();let o=audio.createOscillator(),v=audio.createGain();o.type=type;o.frequency.value=f;v.gain.setValueAtTime(.035,audio.currentTime);v.gain.exponentialRampToValueAtTime(.001,audio.currentTime+d);o.connect(v).connect(audio.destination);o.start();o.stop(audio.currentTime+d)}catch{}}
+function hash(str){let h=2166136261;for(let c of String(str))h=Math.imul(h^c.charCodeAt(0),16777619);return h>>>0}
+function rng(seed){let a=seed>>>0;return()=>{a+=0x6D2B79F5;let t=a;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return((t^t>>>14)>>>0)/4294967296}}
+function random(){S.rand=(S.rand+0x6D2B79F5)>>>0;let t=S.rand;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return((t^t>>>14)>>>0)/4294967296}
+const date=()=>new Date().toISOString().slice(0,10),fmt=n=>!Number.isFinite(n)?'MAX':n>=1e12?n.toExponential(2):Math.round(n).toLocaleString(),clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+// Each orb changes the decision space, not a permanent account-wide power stat.
+const ORBS=[
+['plain','◉','Origin','+12 starting chips. Unused nudges grant +0.6 mult each. The first shop reroll is free.','Always available'],
+['ruby','◆','Ruby','Red pegs give +1 mult. Start with Red Rain. One fewer nudge.','Clear 4 boss rounds across runs'],
+['gilded','●','Gilded','Start with $18. Gold pegs pay +$1. Interest cap rises to $8.','Finish a round holding $60'],
+['spring','↟','Spring','More spring pegs, +2 nudges. Springs grant +1 mult.','Hit 60 spring pegs across runs'],
+['marksman','◎','Marksman','Called shots pay ×4. Misses pay ×0.7 instead of ×0.6.','Land 12 called shots across runs'],
+['demolition','✹','Demolition','Bombs give +1 mult, larger blasts. Start with Bomb Squad.','Detonate 100 bombs across runs'],
+['phoenix','♧','Phoenix','One revival per run with 2 balls. Each revival permanently adds ×1.3 for this run.','Fail 6 runs after reaching round 6'],
+['grave','†','Graveborn','Grave scores ×3 and grants +0.25 permanent mult per landing. Edges score ×0.5.','Land in the grave 35 times across runs'],
+['glass','◇','Glass','All scores ×2.3, but one fewer ball each round.','Score 2,500 with one ball'],
+['scholar','▤','Scholar','All slot upgrades cost $2 less. Start with a blue-slot upgrade and +5 chips.','Buy 12 slot upgrades across runs'],
+['merchant','¤','Merchant','Relics cost 20% less. Start with one fewer relic slot. Selling pays 70% of cost.','Spend $250 across runs'],
+['storm','ϟ','Storm','Every nudge grants +2 mult. +2 nudges; balls start with only 0.5 mult.','Win a run using at least 25 nudges'],
+['echo','≋','Echo','First 3 scoring peg hits each ball trigger twice. -1 ball each round.','Win with 3 relics or fewer'],
+['astral','✧','Astral','Boss rewards include a free rare relic choice. Start with +1 relic slot.','Win with 4 different orbs'],
+['chaos','※','Chaos','Peg colours reroll each ball. All scores ×1.5. Start with a random rare relic.','Win a seeded challenge run'],
+['eclipse','◑','Eclipse','Only 2 balls. All scores ×3. Grave scores ×2. +2 relic slots.','Win Heat 3 with any orb']];
+const orb=()=>ORBS.find(x=>x[0]===S.orb),has=id=>S.relics.some(x=>x.id===id)&&S.lockedRelic!==id,owned=id=>S.lockedRelic===id?undefined:S.relics.find(x=>x.id===id);
+// id, icon, name, family, rarity, price, exact rule
+const R=[
+['heavy','●','Heavy Ball','chip',0,7,'+2 chips per scoring peg.'],['sapphire','◆','Sapphire','chip',0,8,'Blue pegs give +14 chips instead of +6.'],['headstart','↗','Head Start','chip',0,7,'Every ball starts with +20 chips.'],['ruby','♦','Ruby Dust','mult',0,9,'Red pegs give +2 additional mult.'],['midas','¤','Midas Touch','gold',0,8,'Gold pegs pay +$2.'],['spare','◉','Spare Ball','skill',1,13,'+1 ball per round.'],['hands','↔','Steady Hands','skill',0,7,'+2 nudges per ball.'],['edge','♜','Edge Lord','slot',1,12,'Edge slots score ×2.'],['grave','†','Grave Robber','slot',0,8,'Grave has at least a ×1 base payout.'],['pig','¤','Piggy Bank','gold',0,9,'Interest earns $1 per $4 held, instead of per $5.'],['bounce','↟','Bouncy Castle','spring',0,7,'More bounce. Spring hits also give +4 chips.'],['snow','❄','Snowball','mult',1,15,'Every scoring peg gives +0.2 mult.'],['crown','♛','Crown','mult',2,24,'Final score ×1.6.'],['rain','⋮','Red Rain','mult',0,8,'Red peg chance +15 percentage points.'],['bombs','✹','Bomb Squad','bomb',0,9,'Bomb chance +9 percentage points. Bombs trigger nearby pegs.'],['springs','↟','Spring Loaded','spring',0,8,'Spring chance +10 percentage points.'],['cape','∞','Combo Cape','chain',0,9,'Each timed chain gives +2 mult instead of +1.'],['roller','◎','High Roller','skill',1,14,'Called payout ×4. Miss payout ×1.'],['wind','♧','Second Wind','skill',1,15,'Once per run, failure grants 2 more balls.'],['tax','¤','Tax Collector','gold',0,8,'Grave pays +$5.'],['seven','7','Lucky Seven','mult',0,9,'The seventh scoring peg gives +5 mult.'],['streak','♨','Hot Streak','chain',1,12,'Each non-grave streak step gives +0.5 starting mult.'],['feather','≈','Featherweight','skill',0,7,'Lower gravity. +1 nudge.'],['glass','◇','Glass Cannon','mult',1,16,'Final score ×2. One fewer ball per round.'],['detonator','✹','Detonator','bomb',0,10,'Every bomb gives +1.5 mult.'],['wreck','◈','Wrecking Ball','bomb',1,13,'Bomb radius increases from 58 to 100.'],['rush','♛','Gold Rush','gold',1,13,'Gold pegs also give +2 mult.'],['hoard','▣','Hoarder','gold',1,15,'+0.5 starting mult per $5 held at drop time.'],['prism','✧','Prism','chain',1,14,'Hit white, blue, red and gold in a ball: +8 mult.'],['compound','↗','Compound Engine','chip',1,15,'Final score ×(1 + 0.10 per round cleared while owned).'],['collector','◆','Collector Gem','chip',1,13,'+1 starting chip per ball dropped in this run.'],['chain','∞','Chain Reaction','chain',1,13,'Timed chains trigger every 3 pegs, not 5.'],['wizard','↟','Pinball Wizard','spring',1,13,'Spring hits give +2 mult.'],['pocket','¤','Pocket Change','gold',0,8,'Earn $1 per 8 scoring pegs hit by a ball.'],['overdrive','ϟ','Overdrive','skill',1,14,'Each nudge gives +2 mult.'],['jackpot','★','Jackpot Hunter','slot',1,14,'The jackpot slot scores ×2 more.'],['momentum','↗','Momentum','mult',1,15,'+1 starting mult per round cleared.'],['thief','†','Grave Pact','slot',1,12,'Grave keeps your streak and pays +$2.'],['void','◑','Void Pockets','slot',0,8,'Edge landings pay $3.'],
+['abacus','▤','Abacus','chip',1,14,'Gains +3 starting chips after each ball that hits 12+ scoring pegs.'],['reactor','ϟ','Reactor','bomb',2,22,'Gains ×0.04 final score for each bomb triggered while owned.'],['vine','♧','Living Vine','spring',1,14,'Gains +0.15 starting mult per spring hit while owned.'],['sniper','◎','Deadeye','skill',2,21,'Gains ×0.25 final score per successful called shot while owned.'],['bank','▣','Vault Engine','gold',2,22,'Final score ×(1 + current gold / 60), capped at ×3.'],['hollow','◌','Hollow Crown','slot',2,23,'Final score ×1.25 for each empty relic slot.'],['mirror','≋','Mirror Shard','chain',2,23,'First 5 scoring peg hits each ball trigger twice.'],['bloom','✿','Bloom','chain',1,15,'Final score ×1.6 if all 4 base peg colours were hit.'],['anvil','▰','Anvil','chip',1,13,'+50 starting chips. -1 nudge.'],['execution','†','Executioner','slot',2,24,'Final score ×2.5 on a grave landing.'],['singularity','◉','Singularity','mult',3,34,'Final score ×3, but all ordinary white pegs give no chips.'],['architect','▤','Architect','slot',1,16,'Each purchased slot upgrade adds +0.5 starting mult.'],['catalyst','✧','Catalyst','chain',2,22,'Family set bonuses become ×1.8 at 3 relics or ×3 at 5.'],['clock','◷','Patient Zero','skill',1,12,'Each unused nudge gives +1 mult when the ball lands.'],['rebate','¤','Rebate','gold',0,9,'Every relic purchase refunds $2 after paying its full price.'],['interest','↗','Long Game','mult',2,21,'Gains ×0.15 final score after each round cleared while owned.'],['comet','☄','Comet','chip',1,13,'Ball starts with +6 chips per current streak step.'],['undertaker','†','Undertaker','slot',1,14,'Gains +0.5 starting mult per grave landing while owned.'],['split','◈','Split Dividend','gold',1,14,'Each successful call pays $4.'],['bargain','¤','Devil’s Bargain','mult',2,20,'Final score ×2.2. Round clear reward is $3 lower.'],['precision','◎','Precision','skill',1,14,'Called shots gain +5 mult before slot payout.']];
+const byId=Object.fromEntries(R.map(r=>[r[0],r])),rarity=['COMMON','UNCOMMON','RARE','LEGENDARY'];
+function relicText(x){let r=byId[x.id],extra='';if(x.id==='abacus')extra=` Now +${x.v||0} chips.`;if(['reactor','sniper','interest'].includes(x.id))extra=` Now ×${(1+(x.v||0)).toFixed(2)}.`;if(['vine','undertaker'].includes(x.id))extra=` Now +${(x.v||0).toFixed(2)} mult.`;if(x.id==='compound')extra=` Now ×${(1+.1*(x.v||0)).toFixed(2)}.`;return r[6]+extra}
+function capacity(){return S.slots}
+function stats(){let t={cp:1,blue:6,red:1,gold:1,balls:4,nudges:2,chips:0,mult:1,x:1,gravity:950,bounce:.55,redChance:.10,bombChance:.035,springChance:.035,radius:58,call:2.5,miss:.6,edge:1,grave:0,interestCap:5,interestDiv:5};
+switch(S.orb){case'plain':t.chips=12;break;case'ruby':t.red++;t.nudges--;break;case'gilded':t.gold++;t.interestCap=8;break;case'spring':t.springChance+=.12;t.nudges+=2;break;case'marksman':t.call=4;t.miss=.7;break;case'demolition':t.radius=85;break;case'grave':t.grave=3;t.edge=.5;t.mult+=S.graveGrowth;break;case'glass':t.x*=2.3;t.balls--;break;case'scholar':t.chips+=5;break;case'storm':t.nudges+=2;t.mult=.5;break;case'echo':t.balls--;break;case'chaos':t.x*=1.5;break;case'eclipse':t.balls=2;t.x*=3;t.grave=2;break}
+if(S.orb==='phoenix'&&S.revival)t.x*=1.3;
+for(let a of S.relics){if(a.id===S.lockedRelic)continue;switch(a.id){case'heavy':t.cp+=2;break;case'sapphire':t.blue=14;break;case'headstart':t.chips+=20;break;case'ruby':t.red+=2;break;case'midas':t.gold+=2;break;case'spare':t.balls++;break;case'hands':t.nudges+=2;break;case'edge':t.edge*=2;break;case'grave':t.grave=Math.max(1,t.grave);break;case'pig':t.interestDiv=4;break;case'bounce':t.bounce=.78;break;case'crown':t.x*=1.6;break;case'rain':t.redChance+=.15;break;case'bombs':t.bombChance+=.09;break;case'springs':t.springChance+=.10;break;case'roller':t.call=Math.max(t.call,4);t.miss=1;break;case'streak':break;case'feather':t.gravity=700;t.nudges++;break;case'glass':t.x*=2;t.balls--;break;case'wreck':t.radius=100;break;case'hoard':t.mult+=Math.floor(S.gold/5)*.5;break;case'compound':t.x*=1+.1*(a.v||0);break;case'collector':t.chips+=S.drops;break;case'momentum':t.mult+=S.round-1;break;case'abacus':t.chips+=a.v||0;break;case'reactor':case'sniper':case'interest':t.x*=1+(a.v||0);break;case'vine':case'undertaker':t.mult+=a.v||0;break;case'bank':t.x*=Math.min(3,1+S.gold/60);break;case'hollow':t.x*=Math.pow(1.25,Math.max(0,capacity()-S.relics.length));break;case'anvil':t.chips+=50;t.nudges--;break;case'singularity':t.x*=3;break;case'architect':t.mult+=.5*S.upgrades.reduce((a,b)=>a+b,0);break;case'comet':t.chips+=S.streak*6;break;case'bargain':t.x*=2.2;break}}
+t.mult+=S.streak*(has('streak')?.5:.2);const families={};S.relics.filter(x=>x.id!==S.lockedRelic).forEach(x=>families[byId[x.id][3]]=(families[byId[x.id][3]]||0)+1);for(let n of Object.values(families))if(n>=3)t.x*=n>=5?(has('catalyst')?3:2.5):(has('catalyst')?1.8:1.5);
+t.balls=Math.max(1,t.balls-(S.heat>=2?1:0));t.nudges=Math.max(0,t.nudges);return t}
+const BOSSES=[['Crosswind','Gusts push the ball sideways.'],['Blackout','Peg colours stay hidden until hit.'],['Taxman','Gold pegs pay no cash this round.'],['Crumble','Hit pegs disappear until the next round.'],['Undertow','The ball is pulled toward the grave.'],['Embargo','Called shots are disabled.'],['Reaper','Wind, two extra dead slots, and a steeper target.']];
+function bossFor(r){return r%3?null:(r===12?6:Math.floor(rng(S.seed+r*571)()*6))}
+function target(){let n=65*Math.pow(1.48,S.round-1)*(1+.18*S.heat)*(S.round%3===0?1.18:1);if(S.round>12)n*=Math.pow(1.12,S.round-12);return Math.round(n/5)*5}
+function unlockCheck(){const F=M.feats;let tests={ruby:(F.bosses||0)>=4,gilded:(F.maxGold||0)>=60,spring:(F.springs||0)>=60,marksman:(F.calls||0)>=12,demolition:(F.bombs||0)>=100,phoenix:(F.deepLosses||0)>=6,grave:(F.graves||0)>=35,glass:(F.ball||0)>=2500,scholar:(F.upgrades||0)>=12,merchant:(F.spent||0)>=250,storm:!!F.storm,echo:!!F.minimal,astral:Object.keys(M.stakes).length>=4,chaos:!!F.seedWin,eclipse:!!F.heat3};for(let [id,ok]of Object.entries(tests))if(ok&&!M.unlocks.includes(id)){M.unlocks.push(id);toast('ORB UNLOCKED: '+ORBS.find(x=>x[0]===id)[2])}persist()}
+function feat(k,n=1){if(S.mode==='practice')return;M.feats[k]=(M.feats[k]||0)+n}
+function maximum(k,n){if(S.mode!=='practice')M.feats[k]=Math.max(M.feats[k]||0,n)}
+function addRelic(id){S.relics.push({id,v:0});if(!M.relics.includes(id)){M.relics.push(id);persist()}sound(700,.12)}
+function initRun(mode='free',seedText=''){let day=date(),seed=mode==='daily'?hash('afterlife:'+day):seedText?(/^\d+$/.test(seedText)?Number(seedText)>>>0:hash(seedText)):hash(String(Date.now())+Math.random());let id=mode==='daily'?ORBS[seed%ORBS.length][0]:selected,heat=mode==='daily'?0:selectedHeat;
+S={version:1,seed,seedText:seedText||String(seed),rand:seed,mode,day,orb:id,heat,round:1,score:0,rs:0,gold:id==='gilded'?18:6,relics:[],slots:id==='merchant'?4:id==='astral'?6:id==='eclipse'?7:5,upgrades:[0,0,0,0,0,0,0],streak:0,drops:0,bestBall:0,calls:0,nudgesUsed:0,graveGrowth:0,revival:false,windUsed:false,won:false,ended:false,rr:0,phase:'starter',crumbled:[],log:[],lastBall:null,shopNumber:0};if(id==='ruby')addRelic('rain');if(id==='demolition')addRelic('bombs');if(id==='scholar')S.upgrades[1]=1;if(id==='chaos'){let pool=R.filter(x=>x[4]===2);addRelic(pool[Math.floor(random()*pool.length)][0])}M.runs++;S.offers=makeOffers(3,true);save();starter()}
+function price(id){let r=byId[id],p=r[5]+Math.floor((S.round-1)/3)*2+(S.heat>=4?2:0);return Math.max(1,Math.ceil(p*(S.orb==='merchant'?.8:1)))}
+function makeOffers(n=3,starterOnly=false){let pool=R.filter(r=>!has(r[0])&&(!starterOnly||r[4]<2)),out=[];while(out.length<n&&pool.length){let weights=pool.map(r=>[12,5,1.5,.22][r[4]]),sum=weights.reduce((a,b)=>a+b,0),v=random()*sum,i=0;while(v>weights[i]&&i<pool.length-1)v-=weights[i++];out.push(pool.splice(i,1)[0][0])}return out}
+function startRound(){S.phase='play';S.rs=0;S.boss=bossFor(S.round);S.left=stats().balls;S.call=-1;S.crumbled=[];S.roundDrops=0;S.jackpot=Math.floor(rng(S.seed+S.round*19)()*6);S.jackpot=[0,1,2,4,5,6][S.jackpot];S.rerollFree=false;P=makeBoard();B=null;paused=false;screen='play';save();playUI();if(S.boss!==null)toast('BOSS: '+BOSSES[S.boss][0]+' — '+BOSSES[S.boss][1])}
+function makeBoard(){descentState();let act=Math.min(3,Math.ceil(S.round/4)),r=rng(S.seed+act*977),a=[];for(let j=0;j<11;j++)for(let x=j%2?40:20;x<W;x+=40){let y=105+j*35,key=x+','+y;if(act===2&&j>2&&j<8&&Math.abs(x-200)<35&&!S.edits[key])continue;if(act===3&&(j+Math.floor(x/20))%7===0&&!S.edits[key])continue;let e=S.edits[key]||{},t=pegType(r());if(e.remove)continue;if(e.paint!==undefined)t=e.paint;a.push({x,y,r:5,id:a.length,key,t,originalType:t,hit:false,gone:false,glow:0,reinforced:!!e.reinforced,bumper:e.bumper||0,link:e.link||null})}for(let k=1;k<7;k++)a.push({x:k*W/7,y:500,r:4,id:a.length,t:-1,hit:false,gone:false,glow:0});for(let p of a)if(S.crumbled.includes(p.id))p.gone=true;return a}
+function pegType(v){let t=stats(),a=t.redChance,b=a+.08,c=b+.12,d=c+t.bombChance,e=d+t.springChance;return v<a?2:v<b?3:v<c?1:v<d?4:v<e?5:0}
+function slotValue(i){let base=[5,2,1,0,1,2,5][i];if(S.boss===6&&(i===2||i===4))base=0;if(i===S.jackpot)base=8;if(i===3)base=stats().grave;return base+S.upgrades[i]*.5}
+function playUI(){screen='play';$('#app').innerHTML=`<div class="layout"><main><div class="stats"><div class="stat"><small>ROUND ${S.round}/12</small><b>${S.round%3===0?'BOSS':'DROP'}</b></div><div class="stat"><small>RUN SCORE</small><b id="total"></b></div><div class="stat"><small>GOLD</small><b id="gold"></b></div><div class="stat"><small>BALLS</small><b id="left"></b></div></div><div class="progress"><i id="progress"></i><span id="progressLabel"></span></div><div class="scoreline"><span class="chip" id="chips">0</span>×<span class="mult" id="mult">1</span><span class="tiny muted" id="nudgeLabel"></span></div><canvas id="board" width="400" height="560" aria-label="Aim and release to drop. Tap beside a falling ball to nudge."></canvas><div class="row between hudbuttons" style="margin-top:8px"><span class="tiny muted">${orb()[1]} ${orb()[2]} · HEAT ${S.heat}</span><button onclick="pauseMenu()">PAUSE / HELP</button></div><p class="tiny muted" id="callLabel"></p></main><aside><div class="panel"><h3>${S.boss===null?'BUILD YOUR ENGINE':BOSSES[S.boss][0]}</h3><p class="tiny ${S.boss===null?'muted':'boss'}">${S.boss===null?'Aim, release, nudge. Call a slot for a risky bonus.':BOSSES[S.boss][1]}</p><div id="relics"></div></div><div class="panel" style="margin-top:10px"><h3>LAST BALL</h3><div id="lastBall" class="breakdown">Your scoring breakdown appears here.</div></div><div class="panel" style="margin-top:10px"><h3>RUN EVENTS</h3><div id="events" class="log"></div></div></aside></div>`;canvas=$('#board');ctx=canvas.getContext('2d');bindCanvas();renderOwned(false);hud();renderLast()}
+function renderLast(){if(!$('#lastBall'))return;let a=S.lastBall;$('#lastBall').innerHTML=a?`${fmt(a.chips)} chips × ${a.mult.toFixed(2)} mult<br>× ${a.slot.toFixed(2)} slot × ${a.engine.toFixed(2)} engine<br><span class="money">${fmt(a.pts)} round points</span>${S.heat?`<br>${fmt(a.runPts)} run score after Heat bonus`:''}<br><span class="muted">${a.hits} scoring triggers · ${a.reason}</span>`:'Your scoring breakdown appears here.';$('#events').innerHTML=S.log.slice(-8).reverse().join('<br>')}
+function hud(){if(screen!=='play'||!$('#total'))return;let t=stats();$('#total').textContent=fmt(S.score);$('#gold').textContent='$'+S.gold;$('#left').textContent=S.left;$('#progress').style.width=Math.min(100,100*S.rs/target())+'%';$('#progressLabel').textContent=fmt(S.rs)+' / '+fmt(target());$('#chips').textContent=fmt(B?B.chips:t.chips);$('#mult').textContent=(B?B.mult:t.mult).toFixed(2);$('#nudgeLabel').textContent=(B?B.nudges:t.nudges)+' NUDGES';$('#callLabel').textContent=(B?B.call:S.call)>=0?'CALLED SLOT '+((B?B.call:S.call)+1)+' · hit ×'+t.call+' / miss ×'+t.miss:'Tap a bottom slot to CALL it · keyboard: 1–7 · arrows/A/D to aim or nudge · space to drop';}
+function drop(){if(B||screen!=='play'||paused||S.left<1||S.phase!=='play')return;let t=stats();S.ballCheckpoint=JSON.parse(JSON.stringify({...S,ballCheckpoint:undefined}));for(let p of P){p.hit=false;p.hitCount=0;p.lastContact=-1;p.glow=0;if(S.orb==='chaos'&&p.t>=0)p.t=S.edits?.[p.key]?.paint??pegType(random())}S.left--;S.drops++;S.roundDrops++;B={x:aim,y:23,vx:(random()-.5)*16,vy:0,chips:t.chips,mult:t.mult,nudges:t.nudges,initialNudges:t.nudges,call:S.call,t:0,still:0,hits:0,physicalHits:0,chain:0,lastHit:-10,colours:0,prism:false,bombs:0,springs:0,goldHits:0};S.call=-1;S.phase='falling';save();sound(250)}
+function nudge(dir){if(!B||paused||B.nudges<=0)return;B.nudges--;S.nudgesUsed++;B.vx+=dir*145;B.vy=Math.min(B.vy,0)-65;B.mult+=(has('overdrive')?2:0)+(S.orb==='storm'?2:0);sound(600);particles(B.x,B.y,'#fff',6)}
+function particles(x,y,c,n=6){if(store.settings?.reduced)return;for(let k=0;k<n;k++)effects.push({x,y,c,vx:(Math.random()-.5)*150,vy:(Math.random()-.7)*130,life:1})}
+function float(x,y,text,c='#fff'){floats.push({x,y,text,c,life:1})}
+function gainRelic(id,n){let x=owned(id);if(x)x.v=(x.v||0)+n}
+function trigger(p){let t=stats(),b=B;b.hits++;if(p.t===0){if(!has('singularity'))b.chips+=t.cp}else if(p.t===1)b.chips+=t.blue;else b.chips+=t.cp;
+if(p.t===2)b.mult+=t.red;if(p.t===3){b.goldHits++;if(S.boss!==2)S.gold+=t.gold;if(has('rush'))b.mult+=2}
+if(p.t===4){b.bombs++;b.mult+=(has('detonator')?1.5:0)+(S.orb==='demolition'?1:0);gainRelic('reactor',.04);feat('bombs')}
+if(p.t===5){b.springs++;b.mult+=(has('wizard')?2:0)+(S.orb==='spring'?1:0);if(has('bounce'))b.chips+=4;gainRelic('vine',.15);feat('springs')}
+if(p.t<4)b.colours|=1<<p.t;if(b.colours===15&&!b.prism){b.prism=true;if(has('prism')){b.mult+=8;float(p.x,p.y,'PRISM +8','#72e5ab')}}
+if(has('snow'))b.mult+=.2;if(b.hits===7&&has('seven'))b.mult+=5;b.chain=b.t-b.lastHit<.5?b.chain+1:1;b.lastHit=b.t;if(b.chain%(has('chain')?3:5)===0){let bonus=has('cape')?2:1;b.mult+=bonus;float(p.x,p.y,'CHAIN +'+bonus,'#ffcf65')}
+}
+function hit(p){p.hit=true;p.glow=1;B.physicalHits++;if(S.boss===3){p.gone=true;S.crumbled.push(p.id)}trigger(p);if(B.physicalHits<=(has('mirror')?5:0)+(S.orb==='echo'?3:0))trigger(p);sound(280+Math.min(30,B.physicalHits)*20,.035);particles(p.x,p.y,COL[p.t],3);if(p.t===4){particles(p.x,p.y,COL[4],15);for(let q of P)if(q!==p&&q.t>=0&&!q.hit&&!q.gone&&Math.hypot(q.x-p.x,q.y-p.y)<stats().radius)hit(q)}}
+function step(dt){let b=B,t=stats();b.t+=dt;b.vy=Math.min(880,b.vy+t.gravity*dt);if(S.boss===0||S.boss===6)b.vx+=Math.sin(b.t*1.7+S.round)*180*dt;if(S.boss===4)b.vx+=(200-b.x)*1.6*dt;b.x+=b.vx*dt;b.y+=b.vy*dt;if(b.x<7){b.x=7;b.vx=Math.abs(b.vx)*.65}if(b.x>393){b.x=393;b.vx=-Math.abs(b.vx)*.65}
+for(let p of P){if(p.gone)continue;let dx=b.x-p.x,dy=b.y-p.y;if(Math.abs(dx)>14||Math.abs(dy)>14)continue;let d=Math.hypot(dx,dy),m=p.r+7;if(d<m&&d>0){let nx=dx/d,ny=dy/d,v=b.vx*nx+b.vy*ny;b.x=p.x+nx*m;b.y=p.y+ny*m;if(v<0){let e=p.t===5?1.35:t.bounce;b.vx-=(1+e)*v*nx;b.vy-=(1+e)*v*ny;b.vx+=(random()-.5)*32}if(p.t>=0&&(!p.hit||(p.reinforced&&(p.hitCount||0)<2&&b.t-(p.lastContact||0)>.18)))hit(p)}}
+if(Math.hypot(b.vx,b.vy)<25)b.still+=dt;else b.still=0;if(b.still>.4){b.vx+=(random()-.5)*220;b.still=0}if(b.y>535||b.t>18)land()}
+function land(){let b=B,t=stats(),i=clamp(Math.floor(b.x/(W/7)),0,6),slot=slotValue(i),reason='slot '+(i+1);if(i===0||i===6)slot*=t.edge;if(i===S.jackpot&&has('jackpot'))slot*=2;
+if(b.call>=0){if(i===b.call){slot*=t.call;S.calls++;feat('calls');gainRelic('sniper',.25);if(has('precision'))b.mult+=5;if(has('split'))S.gold+=4;reason='CALLED! slot '+(i+1);float(b.x,430,'CALLED!','#72e5ab')}else{slot*=t.miss;reason='missed call'}}
+b.mult+=b.nudges*((S.orb==='plain'?.6:0)+(has('clock')?1:0));let engine=stats().x;if(has('bloom')&&b.colours===15)engine*=1.6;if(has('execution')&&i===3)engine*=2.5;
+let pts=Math.min(1e300,Math.round(b.chips*b.mult*slot*engine)),runPts=Math.round(pts*(1+.25*S.heat));S.rs=Math.min(1e300,S.rs+pts);S.score=Math.min(1e300,S.score+runPts);S.bestBall=Math.max(S.bestBall,pts);maximum('ball',pts);
+if(i===3){feat('graves');S.gold+=2+(has('tax')?5:0)+(has('thief')?2:0);if(!has('thief'))S.streak=0;if(S.orb==='grave')S.graveGrowth+=.25;gainRelic('undertaker',.5)}else S.streak++;
+if((i===0||i===6)&&has('void'))S.gold+=3;if(has('pocket'))S.gold+=Math.floor(b.hits/8);if(has('abacus')&&b.hits>=12)gainRelic('abacus',3);maximum('maxGold',S.gold);
+S.lastBall={chips:b.chips,mult:b.mult,slot,engine,pts,runPts,hits:b.hits,reason};S.log.push(`${reason}: ${fmt(pts)} points`);if(S.log.length>30)S.log.shift();float(b.x,465,'+'+fmt(pts),'#ffcf65');particles(b.x,510,'#ffcf65',22);B=null;S.phase='settle';delete S.ballCheckpoint;unlockCheck();save();renderOwned(false);renderLast();sound(pts>1000?900:550,.18);setTimeout(afterBall,store.settings?.fast?180:750)}
+function afterBall(){if(!S||S.phase!=='settle'||screen!=='play')return;if(S.rs>=target())clearRound();else if(S.left>0){S.phase='play';save()}else if((S.orb==='phoenix'&&!S.revival)||(has('wind')&&!S.windUsed)){if(S.orb==='phoenix'&&!S.revival)S.revival=true;else S.windUsed=true;S.left=2;S.phase='play';toast('SECOND WIND — 2 more balls');save()}else endRun()}
+function clearRound(){let t=stats(),interest=Math.min(t.interestCap,Math.floor(S.gold/t.interestDiv)),boss=S.round%3===0,reward=4+S.left+(boss?5:0)-(has('bargain')?3:0)-(S.heat>=1?1:0);S.gold+=Math.max(0,reward)+interest;S.reward=`Round ${S.round} cleared: +$${Math.max(0,reward)} reward +$${interest} interest.`;if(boss)feat('bosses');gainRelic('compound',1);gainRelic('interest',.15);maximum('maxGold',S.gold);S.round++;S.rr=0;S.shopNumber++;S.capacityBought=false;S.supplyBought=false;S.rerollFree=S.orb==='plain';S.offers=makeOffers();S.phase='shop';unlockCheck();if(S.round===13&&!S.won){recordVictory();S.phase='victory';save();victory()}else if(boss&&S.orb==='astral'){S.draft=R.filter(x=>x[4]===2&&!has(x[0])).sort(()=>0).map(x=>x[0]);let a=[];while(a.length<3&&S.draft.length)a.push(S.draft.splice(Math.floor(random()*S.draft.length),1)[0]);S.draft=a;S.phase='draft';save();draftUI()}else{save();shop()}}
+function recordVictory(){S.won=true;if(S.mode!=='practice'){M.wins++;M.stakes[S.orb]=Math.max(M.stakes[S.orb]??-1,S.heat);if(S.nudgesUsed>=25)M.feats.storm=true;if(S.relics.length<=3)M.feats.minimal=true;if(S.mode==='seed')M.feats.seedWin=true;if(S.heat>=3)M.feats.heat3=true;unlockCheck()}toast('THE REAPER FALLS — RUN CLEARED')}
+function finishRecord(){if(S.recorded)return;S.recorded=true;if(S.mode!=='practice'){M.best=Math.max(M.best,S.score);M.total+=S.score;let rec={score:S.score,round:S.round,orb:S.orb,heat:S.heat,mode:S.mode,seed:S.seedText,won:S.won,date:date()};M.records.unshift(rec);M.records=M.records.slice(0,30);if(S.mode==='daily')M.daily[S.day]=Math.max(M.daily[S.day]||0,S.score)}persist()}
+function endRun(){if(S.round>=6&&!S.won)feat('deepLosses');S.ended=true;S.phase='over';finishRecord();unlockCheck();save();gameOver()}
+function root(h){$('#app').innerHTML=h;window.scrollTo(0,0)}
+function menu(){screen='menu';B=null;paused=false;root(`<div class="hero"><span class="tag">A PEGBOARD ROGUELIKE · THE DESCENT EDITION</span><h1>DEAD<br><em>DROP.</em></h1><p>One more drop. One stranger build.</p><p class="muted tiny">${M.runs} runs · ${M.wins} clears · ${M.unlocks.length}/${ORBS.length} orbs · best ${fmt(M.best)}</p><div class="buttons">${store.run&&!store.run.ended?'<button class="gold" onclick="resume()">CONTINUE RUN</button>':''}<button class="gold" onclick="orbMenu()">NEW RUN</button><button onclick="daily()">DAILY RUN</button></div><div class="panel"><h3>THE DAILY</h3><p class="tiny muted">UTC ${date()} · same orb, board, offers and physics random stream for the same inputs. No online leaderboard. No expiring rewards.</p><p class="money">Best: ${fmt(M.daily[date()]||0)}</p></div><div class="buttons"><button onclick="collection()">COLLECTION & RECORDS</button><button onclick="help()">HOW TO PLAY</button><button onclick="toggleSound()">${mute?'SOUND OFF':'SOUND ON'}</button></div><details><summary>Seeded runs & practice</summary><p class="tiny muted">Choose an orb first, then enter a seed. Seeded runs track unlocks. Practice unlocks every orb but does not advance achievements, Heat or records.</p><div class="row"><input id="seed" placeholder="Enter a seed" maxlength="40"><button onclick="seedStart()">PLAY SEED</button><button onclick="orbMenu(true)">PRACTICE</button></div></details><details><summary>Save backup</summary><p class="tiny muted">Progress stays in this browser. Export a backup before moving browsers or clearing storage.</p><div class="row"><button onclick="exportSave()">EXPORT SAVE</button><button onclick="document.getElementById('importFile').click()">IMPORT SAVE</button><input id="importFile" type="file" accept="application/json" style="display:none" onchange="importSave(this.files[0])"></div></details><p class="footer">Built for replayable decisions, not timers or paid power. Victory at round 12; endless is optional. This balance is a first playable tuning pass.</p></div>`)}
+function daily(){if(store.run&&!store.run.ended){modal(`<h2>Start a daily run?</h2><p>This replaces the current run. Your account progress remains.</p><div class="buttons"><button class="gold" onclick="closeModal();initRun('daily')">REPLACE & START</button><button onclick="closeModal()">CANCEL</button></div>`)}else initRun('daily')}
+function seedStart(){let v=$('#seed').value.trim();if(!v)return toast('Enter a seed first.');orbMenu(false,v)}
+function orbMenu(practice=false,seed=''){screen='orbs';let unlocked=practice?ORBS.map(o=>o[0]):M.unlocks;if(!unlocked.includes(selected))selected='plain';let cap=practice?6:Math.min(6,(M.stakes[selected]??-1)+1);selectedHeat=clamp(selectedHeat,0,cap);let o=ORBS.find(x=>x[0]===selected);window.pendingMode={practice,seed};root(`<div class="screen-title row between"><h2>CHOOSE YOUR ORB</h2><button onclick="menu()">BACK</button></div><div class="panel"><h3>${o[1]} ${o[2]}</h3><p>${o[3]}</p><p class="tiny muted">${practice?'PRACTICE · unlocks and records disabled':seed?'SEEDED CHALLENGE':'STANDARD RUN'} · Heat unlocks separately for each orb.</p><div class="row"><button onclick="changeHeat(-1)">−</button><span>HEAT ${selectedHeat} / ${cap}</span><button onclick="changeHeat(1)">+</button><button class="gold" onclick="requestStart()">START RUN</button></div><p class="tiny muted">${heatDesc(selectedHeat)}</p></div><div class="grid" style="margin-top:12px">${ORBS.map(x=>{let open=unlocked.includes(x[0]),win=M.stakes[x[0]];return `<button class="card ${x[0]===selected?'selected':''} ${open?'':'lock'}" ${open?`onclick="pickOrb('${x[0]}')"`:'disabled'}><span class="icon">${open?x[1]:'⊘'}</span><h3>${x[2]}</h3><span class="desc">${open?x[3]:x[4]}</span><span class="tag">${win!==undefined?'CLEARED HEAT '+win:open?'READY':'LOCKED'}</span></button>`}).join('')}</div>`)}
+function pickOrb(id){selected=id;selectedHeat=0;orbMenu(pendingMode.practice,pendingMode.seed)}function changeHeat(d){selectedHeat+=d;orbMenu(pendingMode.practice,pendingMode.seed)}
+function heatDesc(h){return ['Baseline rules',h>=1?'Clear rewards −$1':'',h>=2?'−1 ball per round':'',h>=3?'Steeper targets':'',h>=4?'Relic prices +$2':'',h>=5?'Rerolls +$1':'',h>=6?'Capacity upgrades +$8':''].filter(Boolean).join(' · ')+` · Targets +${h*18}%; run score +${h*25}%.`}
+function requestStart(){let {practice,seed}=pendingMode;let go=()=>initRun(practice?'practice':seed?'seed':'free',seed);window.startPending=go;if(store.run&&!store.run.ended)modal('<h2>Replace your current run?</h2><p>Only one active run is stored at a time.</p><div class="buttons"><button class="gold" onclick="closeModal();startPending()">REPLACE RUN</button><button onclick="closeModal()">CANCEL</button></div>');else go()}
+function relicCard(id,action,label,disabled=false){let r=byId[id];if(!r)return '<div class="card"><h3>SOLD</h3></div>';return `<div class="card ${r[4]>=3?'legendary':r[4]>=2?'rare':''}"><span class="tag">${rarity[r[4]]} · ${r[3]}</span><h3>${r[1]} ${r[2]}</h3><span class="desc">${r[6]}</span><button class="gold" onclick="${action}" ${disabled?'disabled':''}>${label}</button></div>`}
+function starter(){screen='starter';root(`<div class="hero"><span class="tag">${orb()[2]} · HEAT ${S.heat}</span><h2>THE FIRST PIECE</h2><p>Choose one free relic. Your build starts here.</p><p class="tiny money">New in The Descent: 1 starting edit charge and a Second Bounce tool. After your first encounter, choose routes to markets, workshops and special events.</p><div class="grid">${S.offers.map((id,i)=>relicCard(id,`chooseStarter(${i})`,'TAKE')).join('')}</div><p class="tiny muted">Relics are your persistent power-ups. Three from the same family grant ×1.5; five grant ×2.5. No permanent account upgrades make later runs automatically stronger.</p></div>`)}
+function chooseStarter(i){if(screen!=='starter'||!S.offers[i])return;addRelic(S.offers[i]);openWorkshop('contract')}
+function rerollCost(){return S.rerollFree?0:3+S.rr+(S.heat>=5?1:0)}
+function slotCost(){return 18+(S.slots-4)*10+(S.heat>=6?8:0)}
+function upgradeCost(i){return Math.max(2,6+S.upgrades[i]*5+Math.floor((S.round-1)/3)*2-(S.orb==='scholar'?2:0))}
+function spend(n){if(S.gold<n)return false;S.gold-=n;feat('spent',n);return true}
+function shop(){screen='shop';S.phase='shop';root(`<div class="screen-title row between"><div><span class="tag">THE UNDERGROUND MARKET</span><h2>BUILD SOMETHING BROKEN</h2></div><button onclick="pauseMenu()">SAVE / MENU</button></div><div class="panel"><div class="row between"><div><p class="good">${S.reward||'Choose your next move.'}</p><p class="money">$${S.gold} · ${S.relics.length}/${capacity()} RELIC SLOTS</p></div><button class="gold" onclick="startRound()">ROUND ${S.round} → ${fmt(target())}</button></div><p class="tiny ${bossFor(S.round)!==null?'boss':'muted'}">${bossFor(S.round)!==null?'NEXT BOSS: '+BOSSES[bossFor(S.round)][0]+' — '+BOSSES[bossFor(S.round)][1]:'Next round: ordinary board.'} Interest: $1 per $${stats().interestDiv} held, max $${stats().interestCap}.</p></div><h3 style="margin-top:18px">RELICS</h3><div class="grid">${S.offers.map((id,i)=>id?relicCard(id,`buy(${i})`,'BUY $'+price(id),S.gold<price(id)||S.relics.length>=capacity()):'<div class="card"><h3>SOLD</h3><span class="desc">Reroll for another offer.</span></div>').join('')}</div><div class="buttons"><button onclick="reroll()" ${S.gold<rerollCost()?'disabled':''}>REROLL ${rerollCost()?'$'+rerollCost():'FREE'}</button></div><div class="grid"><div class="panel"><h3>EXPAND YOUR RACK</h3><p class="tiny muted">+1 relic slot for this run. One purchase per shop. Maximum 10 slots. More space also strengthens Hollow Crown.</p><button onclick="buyCapacity()" ${S.slots>=10||S.capacityBought||S.gold<slotCost()?'disabled':''}>${S.slots>=10?'MAXIMUM':S.capacityBought?'INSTALLED':'+1 SLOT · $'+slotCost()}</button></div><div class="panel"><h3>SUPPLY CRATE</h3><p class="tiny muted">Choose one of three uncommon-or-better relics. Capacity required. Once per shop.</p><button onclick="buyCrate()" ${S.supplyBought||S.gold<16||S.relics.length>=capacity()?'disabled':''}>DRAFT A RELIC · $16</button></div></div><h3 style="margin-top:18px">YOUR ENGINE</h3><div id="relics"></div><details><summary>Slot workshop — permanent upgrades for this run</summary><p class="tiny muted">Each level adds +0.5 to that slot’s base multiplier, even the grave. Orb and relic multipliers apply afterward. Maximum 6 levels per slot.</p><div class="grid">${S.upgrades.map((n,i)=>`<div class="panel"><h3>${i===3?'GRAVE':'SLOT '+(i+1)} · LV ${n}</h3><p class="tiny">Base +${(n*.5).toFixed(1)}</p><button onclick="upgradeSlot(${i})" ${n>=6||S.gold<upgradeCost(i)?'disabled':''}>${n>=6?'MAX':'UPGRADE $'+upgradeCost(i)}</button></div>`).join('')}</div></details><p class="footer">Seed ${S.seedText.replace(/[^a-zA-Z0-9 _.-]/g,'')} · ${S.mode} · purchases, rerolls and capacity are run-local.</p>`);renderOwned(true);save()}
+function buy(i){if(screen!=='shop')return;let id=S.offers[i];if(!id||has(id)||S.relics.length>=capacity())return;if(!spend(price(id)))return;addRelic(id);S.offers[i]=null;if(has('rebate'))S.gold+=2;unlockCheck();shop()}
+function reroll(){if(screen!=='shop'||!spend(rerollCost()))return;S.rerollFree=false;S.rr++;S.offers=makeOffers();shop()}
+function buyCapacity(){if(screen!=='shop'||S.slots>=10||S.capacityBought||!spend(slotCost()))return;S.slots++;S.capacityBought=true;toast('RELIC RACK EXPANDED');shop()}
+function upgradeSlot(i){if(screen!=='shop'||S.upgrades[i]>=6||!spend(upgradeCost(i)))return;S.upgrades[i]++;feat('upgrades');unlockCheck();shop()}
+function buyCrate(){if(screen!=='shop'||S.supplyBought||S.relics.length>=capacity()||!spend(16))return;S.supplyBought=true;let pool=R.filter(r=>r[4]>=1&&!has(r[0])&&!RECIPES.some(q=>q.id===r[0])),a=[];while(a.length<3&&pool.length)a.push(pool.splice(Math.floor(random()*pool.length),1)[0][0]);S.draft=a;S.phase='draft';save();draftUI()}
+function draftUI(){screen='draft';root(`<div class="hero"><h2>CHOOSE YOUR PAYOFF</h2><p>A new direction, or the missing piece?</p><div class="grid">${S.draft.map((id,i)=>relicCard(id,`takeDraft(${i})`,S.relics.length>=capacity()?'RACK FULL':'TAKE',S.relics.length>=capacity())).join('')}</div><button style="margin-top:15px" onclick="S.draft=[];shop()">SKIP</button><p class="tiny muted">If your rack is full, skip and sell in the shop before buying another crate.</p></div>`)}
+function takeDraft(i){if(screen!=='draft'||!S.draft[i]||S.relics.length>=capacity())return;addRelic(S.draft[i]);S.draft=[];shop()}
+function sellValue(x){return Math.max(1,Math.floor(byId[x.id][5]*(S.orb==='merchant'?.7:.45)))}
+function askSell(i){let x=S.relics[i];if(!x)return;modal(`<h2>Sell ${byId[x.id][2]}?</h2><p>${relicText(x)}</p><p>Get $${sellValue(x)}. Its accumulated growth is lost.</p><div class="buttons"><button class="gold" onclick="sell(${i})">SELL</button><button onclick="closeModal()">KEEP</button></div>`)}
+function sell(i){if(screen!=='shop')return;let x=S.relics[i];S.gold+=sellValue(x);S.relics.splice(i,1);closeModal();shop()}
+function renderOwned(shopMode){let el=$('#relics');if(!el)return;let fam={};S.relics.forEach(x=>fam[byId[x.id][3]]=(fam[byId[x.id][3]]||0)+1);el.innerHTML=`<p class="tiny muted">${Object.entries(fam).map(([k,n])=>`${k} ${n}/3${n>=3?' [SET]':''}`).join(' · ')||'No relics yet.'}</p><div class="relicrow">${S.relics.map((x,i)=>`<div class="owned"><span class="tag">${byId[x.id][3]}</span><h3>${byId[x.id][1]} ${byId[x.id][2]}</h3><p>${relicText(x)}</p>${shopMode?`<button onclick="askSell(${i})">SELL $${sellValue(x)}</button>`:''}</div>`).join('')}${Array.from({length:Math.max(0,capacity()-S.relics.length)},()=>'<div class="empty">EMPTY SLOT</div>').join('')}</div><p class="tiny money">Current engine: ×${stats().x.toFixed(2)} before landing-specific effects.</p>`}
+function victory(){screen='victory';root(`<div class="hero panel"><span class="tag">ROUND 12 CLEARED</span><h1>REAPER<br><em>DOWN.</em></h1><p>${orb()[2]} · Heat ${S.heat} · ${fmt(S.score)} points</p><p class="good">${S.mode==='practice'?'Practice clear — no progression recorded.':'Next Heat unlocked for this orb, up to Heat 6.'}</p><p>Bank the run, or take your engine into endless. There is no penalty for stopping here.</p><div class="buttons"><button class="gold" onclick="shop()">ENTER ENDLESS</button><button onclick="cashOut()">BANK & FINISH</button></div></div>`)}
+function cashOut(){S.ended=true;S.phase='over';finishRecord();save();gameOver()}
+function gameOver(){screen='over';root(`<div class="hero panel"><span class="tag">${S.won?'CLEARED RUN':'RUN COMPLETE'}</span><h1>${S.won?'WELL<br><em>PLAYED.</em>':'DEAD<br><em>DROP.</em>'}</h1><h2>${fmt(S.score)} POINTS</h2><p>${orb()[2]} · Heat ${S.heat} · ${S.won?'Cleared through round '+(S.round-1):'Stopped on round '+S.round}</p><p class="muted">Best ball ${fmt(S.bestBall)} · ${S.calls} calls hit · ${S.drops} drops</p>${!S.won?`<p class="tiny">Round target ${fmt(target())}; scored ${fmt(S.rs)}.</p>`:''}<p>${S.relics.map(x=>byId[x.id][2]).join(' · ')}</p><div class="buttons"><button class="gold" onclick="orbMenu()">NEW BUILD</button><button onclick="replaySeed()">REPLAY THIS SEED</button><button onclick="shareRun()">COPY RESULT</button><button onclick="menu()">MENU</button></div><p class="tiny muted">Seed: ${S.seedText.replace(/[^a-zA-Z0-9 _.-]/g,'')}</p></div>`)}
+function replaySeed(){let old=S,seed=old.seed;selected=old.orb;selectedHeat=old.heat;initRun(old.mode==='practice'?'practice':'seed','replay');S.seed=seed;S.seedText=old.seedText;S.rand=seed;S.relics=[];if(S.orb==='ruby')addRelic('rain');if(S.orb==='demolition')addRelic('bombs');if(S.orb==='chaos'){let p=R.filter(x=>x[4]===2);addRelic(p[Math.floor(random()*p.length)][0])}S.offers=makeOffers(3,true);save();starter()}
+function shareRun(){let t=`DEAD DROP: THE DESCENT\n${orb()[2]} / Heat ${S.heat}\n${S.won?'Cleared':'Round '+S.round} / ${fmt(S.score)} pts\nBest ball: ${fmt(S.bestBall)}\nSeed: ${S.seedText}\n${S.relics.map(x=>byId[x.id][2]).join(' + ')}`;navigator.clipboard?.writeText(t).then(()=>toast('Result copied.'),()=>toast('Clipboard unavailable.')).catch(()=>{})}
+function modal(h){$('#modal').innerHTML='<div>'+h+'</div>';$('#modal').style.display='flex'}function closeModal(){$('#modal').style.display='none'}
+function help(){modal(`<h2>SMALL RULES. BIG ENGINES.</h2><p>Every ball builds <span style="color:var(--blue)">chips</span> and <span style="color:var(--red)">mult</span>. Landing multiplies them by a slot and your relic engine.</p><div class="breakdown">POINTS = chips × mult × slot × engine</div><p>White pegs: +1 chip. Blue: +6 chips. Red: +1 mult. Gold: +1 chip and $1. Bombs trigger nearby unhit pegs. Springs launch the ball. Relics modify these rules.</p><p>Aim and release to drop. During flight, tap to the left or right of the ball to nudge. Arrows or A/D do the same. Space drops. Keys 1–7 call a slot.</p><p>Calling: land in the chosen slot for ×2.5; miss and score ×0.6. The centre grave normally pays no points but gives $2. The star is this round’s jackpot.</p><p>Hit 5 pegs within a continuing 0.5-second chain to gain +1 mult. Each non-grave landing grows your starting mult streak. A grave resets it unless your build says otherwise.</p><p>Beat the target before your balls run out. Spare balls become money. Every third round is a boss. Clear round 12 to win; endless is optional.</p><p>Three relics of one family grant ×1.5; five grant ×2.5, replacing the three-piece bonus. Expand your rack in shops. Interest rewards saving; scaling relics reward buying early.</p><p class="tiny muted">Automatic checkpoints happen between drops. Reloading during flight restores the pre-drop checkpoint rather than simulating offline. Daily seeds use UTC. No real-money purchases or online score submission.</p><button class="gold" onclick="closeHelp()">GOT IT</button>`)}
+function closeHelp(){closeModal();if(screen==='play')paused=false}
+function pauseMenu(){if(screen==='play')paused=true;save();modal(`<h2>TAKE A BREATHER</h2><p>Progress is saved in this browser. ${B?'A mid-flight reload restores the pre-drop checkpoint.':''}</p><div class="buttons"><button class="gold" onclick="closeModal();paused=false">RESUME</button><button onclick="help()">RULES</button><button onclick="toggleSound(false)">${mute?'ENABLE':'DISABLE'} SOUND</button><button onclick="leaveRun()">SAVE & MENU</button></div>`)}
+function leaveRun(){if(B&&S.ballCheckpoint){S=S.ballCheckpoint;S.phase='play';delete S.ballCheckpoint;B=null}save();closeModal();menu()}
+function toggleSound(rebuild=true){mute=!mute;store.mute=mute;persist();if(rebuild)menu();else toast(mute?'Sound off':'Sound on')}
+function resume(){S=JSON.parse(JSON.stringify(store.run));if(S.phase==='falling'&&S.ballCheckpoint){S=S.ballCheckpoint;S.phase='play';delete S.ballCheckpoint}B=null;paused=false;switch(S.phase){case'starter':starter();break;case'shop':shop();break;case'draft':draftUI();break;case'victory':victory();break;case'over':gameOver();break;default:P=makeBoard();playUI();if(S.phase==='settle')afterBall()}}
+function collection(){screen='collection';root(`<div class="row between"><h2>THE ARCHIVE</h2><button onclick="menu()">BACK</button></div><p>${M.relics.length}/${R.length} relics discovered · ${M.unlocks.length}/${ORBS.length} orbs unlocked · ${M.wins} clears</p><details open><summary>Recent runs</summary><div class="panel log">${M.records.slice(0,15).map(x=>`${x.won?'CLEAR':'R'+x.round} · ${ORBS.find(o=>o[0]===x.orb)?.[2]||x.orb} · H${x.heat} · ${fmt(x.score)} · ${x.mode}`).join('<br>')||'Your next run starts the archive.'}</div></details><details><summary>Milestone progress</summary><div class="panel log">${Object.entries(M.feats).map(([k,v])=>k+': '+(typeof v==='number'?fmt(v):'complete')).join('<br>')||'Play to begin your collection.'}</div></details><div class="grid">${R.map(r=>`<div class="card ${r[4]>=2?'rare':''}"><span class="tag">${rarity[r[4]]} · ${r[3]}</span><h3>${r[1]} ${r[2]}</h3><span class="desc">${r[6]}</span><span class="tiny money">${M.relics.includes(r[0])?'DISCOVERED':'NOT YET OWNED'} · base $${r[5]}</span></div>`).join('')}</div>`)}
+function exportSave(){persist();let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(store)],{type:'application/json'}));a.download='dead-drop-descent-backup.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+async function importSave(file){if(!file)return;try{let data=JSON.parse(await file.text());if(!data.meta||!Array.isArray(data.meta.unlocks)||!Array.isArray(data.meta.relics)||data.run&&data.run.version!==1)throw Error();window.imported=data;modal('<h2>Replace local progress?</h2><p>This imports the selected backup and overwrites current progress.</p><div class="buttons"><button class="gold" onclick="store=imported;M=store.meta;persist();location.reload()">IMPORT</button><button onclick="closeModal()">CANCEL</button></div>')}catch{toast('That does not look like an Afterlife save.')}}
+function pointerPos(e){let r=canvas.getBoundingClientRect(),k=Math.min(r.width/W,r.height/H);return{x:(e.clientX-r.left-(r.width-W*k)/2)/k,y:(e.clientY-r.top-(r.height-H*k)/2)/k}}
+function bindCanvas(){canvas.onpointerdown=e=>{if(paused||(!B&&S.phase!=='play'))return;let p=pointerPos(e);if(p.x<0||p.x>W||p.y<0||p.y>H)return;if(B){nudge(p.x<B.x?-1:1);return}if(p.y>500){if(S.boss===5){toast('Embargo: calls disabled.');return}let i=clamp(Math.floor(p.x/(W/7)),0,6);S.call=S.call===i?-1:i;save();sound(700);return}aim=clamp(p.x,14,386);drag=true;canvas.setPointerCapture(e.pointerId)};canvas.onpointermove=e=>{if(!B&&!paused&&(drag||e.pointerType==='mouse'))aim=clamp(pointerPos(e).x,14,386)};canvas.onpointerup=()=>{if(drag&&!B)drop();drag=false};canvas.onpointercancel=()=>drag=false}
+window.onkeydown=e=>{if(screen!=='play')return;if(e.key==='Escape'){if($('#modal').style.display==='flex'){closeModal();paused=false}else pauseMenu();return}if(paused)return;if(['ArrowLeft','ArrowRight',' ','ArrowDown'].includes(e.key))e.preventDefault();if(e.key==='ArrowLeft'||e.key==='a')B?nudge(-1):aim=clamp(aim-16,14,386);if(e.key==='ArrowRight'||e.key==='d')B?nudge(1):aim=clamp(aim+16,14,386);if(e.key===' '||e.key==='ArrowDown'||e.key==='Enter')drop();if(e.key>='1'&&e.key<='7'&&!B&&S.boss!==5){let i=+e.key-1;S.call=S.call===i?-1:i;save()}};
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&screen==='play'){paused=true;pauseMenu()}});
+function draw(dt){if(!ctx||screen!=='play')return;let g=ctx;g.clearRect(0,0,W,H);g.fillStyle='#171122';g.fillRect(0,0,W,H);let sw=W/7,t=stats();for(let i=0;i<7;i++){g.fillStyle=i===3?'#40172a':i===S.jackpot?'#4e3b20':'#2d213f';g.fillRect(i*sw+2,505,sw-4,55);g.fillStyle=i===3?'#ff839b':i===S.jackpot?'#ffcf65':'#c5afe0';g.textAlign='center';g.font='bold 16px monospace';let v=slotValue(i)*(i===0||i===6?t.edge:1)*(i===S.jackpot&&has('jackpot')?2:1);g.fillText((i===S.jackpot?'★':'')+'×'+(+v.toFixed(1)),i*sw+sw/2,538);g.font='10px monospace';g.fillText(i===3?'GRAVE':''+(i+1),i*sw+sw/2,553)}let call=B?B.call:S.call;if(call>=0){g.strokeStyle='#72e5ab';g.lineWidth=3;g.strokeRect(call*sw+3,507,sw-6,51)}
+for(let p of P){if(p.gone)continue;let col=p.t<0?'#695174':S.boss===1&&!p.hit?'#756783':COL[p.t];g.globalAlpha=p.hit?.5:1;g.fillStyle=col;g.beginPath();g.arc(p.x,p.y,p.r,0,Math.PI*2);g.fill();g.globalAlpha=1;if(p.glow>0){g.strokeStyle=col;g.globalAlpha=p.glow;g.beginPath();g.arc(p.x,p.y,p.r+8*(1-p.glow),0,7);g.stroke();g.globalAlpha=1;p.glow=Math.max(0,p.glow-dt*2)}}
+if(!B&&S.phase==='play'){g.strokeStyle='#ffffff30';g.setLineDash([3,7]);g.beginPath();g.moveTo(aim,28);g.lineTo(aim,88);g.stroke();g.setLineDash([]);g.fillStyle='#ffcf65';g.beginPath();g.arc(aim,23,7,0,7);g.fill()}
+if(B){trail.push({x:B.x,y:B.y});if(trail.length>12)trail.shift();trail.forEach((p,i)=>{g.globalAlpha=i/30;g.fillStyle='#ffcf65';g.beginPath();g.arc(p.x,p.y,5,0,7);g.fill()});g.globalAlpha=1;g.shadowColor='#ffcf65';g.shadowBlur=store.settings?.reduced?0:12;g.fillStyle='#fff';g.beginPath();g.arc(B.x,B.y,7,0,7);g.fill();g.shadowBlur=0}else trail=[];
+effects=effects.filter(p=>(p.life-=dt*1.7)>0);for(let p of effects){p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=300*dt;g.globalAlpha=p.life;g.fillStyle=p.c;g.fillRect(p.x,p.y,3,3)}floats=floats.filter(p=>(p.life-=dt*.8)>0);g.font='bold 21px monospace';for(let p of floats){p.y-=dt*25;g.globalAlpha=Math.min(1,p.life*2);g.fillStyle=p.c;g.fillText(p.text,clamp(p.x,65,335),p.y)}g.globalAlpha=1;g.lineWidth=1}
+function loop(ts){requestAnimationFrame(loop);let dt=Math.min(.035,(ts-last)/1000||0);last=ts;if(screen==='play'&&!paused){if(B){acc+=dt;while(acc>=1/120&&B){step(1/120);acc-=1/120}}else acc=0;draw(dt);hud()}}
+
+/* THE DESCENT — run topology, persistent board craft, contracts and transformations. */
+const ACTS=['The Underworks','The Foundry','The Crypt'];
+const NODES={table:['◉','Open Table','A normal encounter. Gain $3 now. No shop.'],market:['¤','Black Market','Browse relics, tools and upgrades before the next encounter.'],workshop:['▤','Workshop','Gain 2 edit charges. Reshape your board and fuse relics. No shop.'],elite:['†','High Stakes','Target ×1.35. Clearing earns $8, 2 edit charges and a utility tool.'],trial:['◎','Trial Chamber','Choose a specialized optional contract. Success earns an extra edit.'],event:['?','A Strange Door','A revealed event offers a trade. Your choice changes this run.'],rest:['♧','Quiet Platform','Choose a recovery boon before the next encounter.']};
+const CONTRACTS=[
+['clean','Clean Hands','Clear without using nudges.','2 edit charges'],['grave','Grave Offering','Land in the grave at least once and still clear.','$7 and 1 edit charge'],['one','One Shot','Clear with the very first ball.','1 rare-or-better relic draft'],['tour','Around the World','Visit 3 different landing slots, then clear.','1 slot upgrade token and $4'],['call','Precision Job','Land a called shot, then clear.','$6 and a utility tool'],['bare','Bare Bones','Clear while keeping at least 2 relic slots empty.','$8 and 1 edit charge']];
+const TOOLS={recall:['↶','Recall','Return a falling ball to the launcher without refunding the ball. Scoring and hit pegs stay as they are.'],polarity:['↔','Polarity','Tap the left or right half of the board to pull the ball in that direction.'],wild:['◎','Wild Call','During flight, select a landing slot to change your call, even during Embargo.'],detonate:['✹','Detonation','Tap an unhit bomb to trigger its blast immediately.'],bounce:['↟','Second Bounce','Launch the ball upward. Can save a bad fall.']};
+const RECIPES=[
+{id:'furnace',name:'Furnace Heart',icon:'♨',parents:['reactor','midas'],desc:'Bomb blasts gild nearby ordinary pegs for this encounter. Bombs pay $1 and give +1 mult. Keeps Reactor’s accumulated score growth.'},
+{id:'haunted',name:'Haunted Crown',icon:'♛',parents:['grave','streak'],desc:'Grave base is at least ×2 and keeps your streak. Consecutive grave landings add +0.8 starting mult each, but increase next table’s target 8% each. Non-grave landings cash out $2 per grave and reset the bargain.'},
+{id:'thunder',name:'Thunderloom',icon:'ϟ',parents:['wizard','overdrive'],desc:'Nudges give +2 mult and charge your next spring. A charged spring pulses through nearby pegs. Springs give +2 mult.'},
+{id:'observatory',name:'Observatory',icon:'✧',parents:['prism','collector'],desc:'+1 starting chip per run drop. All four base colours give +8 mult and ×1.5 final score.'},
+{id:'mint',name:'Royal Mint',icon:'¤',parents:['rush','pig'],desc:'Gold pegs give +2 mult. Interest uses $4 steps and a cap of $9. Final score ×1.3.'},
+{id:'railgun',name:'Railgun',icon:'➤',parents:['anvil','precision'],desc:'+50 starting chips. Called shots add +8 mult. Each successful call grants 1 nudge for the next ball.'}];
+for(let q of RECIPES){let r=[q.id,q.icon,q.name,'fusion',3,30,q.desc];R.push(r);byId[q.id]=r}
+M.recipes=M.recipes||[];store.settings=Object.assign({fast:false,reduced:false},store.settings||{});
+BOSSES.push(['The Auditor','Red pegs give half their usual mult. Prepare another source.'],['The Gatekeeper','Odd-numbered slots and even-numbered slots alternate between balls. Closed slots pay ×0.25.'],['The Collector','Choose one owned relic to disable for this encounter.'],['The Mirror','After each drop, your next launch position is reflected.'],['The Last Reaper','A final bargain changes the fight. Decide what to sacrifice.']);
+function descentState(){if(!S)return;let d={edits:{},editCharges:1,tools:[],routeHistory:[],routeOptions:null,routeChosen:false,route:null,contract:null,contractDone:false,ct:{},boardLinks:0,haunt:0,rail:0,slotTokens:0,blueprints:[],seenEvents:[],bossChoice:false,lockedRelic:null,gate:0,lastContrib:[],contractOffers:null,jackpotMoved:null};for(let [k,v]of Object.entries(d))if(S[k]===undefined)S[k]=v;S.tools=S.tools.slice(0,2);if(S.ballCheckpoint){let checkpoint=S.ballCheckpoint;for(let [k,v]of Object.entries(d))if(checkpoint[k]===undefined)checkpoint[k]=JSON.parse(JSON.stringify(v))}}
+const oldInit=initRun;
+initRun=function(mode='free',seed=''){oldInit(mode,seed);descentState();S.tools=['bounce'];S.boardSeed=S.seed;save();starter()};
+const oldMakeOffers=makeOffers;
+makeOffers=function(n=3,starterOnly=false){let fusionIds=new Set(RECIPES.map(q=>q.id));let stash=S.relics;S.relics=[...stash,...RECIPES.filter(q=>!stash.some(x=>x.id===q.id)).map(q=>({id:q.id,v:0}))];try{return oldMakeOffers(n,starterOnly)}finally{S.relics=stash}};
+const oldStats=stats;
+stats=function(){let t=oldStats();if(!S)return t;if(S.boss===7&&['play','falling','settle'].includes(S.phase))t.red*=.5;if(has('furnace'))t.x*=1+(owned('furnace').v||0);if(has('haunted')){t.grave=Math.max(2,t.grave);t.mult+=(S.haunt||0)*.8}if(has('thunder')){}if(has('observatory')){t.chips+=S.drops;if(B&&B.colours===15)t.x*=1.5;}if(has('mint')){t.interestDiv=4;t.interestCap=9;t.x*=1.3}if(has('railgun')){t.chips+=50;t.nudges+=S.rail||0}if(S.tableBoon==='steady')t.nudges++;if(S.finalBargain==='ball')t.balls=Math.max(1,t.balls-1);if(S.finalBargain==='cash')t.x*=1.15;return t};
+const oldBoss=bossFor;
+bossFor=function(r){if(r%3)return null;if(r===12)return 11;if(r>12)return Math.floor(rng(S.seed+r*191)()*12);let pool=r<=3?[0,1,3,10]:r<=6?[2,4,7,8]:[5,6,9,10];return pool[Math.floor(rng(S.seed+r*571)()*pool.length)]};
+const oldTarget=target;
+target=function(){let n=oldTarget();if(S.route==='elite')n*=1.35;n*=1+.08*((['play','falling','settle'].includes(S.phase)?S.tableHaunt:S.haunt)||0);if(S.finalBargain==='target')n*=1.25;return Math.round(n/5)*5};
+const oldSlot=slotValue;
+slotValue=function(i){let n=oldSlot(i);if(S.boss===8){let group=B?B.gate:(S.roundDrops||0)%2;let closed=(i%2)!==group;if(closed)n*=.25}return n};
+function actName(){return S.round>12?'The Beyond':ACTS[Math.min(2,Math.floor((S.round-1)/4))]}
+function actHeader(){let next=Math.ceil(S.round/3)*3;return `<span class="tag">${actName()} · ${orb()[2]} · HEAT ${S.heat}</span><div class="actline">${Array.from({length:12},(_,i)=>`<span class="${i<S.round-1?'done':''}"></span>`).join('')}</div><p class="tiny muted">Next boss · Round ${next}: ${BOSSES[bossFor(next)][0]} — ${BOSSES[bossFor(next)][1]}</p>`}
+function makeRoutes(){let a=['market','workshop'],pool=['table','elite','trial','event','rest'];let third=pool[Math.floor(random()*pool.length)];if(S.round%3===0){a=['market','workshop'];third='rest'}else if(S.round%4===2){a=['table',random()<.5?'market':'workshop'];third=random()<.5?'event':'trial'}else if(S.round%4===0){a=['workshop','elite'];third='event'}return [...a,third]}
+function routeUI(){descentState();B=null;paused=false;screen='route';S.phase='route';S.lockedRelic=null;if(!S.routeOptions)S.routeOptions=makeRoutes();root(`<div class="route-note"><div class="row between"><h2>CHOOSE YOUR DESCENT</h2><button onclick="pauseMenu()">SAVE / MENU</button></div>${actHeader()}<p>${S.reward||'Your engine needs a direction.'}</p><p class="money">$${S.gold} · ${S.editCharges} edits · ${S.tools.length}/2 tools</p><div class="route-grid">${S.routeOptions.map((id,i)=>`<div class="card route-card ${id==='elite'?'risk':''}"><span class="icon">${NODES[id][0]}</span><h3>${NODES[id][1]}</h3><span class="desc">${NODES[id][2]}</span><span class="tiny muted">${id==='market'?'Shop, then play':id==='workshop'?'Build, then play':id==='elite'?'Higher risk, visible reward':'Choose, then play'} · Round ${S.round}</span><button class="gold" onclick="chooseRoute(${i})">TAKE THIS PATH</button></div>`).join('')}</div><div class="panel"><h3>YOUR JOURNEY</h3><p class="tiny muted">${S.routeHistory.slice(-9).map(x=>'R'+x.round+' '+NODES[x.id][1]).join(' → ')||'The first descent.'}</p><p class="tiny">Routes are mutually exclusive. The workshop sacrifices shopping; the market sacrifices free board edits. Every path leads to one scoring encounter.</p></div></div>`);save()}
+function chooseRoute(i){if(screen!=='route')return;let id=S.routeOptions[i];if(!NODES[id])return;S.route=id;S.routeChosen=true;S.routeOptions=null;S.routeHistory.push({round:S.round,id});S.contract=null;S.contractOffers=null;S.contractDone=false;S.bossChoice=false;S.finalBargain=null;S.tableBoon=null;save();switch(id){case'market':shop();break;case'workshop':S.editCharges+=2;openWorkshop('contract');break;case'event':eventUI();break;case'rest':restUI();break;case'table':S.gold+=3;contractUI();break;default:contractUI()}}
+const oldShop=shop;
+shop=function(){descentState();S.lockedRelic=null;oldShop();let box=document.createElement('div');box.className='panel';box.style.marginTop='14px';box.innerHTML=`<div class="row between"><h3>THE DESCENT WORKBENCH</h3><button onclick="openWorkshop('shop')">BOARD & FUSION · ${S.editCharges} EDITS</button></div><p class="tiny muted">${actName()} · edits persist all run · ${S.tools.length}/2 utility tools · ${S.slotTokens} slot tokens.</p><div class="buttons">${Object.entries(TOOLS).map(([id,t])=>`<button ${S.gold<7||S.tools.length>=2?'disabled':''} onclick="buyTool('${id}')">${t[0]} ${t[1]} · $7</button>`).join('')}</div><button ${S.gold<9?'disabled':''} onclick="buyEdit()">BUY EDIT CHARGE · $9</button>${S.slotTokens?'<button onclick="tokenUI()">SPEND SLOT TOKEN</button>':''}</div>`;$('#app').appendChild(box);save()};
+function buyEdit(){if(screen!=='shop'||!spend(9))return;S.editCharges++;shop()}
+function buyTool(id){if(screen!=='shop'||!TOOLS[id]||S.tools.length>=2||!spend(7))return;S.tools.push(id);shop()}
+const oldStart=startRound;
+startRound=function(){descentState();if(S.contractDone){beginEncounter();return}contractUI()};
+function contractUI(){descentState();screen='contract';S.phase='contract';if(!S.contractOffers){let pool=CONTRACTS.map(x=>x[0]);if(bossFor(S.round)===5)pool=pool.filter(x=>x!=='call');S.contractOffers=[];while(S.contractOffers.length<3&&pool.length)S.contractOffers.push(pool.splice(Math.floor(random()*pool.length),1)[0])}root(`<div class="hero">${actHeader()}<h2>TAKE A SIDE BET?</h2><p>One optional contract. No entry fee; failure loses only its reward. The round still has to be cleared.</p><div class="grid">${S.contractOffers.map(id=>{let q=CONTRACTS.find(x=>x[0]===id);return `<div class="card"><span class="tag">OPTIONAL CONTRACT</span><h3>${q[1]}</h3><span class="desc">${q[2]}</span><p class="money">${q[3]}${S.route==='trial'?' + 1 edit':''}</p><button onclick="acceptContract('${id}')">ACCEPT</button></div>`}).join('')}</div><div class="buttons"><button class="gold" onclick="acceptContract(null)">PLAY WITHOUT CONTRACT</button></div><p class="tiny muted">Encounter target ${fmt(target())}. ${S.route==='elite'?'High Stakes reward: $8 + 2 edits + a tool.':''}</p></div>`);save()}
+function acceptContract(id){if(screen!=='contract')return;S.contract=id;S.contractDone=true;prepareBoss()}
+function prepareBoss(){let boss=bossFor(S.round);if(boss===9&&S.relics.length&&!S.bossChoice){screen='bosschoice';S.phase='bosschoice';root(`<div class="hero"><h2>THE COLLECTOR</h2><p>Choose one relic to disable for this encounter only. Its family contribution and special effects will also be disabled.</p><div class="grid">${S.relics.map(x=>`<button class="card" onclick="chooseLocked('${x.id}')"><h3>${byId[x.id][2]}</h3><span class="desc">${relicText(x)}</span><span class="danger">DISABLE THIS RELIC</span></button>`).join('')}</div></div>`);save();return}if(boss===11&&!S.bossChoice){screen='bosschoice';S.phase='bosschoice';root(`<div class="hero">${actHeader()}<h2>THE LAST BARGAIN</h2><p>The Reaper asks for a sacrifice. All terms are visible.</p><div class="grid"><button class="card" onclick="chooseBargain('cash')"><h3>PAY THE FERRYMAN</h3><span class="desc">Lose all current gold before the fight. Final scores ×1.15 for this encounter.</span></button><button class="card" onclick="chooseBargain('ball')"><h3>SURRENDER A BALL</h3><span class="desc">One fewer ball this encounter, with a minimum of one.</span></button><button class="card" onclick="chooseBargain('target')"><h3>DEFY THE REAPER</h3><span class="desc">Keep your resources. The target increases ×1.25.</span></button></div></div>`);save();return}beginEncounter()}
+function chooseLocked(id){if(screen!=='bosschoice'||!S.relics.some(x=>x.id===id))return;S.lockedRelic=id;S.bossChoice=true;beginEncounter()}
+function chooseBargain(id){if(screen!=='bosschoice')return;S.finalBargain=id;S.bossChoice=true;if(id==='cash')S.gold=0;beginEncounter()}
+function beginEncounter(){S.tableHaunt=S.haunt||0;S.ct={nudges:0,graves:0,calls:0,slots:[],emptyMin:capacity()-S.relics.length};S.rail=S.rail||0;oldStart();if(S.jackpotMoved!==null){S.jackpot=S.jackpotMoved;S.jackpotMoved=null;save()}updateDescentHUD()}
+function giveTool(preferred){let id=preferred||Object.keys(TOOLS)[Math.floor(random()*5)];if(S.tools.length<2){S.tools.push(id);toast('UTILITY FOUND: '+TOOLS[id][1])}else{S.gold+=4;toast('Utility rack full: converted reward to $4.')}}
+function resolveContract(){let id=S.contract,c=S.ct||{},ok=id==='clean'?c.nudges===0:id==='grave'?c.graves>0:id==='one'?S.roundDrops===1:id==='tour'?(c.slots||[]).length>=3:id==='call'?c.calls>0:id==='bare'?(c.emptyMin??0)>=2:false;if(!id)return '';if(!ok)return ' Contract missed (no penalty).';if(S.route==='trial')S.editCharges++;feat('contracts');if(id==='clean')S.editCharges+=2;if(id==='grave'){S.gold+=7;S.editCharges++}if(id==='one')S.rareDraftPending=true;if(id==='tour'){S.slotTokens++;S.gold+=4}if(id==='call'){S.gold+=6;giveTool()}if(id==='bare'){S.gold+=8;S.editCharges++}return ' CONTRACT COMPLETE: '+CONTRACTS.find(x=>x[0]===id)[1]+'.'}
+clearRound=function(){let ctext=resolveContract(),t=stats(),interest=Math.min(t.interestCap,Math.floor(S.gold/t.interestDiv)),boss=S.round%3===0,reward=4+S.left+(boss?5:0)-(has('bargain')?3:0)-(S.heat>=1?1:0);S.gold+=Math.max(0,reward)+interest;if(S.route==='elite'){S.gold+=8;S.editCharges+=2;giveTool()}S.reward=`Round ${S.round} cleared: +$${Math.max(0,reward)} reward +$${interest} interest.${S.route==='elite'?' HIGH STAKES: +$8, 2 edits and utility.':''}${ctext}`;if(boss){feat('bosses');S.editCharges++}gainRelic('compound',1);gainRelic('interest',.15);maximum('maxGold',S.gold);S.round++;S.rr=0;S.shopNumber++;S.capacityBought=false;S.supplyBought=false;S.rerollFree=S.orb==='plain';S.lockedRelic=null;S.route=null;S.routeChosen=false;S.routeOptions=null;S.contractDone=false;S.contractOffers=null;S.bossChoice=false;S.finalBargain=null;S.tableBoon=null;S.offers=makeOffers();unlockCheck();if(S.round===13&&!S.won){recordVictory();S.phase='victory';save();victory();return}if(S.rareDraftPending||(boss&&S.orb==='astral')){S.rareDraftPending=false;let pool=R.filter(x=>x[4]>=2&&!has(x[0])&&!RECIPES.some(q=>q.id===x[0])),a=[];while(a.length<3&&pool.length)a.push(pool.splice(Math.floor(random()*pool.length),1)[0][0]);S.draft=a;S.draftReturn='route';S.phase='draft';save();draftUI();return}save();routeUI()};
+const oldDraftUI=draftUI;
+draftUI=function(){oldDraftUI();let btn=$('#app button[onclick="S.draft=[];shop()"]');if(btn)btn.setAttribute('onclick','skipDescentDraft()')};
+function draftExit(){let dest=S.draftReturn;S.draftReturn=null;S.draft=[];if(dest==='route')routeUI();else shop()}
+function skipDescentDraft(){draftExit()}
+takeDraft=function(i){if(screen!=='draft'||!S.draft[i]||S.relics.length>=capacity())return;addRelic(S.draft[i]);draftExit()};
+function restUI(){screen='rest';S.phase='rest';root(`<div class="hero">${actHeader()}<h2>A QUIET PLATFORM</h2><p>Choose a boon for the next encounter. No shop here.</p><div class="grid"><button class="card" onclick="takeRest('steady')"><h3>STEADY YOUR HANDS</h3><span class="desc">+1 nudge per ball for the next encounter.</span></button><button class="card" onclick="takeRest('tool')"><h3>SEARCH THE LOCKERS</h3><span class="desc">Receive a utility tool. A full rack converts it to $4.</span></button><button class="card" onclick="takeRest('edit')"><h3>REPAIR THE MACHINE</h3><span class="desc">Gain 1 edit charge and enter the workshop.</span></button></div></div>`);save()}
+function takeRest(id){if(screen!=='rest')return;if(id==='steady'){S.tableBoon='steady';contractUI()}if(id==='tool'){giveTool();contractUI()}if(id==='edit'){S.editCharges++;openWorkshop('contract')}}
+const EVENTS=[['The Tollkeeper','A ferryman offers safe passage through the machinery.'],['The Locked Cabinet','A humming cabinet contains a rare mechanism.'],['The Cartographer','A stranger knows the geometry of your next landing.'],['The Salvage Pit','Something useful glints among the wreckage.']];
+function eventUI(){screen='event';S.phase='event';if(S.eventId===undefined||S.eventRound!==S.round){let pool=[0,1,2,3].filter(n=>!S.seenEvents.includes(n));if(!pool.length){pool=[0,1,2,3];S.seenEvents=[]}S.eventId=pool[Math.floor(random()*pool.length)];S.eventRound=S.round;S.seenEvents.push(S.eventId)}let id=S.eventId,choices=id===0?[['pay','PAY $8 · gain 3 edit charges',S.gold<8],['trade','TRADE A TOOL · gain $10',!S.tools.length],['leave','LEAVE · keep what you have',false]]:id===1?[['pay','PAY $12 · draft a rare relic',S.gold<12||S.relics.length>=capacity()],['risk','SELL ONE RACK SLOT · gain $16',S.slots<=3||S.relics.length>=S.slots],['leave','LEAVE',false]]:id===2?[['map','CHOOSE NEXT JACKPOT · free',false],['edit','GAIN 1 EDIT · free',false]]:[['salvage','TAKE A UTILITY TOOL · free',false],['cash','TAKE $5 · free',false]];root(`<div class="hero panel">${actHeader()}<h2>${EVENTS[id][0]}</h2><p>${EVENTS[id][1]}</p><p class="money">$${S.gold} · ${S.tools.length}/2 tools</p><div class="buttons">${choices.map(([v,l,dis])=>`<button onclick="eventChoice('${v}')" ${dis?'disabled':''}>${l}</button>`).join('')}</div><p class="tiny muted">No hidden dice roll. The displayed trade is exactly what happens.</p></div>`);save()}
+function eventChoice(v){if(screen!=='event')return;let id=S.eventId;if(id===0){if(v==='pay'){if(!spend(8))return;S.editCharges+=3;openWorkshop('contract');return}if(v==='trade'){if(!S.tools.length)return;S.tools.shift();S.gold+=10}}if(id===1){if(v==='pay'){if(S.relics.length>=capacity()||!spend(12))return;let pool=R.filter(x=>x[4]===2&&!has(x[0])&&!RECIPES.some(q=>q.id===x[0]));S.draft=[];while(S.draft.length<3&&pool.length)S.draft.push(pool.splice(Math.floor(random()*pool.length),1)[0][0]);S.draftReturn='contract';S.phase='draft';save();draftUI();return}if(v==='risk'){if(S.slots<=3||S.relics.length>=S.slots)return;S.slots--;S.gold+=16}}if(id===2){if(v==='edit')S.editCharges++;if(v==='map'){jackpotPicker();return}}if(id===3){if(v==='salvage')giveTool();if(v==='cash')S.gold+=5}contractUI()}
+const oldDraftExit=draftExit;
+draftExit=function(){if(S.draftReturn==='contract'){S.draftReturn=null;S.draft=[];contractUI()}else oldDraftExit()};
+function jackpotPicker(){screen='jackpot';S.phase='jackpot';root(`<div class="hero panel"><h2>PLOT A LANDING</h2><p>Move the next encounter’s jackpot. This costs no edit charge.</p><div class="buttons">${[0,1,2,4,5,6].map(i=>`<button onclick="S.jackpotMoved=${i};contractUI()">SLOT ${i+1}</button>`).join('')}</div></div>`);save()}
+let editMode='red',editLink=null,editorBoard=[],editCanvas,editCtx;
+function openWorkshop(dest='contract'){descentState();S.editorReturn=dest;screen='workshop';S.phase='workshop';editLink=null;editorBoard=makeBoard();root(`<div class="screen-title row between"><div><span class="tag">${actName()}</span><h2>MAKE THE BOARD YOURS</h2></div><button class="gold" onclick="exitWorkshop()">CONTINUE</button></div><div class="edit-layout"><div><canvas id="editor" width="400" height="560" aria-label="Tap a peg to apply the selected board modification."></canvas></div><div><div class="panel"><h3>${S.editCharges} EDIT CHARGES</h3><p class="tiny muted">Each edit costs 1 charge. Edits persist for this run at the same marked positions through all acts. Board layouts evolve at rounds 5 and 9. Removed pegs stay removed.</p><div class="buttons" id="editButtons">${[['white','WHITE'],['blue','BLUE'],['red','RED'],['gold','GOLD'],['bomb','BOMB'],['spring','SPRING'],['remove','REMOVE'],['reinforce','REINFORCE'],['left','LEFT BUMPER'],['right','RIGHT BUMPER'],['link','LINK TWO']].map(([id,l])=>`<button id="edit-${id}" onclick="selectEdit('${id}')">${l}</button>`).join('')}</div><p class="tiny money" id="editHint"></p><button onclick="undoEdit()" ${S.editUndo?'':'disabled'}>UNDO LAST EDIT</button><p class="tiny muted">Reinforce: score on 2 separate contacts each ball. Link: the first peg activates the second once per ball. Bumpers add a horizontal impulse when hit. Remove is reversible with Undo until the next edit.</p>${S.slotTokens?'<button onclick="tokenUI()">USE SLOT TOKEN</button>':''}</div><div class="panel" style="margin-top:10px"><h3>RELIC TRANSFORMATIONS</h3><p class="tiny muted">Fuse two relics into one. No cash or edit cost. Frees one rack slot. Only the explicitly described growth is retained.</p>${RECIPES.map(q=>{let ready=q.parents.every(id=>S.relics.some(x=>x.id===id))&&!S.relics.some(x=>x.id===q.id);return `<div class="owned recipe" style="margin:8px 0"><h3>${q.icon} ${q.name}</h3><p class="tiny">${q.parents.map(id=>byId[id][2]).join(' + ')}</p><p class="tiny muted">${q.desc}</p><button ${ready?'':'disabled'} onclick="askFuse('${q.id}')">${ready?'FUSE':M.recipes.includes(q.id)?'RECIPE DISCOVERED':'INGREDIENTS REQUIRED'}</button></div>`}).join('')}</div></div></div>`);editCanvas=$('#editor');editCtx=editCanvas.getContext('2d');editCanvas.onpointerdown=e=>{let r=editCanvas.getBoundingClientRect(),x=(e.clientX-r.left)*W/r.width,y=(e.clientY-r.top)*H/r.height,p=editorBoard.filter(p=>p.t>=0).sort((a,b)=>Math.hypot(a.x-x,a.y-y)-Math.hypot(b.x-x,b.y-y))[0];if(p&&Math.hypot(p.x-x,p.y-y)<19)applyEdit(p)};selectEdit(editMode);drawEditor();save()}
+function selectEdit(mode){editMode=mode;editLink=null;document.querySelectorAll('#editButtons button').forEach(b=>b.classList.remove('picked'));$('#edit-'+mode)?.classList.add('picked');if($('#editHint'))$('#editHint').textContent=mode==='link'?'Select a source peg, then a different target peg. One charge total.':'Select a peg. One charge per modification.';drawEditor()}
+function applyEdit(p){if(screen!=='workshop'||S.editCharges<1){toast('No edit charges left.');return}if(editMode==='link'&&!editLink){editLink=p.key;$('#editHint').textContent='Now select the target peg.';drawEditor();return}if(editMode==='link'&&p.key===editLink){toast('Choose a different target.');return}let key=editMode==='link'?editLink:p.key,prev=S.edits[key]?JSON.parse(JSON.stringify(S.edits[key])):null,e={...(prev||{})};let paints={white:0,blue:1,red:2,gold:3,bomb:4,spring:5};if(paints[editMode]!==undefined)e.paint=paints[editMode];if(editMode==='remove')e.remove=true;if(editMode==='reinforce'){if(e.reinforced){toast('Already reinforced.');return}e.reinforced=true}if(editMode==='left')e.bumper=-1;if(editMode==='right')e.bumper=1;if(editMode==='link')e.link=p.key;if(JSON.stringify(e)===JSON.stringify(prev)){toast('That modification is already installed.');return}S.editUndo={key,prev};S.edits[key]=e;S.editCharges--;editLink=null;sound(650);openWorkshop(S.editorReturn)}
+function undoEdit(){if(screen!=='workshop'||!S.editUndo)return;let {key,prev}=S.editUndo;if(prev)S.edits[key]=prev;else delete S.edits[key];S.editCharges++;S.editUndo=null;openWorkshop(S.editorReturn)}
+function drawEditor(){if(!editCtx||screen!=='workshop')return;let g=editCtx;g.fillStyle='#171122';g.fillRect(0,0,W,H);g.textAlign='center';g.fillStyle='#b6a8cb';g.font='13px monospace';g.fillText('PERSISTENT BOARD · TAP A PEG',200,30);for(let p of editorBoard){if(p.t<0)continue;g.fillStyle=COL[p.t];g.beginPath();g.arc(p.x,p.y,p.reinforced?8:6,0,7);g.fill();if(S.edits[p.key]){g.strokeStyle='#ffcf65';g.lineWidth=1;g.strokeRect(p.x-10,p.y-10,20,20)}if(p.link){let q=editorBoard.find(x=>x.key===p.link);if(q){g.strokeStyle='#72e5ab77';g.beginPath();g.moveTo(p.x,p.y);g.lineTo(q.x,q.y);g.stroke()}}if(p.bumper){g.fillStyle='#fff';g.font='12px monospace';g.fillText(p.bumper<0?'‹':'›',p.x,p.y-12)}if(p.key===editLink){g.strokeStyle='#fff';g.beginPath();g.arc(p.x,p.y,15,0,7);g.stroke()}}g.fillStyle='#ffcf65';g.font='14px monospace';g.fillText(Object.keys(S.edits).length+' modified positions',200,530)}
+function exitWorkshop(){S.editUndo=null;if(S.editorReturn==='shop')shop();else contractUI()}
+function askFuse(id){let q=RECIPES.find(x=>x.id===id);if(!q||!q.parents.every(p=>S.relics.some(x=>x.id===p)))return;modal(`<h2>CREATE ${q.name}?</h2><p>Consumes ${q.parents.map(p=>byId[p][2]).join(' and ')}. Frees one relic slot.</p><p>${q.desc}</p><div class="buttons"><button class="gold" onclick="fuse('${id}')">TRANSFORM</button><button onclick="closeModal()">KEEP INGREDIENTS</button></div>`)}
+function fuse(id){if(screen!=='workshop')return;let q=RECIPES.find(x=>x.id===id);if(!q||!q.parents.every(p=>S.relics.some(x=>x.id===p)))return;let growth=id==='furnace'?(S.relics.find(x=>x.id==='reactor').v||0):0;S.relics=S.relics.filter(x=>!q.parents.includes(x.id));addRelic(id);S.relics[S.relics.length-1].v=growth;if(!M.recipes.includes(id)&&S.mode!=='practice')M.recipes.push(id);closeModal();toast('TRANSFORMED: '+q.name);feat('fusions');openWorkshop(S.editorReturn)}
+function tokenUI(){if(!S.slotTokens)return;modal(`<h2>FREE SLOT UPGRADE</h2><p>Spend one token for +0.5 base multiplier at a landing slot.</p><div class="buttons">${S.upgrades.map((v,i)=>`<button ${v>=6?'disabled':''} onclick="useSlotToken(${i})">${i===3?'GRAVE':'SLOT '+(i+1)} · LV${v}</button>`).join('')}</div><button onclick="closeModal()">CANCEL</button>`)}
+function useSlotToken(i){if(!S.slotTokens||S.upgrades[i]>=6)return;S.slotTokens--;S.upgrades[i]++;feat('upgrades');closeModal();save();toast('Slot upgraded.');if(screen==='shop')shop();else if(screen==='workshop')openWorkshop(S.editorReturn)}
+let armedTool=null;
+const oldPlayUI=playUI;
+playUI=function(){oldPlayUI();let main=$('#app main'),bar=document.createElement('div');bar.id='descentHud';main.insertBefore(bar,$('#board'));updateDescentHUD()};
+function updateDescentHUD(){let el=$('#descentHud');if(!el||screen!=='play')return;let q=CONTRACTS.find(x=>x[0]===S.contract);el.innerHTML=`<p class="tiny muted">${actName()} · ${S.route?NODES[S.route][1]:'First Table'} · ${S.editCharges} edit charges ${S.boss===8?'· OPEN: '+((B?B.gate:(S.roundDrops||0)%2)===0?'1, 3, 5, 7':'2, 4, 6'):''}</p>${q?`<div class="contract tiny">${q[1]}: ${q[2]} <span class="money">${contractStatus()}</span></div>`:''}<div class="toolrow">${S.tools.map((id,i)=>`<button class="${armedTool===i?'armed':''}" onclick="armTool(${i})" title="${TOOLS[id][2]}" ${!B||paused?'disabled':''}>${TOOLS[id][0]} ${TOOLS[id][1]} [${i+1===1?'Q':'E'}]</button>`).join('')}${!S.tools.length?'<span class="tiny muted">UTILITY SLOTS EMPTY</span>':''}${armedTool!==null?'<button onclick="armedTool=null;updateDescentHUD()">CANCEL TOOL</button>':''}</div>`}
+function contractStatus(){let c=S.ct||{};switch(S.contract){case'clean':return c.nudges?'MISSED':'NO NUDGES USED';case'grave':return(c.graves||0)+' GRAVES';case'one':return S.roundDrops>1?'MISSED':'FIRST BALL';case'tour':return(c.slots||[]).length+'/3 SLOTS';case'call':return(c.calls||0)+' CALLS HIT';case'bare':return(c.emptyMin??0)+' EMPTY SLOTS';default:return''}}
+function consumeTool(i){let id=S.tools[i];S.tools.splice(i,1);armedTool=null;feat('tools');sound(750);updateDescentHUD();return id}
+function armTool(i){if(!B||paused||!S.tools[i])return;let id=S.tools[i];if(id==='recall'){consumeTool(i);B.x=aim;B.y=24;B.vx=0;B.vy=0;B.t=Math.max(0,B.t-5);toast('RECALLED — score and peg hits preserved.');return}if(id==='bounce'){consumeTool(i);B.vy=-390;B.y=Math.min(B.y,495);particles(B.x,B.y,'#72e5ab',16);return}armedTool=armedTool===i?null:i;toast(TOOLS[id][2]);updateDescentHUD()}
+function toolClick(p){if(!B||armedTool===null)return false;let i=armedTool,id=S.tools[i];if(id==='polarity'){consumeTool(i);B.vx+=(p.x<200?-1:1)*280;B.vy=Math.min(B.vy,120);return true}if(id==='wild'){if(p.y<490){toast('Tap a landing slot at the bottom.');return true}let slot=clamp(Math.floor(p.x/(W/7)),0,6);consumeTool(i);B.call=slot;return true}if(id==='detonate'){let q=P.filter(x=>x.t===4&&!x.hit&&!x.gone).sort((a,b)=>Math.hypot(a.x-p.x,a.y-p.y)-Math.hypot(b.x-p.x,b.y-p.y))[0];if(!q||Math.hypot(q.x-p.x,q.y-p.y)>26){toast('Tap an unhit orange bomb.');return true}consumeTool(i);hit(q);return true}return false}
+const oldBind=bindCanvas;
+bindCanvas=function(){oldBind();let down=canvas.onpointerdown;canvas.onpointerdown=e=>{let p=pointerPos(e);if(!paused&&B&&armedTool!==null){toolClick(p);return}down(e)}};
+const priorKey=window.onkeydown;
+window.onkeydown=e=>{if(screen==='play'&&!paused&&B&&['q','Q','e','E'].includes(e.key)){e.preventDefault();armTool(e.key.toLowerCase()==='q'?0:1);return}priorKey(e)};
+const oldDrop=drop;
+drop=function(){let before=B;oldDrop();if(!before&&B){descentState();B.gate=(S.roundDrops-1)%2;B.pulseCharge=0;B.contrib={};B.retriggerCount=0;B.reinforcedHits=0;B.linkedHits=0;S.rail=0;armedTool=null;if(S.boss===10)aim=W-aim;updateDescentHUD()}};
+const oldNudge=nudge;
+nudge=function(dir){let n=B?.nudges;oldNudge(dir);if(B&&B.nudges!==n){S.ct.nudges=(S.ct.nudges||0)+1;if(has('thunder')){B.mult+=2;B.pulseCharge=(B.pulseCharge||0)+1}updateDescentHUD()}};
+const oldTrigger=trigger;
+trigger=function(p){let b=B;if(!b)return;let prev=b.hits;oldTrigger(p);if(has('furnace')&&p.t===4){b.mult++;S.gold++;gainRelic('furnace',.04)}if(has('thunder')&&p.t===5)b.mult+=2;if(has('mint')&&p.t===3)b.mult+=2;if(has('observatory')&&b.colours===15&&!b.astro){b.astro=true;b.mult+=8}b.contrib=b.contrib||{};let k=['White chips','Blue chips','Red mult','Gold income','Bomb triggers','Spring hits'][p.t];b.contrib[k]=(b.contrib[k]||0)+1;
+let ids=p.t===4?['reactor','detonator','furnace']:p.t===5?['wizard','vine','thunder']:p.t===2?['ruby','rain']:p.t===3?['midas','rush','mint']:p.t===1?['sapphire']:['heavy'];ids.forEach(id=>{if(has(id))pulseRelic(id)});if(has('snow'))pulseRelic('snow')};
+let pulseUntil={};function pulseRelic(id){pulseUntil[id]=performance.now()+350}
+const oldHit=hit;
+hit=function(p){if(!B||p.t<0)return;let was=p.hit;p.hitCount=(p.hitCount||0)+1;p.lastContact=B.t;if(was)B.reinforcedHits=(B.reinforcedHits||0)+1;
+if(has('furnace')&&p.t===4)for(let q of P)if(q.t===0&&!q.hit&&!q.gone&&Math.hypot(q.x-p.x,q.y-p.y)<stats().radius){q.t=3;q.glow=1}
+oldHit(p);if(!B)return;if(p.bumper){B.vx+=p.bumper*105;float(p.x,p.y,'BUMPER','#68baff')}
+if(p.link&&!p.linkFired){p.linkFired=true;let q=P.find(x=>x.key===p.link);if(q&&!q.hit&&!q.gone){B.linkedHits=(B.linkedHits||0)+1;hit(q)}}
+if(has('thunder')&&p.t===5&&B.pulseCharge>0){let charges=B.pulseCharge;B.pulseCharge=0;let radius=40+Math.min(4,charges)*10;float(p.x,p.y,'THUNDER PULSE','#72e5ab');for(let q of P)if(q!==p&&q.t>=0&&!q.hit&&!q.gone&&Math.hypot(q.x-p.x,q.y-p.y)<radius)hit(q)} };
+const originalPhysicalDrop=drop;
+drop=function(){let active=B;originalPhysicalDrop();if(!active&&B)P.forEach(p=>p.linkFired=false)};
+const oldLand=land;
+land=function(){if(!B)return;let b=B,i=clamp(Math.floor(b.x/(W/7)),0,6);S.ct=S.ct||{};S.ct.slots=S.ct.slots||[];if(!S.ct.slots.includes(i))S.ct.slots.push(i);if(i===3)S.ct.graves=(S.ct.graves||0)+1;if(b.call===i)S.ct.calls=(S.ct.calls||0)+1;
+if(has('haunted')){if(i===3){S.haunt=(S.haunt||0)+1;S.streak++;}else{S.gold+=(S.haunt||0)*2;S.haunt=0}}
+if(has('railgun')&&b.call===i){b.mult+=8;S.rail=1}if(has('observatory')&&b.colours===15){float(b.x,395,'OBSERVATORY ×1.5','#68baff')}
+let contrib={...(b.contrib||{})};if(b.reinforcedHits)contrib['Reinforced contacts']=b.reinforcedHits;if(b.linkedHits)contrib['Linked activations']=b.linkedHits;if(b.physicalHits&&b.hits>b.physicalHits)contrib['Extra scoring triggers']=b.hits-b.physicalHits;let streak=S.streak;armedTool=null;oldLand();if(has('haunted')&&i===3)S.streak=streak;S.lastContrib=Object.entries(contrib);S.lastBall.details=S.lastContrib;S.lastBall.contract=contractStatus();save();renderLast();updateDescentHUD()};
+const oldRenderLast=renderLast;
+renderLast=function(){oldRenderLast();let el=$('#lastBall');if(el&&S.lastBall){el.innerHTML+=`<div class="contrib">${(S.lastBall.details||[]).map(([k,n])=>k+': '+n).join('<br>')}</div><p class="tiny money">${S.lastBall.contract||''}</p>`}};
+const oldDraw=draw;
+draw=function(dt){oldDraw(dt);if(screen!=='play'||!ctx)return;let g=ctx;for(let p of P){if(p.t<0||p.gone)continue;if(p.reinforced){g.strokeStyle='#ffcf65';g.beginPath();g.arc(p.x,p.y,8,0,7);g.stroke()}if(p.link){let q=P.find(x=>x.key===p.link);if(q&&!q.gone){g.strokeStyle='#72e5ab33';g.beginPath();g.moveTo(p.x,p.y);g.lineTo(q.x,q.y);g.stroke()}}if(p.bumper){g.fillStyle='#fff';g.font='11px monospace';g.fillText(p.bumper<0?'‹':'›',p.x,p.y-8)}}if(S.boss===8){let gate=B?B.gate:(S.roundDrops||0)%2;for(let i=0;i<7;i++)if(i%2!==gate){g.fillStyle='#ff587666';g.fillRect(i*W/7+3,506,W/7-6,5)}}document.querySelectorAll('[data-relic]').forEach(el=>el.classList.toggle('pulse',!store.settings.reduced&&(pulseUntil[el.dataset.relic]||0)>performance.now()))};
+const oldRenderOwned=renderOwned;
+renderOwned=function(mode){oldRenderOwned(mode);let el=$('#relics');if(el)el.querySelectorAll('.owned').forEach((node,i)=>{let id=S.relics[i]?.id;node.dataset.relic=id;if(id===S.lockedRelic){node.style.opacity='.4';node.insertAdjacentHTML('beforeend','<span class="danger">DISABLED THIS ENCOUNTER</span>')}})};
+// The original delay is retained for readability; fast scoring uses a short transition.
+const oldAfter=afterBall;
+afterBall=function(){if(screen==='play'&&paused){setTimeout(afterBall,200);return}oldAfter()};
+function descentVictory(){screen='victory';S.phase='victory';root(`<div class="hero panel"><span class="tag">THE DESCENT IS COMPLETE</span><h1>REAPER<br><em>DOWN.</em></h1><h2>${fmt(S.score)} POINTS</h2><p>${orb()[2]} · Heat ${S.heat} · ${Object.keys(S.edits).length} board modifications · ${S.routeHistory.length} paths chosen</p><p class="good">${S.mode==='practice'?'Practice clear; progression disabled.':'Orb Heat progression recorded. You can safely finish now.'}</p><div class="buttons"><button class="gold" onclick="cashOut()">ESCAPE & BANK RUN</button><button onclick="routeUI()">ENTER THE BEYOND</button>${S.fusedFinal?'<button onclick="secretFinal()">CHALLENGE THE ARCHITECT</button>':''}</div><p class="tiny muted">${S.fusedFinal?'Your fusion unlocked an optional Architect challenge: +60% target on the next encounter.':'Create any fused relic before the final boss to unlock the optional Architect challenge.'} Endless is optional, not a requirement for a valid clear.</p></div>`);save()}
+victory=descentVictory;
+function secretFinal(){S.architect=true;S.reward='THE ARCHITECT — a single optional encounter. Target ×1.6. Clear it to claim a distinct ending.';S.route='elite';S.routeChosen=true;S.routeOptions=null;contractUI()}
+const preArchitectTarget=target;
+target=function(){return Math.round(preArchitectTarget()*(S.architect?1.6/1.35:1)/5)*5};
+const preArchitectClear=clearRound;
+clearRound=function(){let special=S.architect;if(special){S.architect=false;S.architectClear=true;S.rs=target();S.round++;S.gold+=15;S.reward='The Architect is defeated.';S.ended=true;S.phase='over';feat('architect');finishRecord();save();gameOver();return}preArchitectClear()};
+const preFuse=fuse;
+fuse=function(id){let count=S.relics.length;preFuse(id);if(S.relics.length<count){S.fusedFinal=true;save()}};
+const oldResume=resume;
+resume=function(){S=JSON.parse(JSON.stringify(store.run));descentState();if(S.phase==='falling'&&S.ballCheckpoint){S=S.ballCheckpoint;S.phase='play';delete S.ballCheckpoint;descentState()}B=null;armedTool=null;paused=false;switch(S.phase){case'route':routeUI();return;case'contract':contractUI();return;case'workshop':openWorkshop(S.editorReturn);return;case'event':eventUI();return;case'rest':restUI();return;case'jackpot':jackpotPicker();return;case'bosschoice':prepareBoss();return;default:store.run=JSON.parse(JSON.stringify(S));oldResume();descentState();updateDescentHUD()}};
+const oldPause=pauseMenu;
+pauseMenu=function(){oldPause();$('#modal>div').insertAdjacentHTML('beforeend',`<div class="sep"></div><div class="buttons"><button onclick="store.settings.fast=!store.settings.fast;persist();toast(store.settings.fast?'Fast scoring on':'Fast scoring off')">TOGGLE FAST SCORING</button><button onclick="store.settings.reduced=!store.settings.reduced;persist();toast(store.settings.reduced?'Reduced effects on':'Reduced effects off')">TOGGLE REDUCED EFFECTS</button></div>`)};
+const oldHelp=help;
+help=function(){oldHelp();$('#modal>div').insertAdjacentHTML('beforeend',`<div class="sep"></div><h3>THE DESCENT SYSTEMS</h3><p>After each encounter, choose a route. Markets offer shopping; workshops give two board edits. High-stakes tables trade a 35% harder target for visible rewards. Other paths offer contracts, tools, events or rest. Every route ends in a scoring encounter.</p><p>Paint, remove, reinforce, link or add a bumper at a workshop. One edit costs one charge. Your changes persist for the run. Rounds 5 and 9 introduce new layouts but preserve your modified positions.</p><p>Optional contracts cost nothing. Missed contracts have no penalty. Clearing the encounter is always required. A full utility rack converts awarded tools to $4.</p><p>Utility tools use Q/E or their buttons during flight. Some need a second tap on the board. Tools are consumed on use. Recall preserves earned score, spent nudges and hit pegs; it is not a free extra ball.</p><p>Relic fusion is available at workshops and market workbenches. It consumes both ingredients and frees one rack slot. Fusion cards explain which effects replace the originals.</p><p>Collector disables a chosen relic for one encounter. Gatekeeper alternates slot groups. The final Reaper offers a visible sacrifice. Create a fusion before winning to unlock the optional Architect ending.</p>`)};
+const oldMenu=menu;
+menu=function(){oldMenu();let p=$('.hero>p');if(p)p.textContent='Build the board. Choose the path. Break the machine.';let panel=document.createElement('div');panel.className='panel';panel.innerHTML='<h3>NEW: THE DESCENT</h3><p class="tiny muted">Branching paths · persistent board editing · optional contracts · six relic fusions · five utility tools · new bosses · optional Architect ending.</p><p class="tiny muted">Afterlife save format supported. Import your exported Afterlife backup if this file opens in a separate browser storage area.</p>';$('.hero').insertBefore(panel,$('.hero>.panel'));};
+const oldRecord=finishRecord;
+finishRecord=function(){if(S.recorded)return;oldRecord();if(S.mode!=='practice'&&M.records.length){M.records[0].ending=S.architectClear?'Architect':S.won?'Escape':'Fallen';M.records[0].edits=Object.keys(S.edits||{}).length;M.records[0].fusions=S.relics.filter(x=>RECIPES.some(q=>q.id===x.id)).length;persist()}};
+const oldCollect=collection;
+collection=function(){oldCollect();let top=document.createElement('div');top.className='panel';top.innerHTML=`<h3>TRANSFORMATIONS</h3><p class="tiny muted">${M.recipes.length}/${RECIPES.length} crafted · Ingredients and effects are revealed at workbenches. Practice does not discover recipes.</p><p>${M.recipes.map(id=>byId[id][2]).join(' · ')||'No fusions crafted yet.'}</p>`;$('#app').insertBefore(top,$('#app>.grid'))};
+// Harden save import: reject unknown relics, invalid phases and oversized files.
+importSave=async function(file){if(!file)return;try{if(file.size>2000000)throw Error();let data=JSON.parse(await file.text());if(!data.meta||!Array.isArray(data.meta.unlocks)||!Array.isArray(data.meta.relics))throw Error();if(data.run){let r=data.run;if(r.version!==1||!ORBS.some(x=>x[0]===r.orb)||!Array.isArray(r.relics)||r.relics.some(x=>!byId[x.id])||!Array.isArray(r.upgrades)||r.upgrades.length!==7||!Number.isFinite(r.seed)||!Number.isFinite(r.round)||r.round<1)throw Error()}window.imported=data;modal('<h2>Replace local progress?</h2><p>Afterlife and Descent backups are supported. Current local progress will be replaced.</p><div class="buttons"><button class="gold" onclick="store=imported;M=store.meta;persist();location.reload()">IMPORT</button><button onclick="closeModal()">CANCEL</button></div>')}catch{toast('Invalid or unsupported save file.')}};
+
+const descentOver=gameOver;
+gameOver=function(){descentOver();if(S.architectClear){let hero=$('.hero');let ending=document.createElement('div');ending.className='panel';ending.innerHTML='<span class="tag">SECRET ENDING</span><h2>THE ARCHITECT FALLS</h2><p>You did not merely escape the machine. You rewrote it.</p>';hero.insertBefore(ending,hero.children[0]);}};
+
+menu();requestAnimationFrame(loop);
+</script></body></html>
